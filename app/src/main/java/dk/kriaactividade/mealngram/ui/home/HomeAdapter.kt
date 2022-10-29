@@ -3,6 +3,8 @@ package dk.kriaactividade.mealngram.ui.home
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.view.get
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -18,7 +20,12 @@ class HomeAdapter(
     private val listFood: MutableList<FoodModel>
 ) : ListAdapter<FoodModel, HomeAdapter.HomeItemViewHolder>(DiffUtilHome()) {
     private var isOpen = false
+    private var isMark = ""
+    private var isActive = true
+    var chipPosition = 0
     var newValue = 0
+    val listChip = mutableListOf<Chip>()
+
     inner class HomeItemViewHolder(private val item: ItemRecyclerHomeBinding) :
         RecyclerView.ViewHolder(item.root) {
         fun binding(foodModel: FoodModel) {
@@ -36,36 +43,87 @@ class HomeAdapter(
             } else {
                 item.chipGroup.gone()
             }
-            clickToUpdateProgress(item.monday)
-            clickToUpdateProgress(item.tuesday)
-            clickToUpdateProgress(item.wednesday)
-            clickToUpdateProgress(item.thursday)
-            clickToUpdateProgress(item.friday)
-            clickToUpdateProgress(item.saturday)
-            clickToUpdateProgress(item.sunday)
-        }
-    }
 
-    private fun clickToUpdateProgress(chip: Chip) {
-        chip.apply {
-            setOnClickListener {
-                isChecked(isChecked,15)
+
+            listChip.add(item.monday)
+            listChip.add(item.tuesday)
+            listChip.add(item.wednesday)
+            listChip.add(item.thursday)
+            listChip.add(item.friday)
+            listChip.add(item.saturday)
+            listChip.add(item.sunday)
+
+            for (value in 0 until listChip.size) {
+                clickToUpdateProgress(listChip[value])
+                if (isMark == listChip[value].text) {
+                    markItemChip(listChip[value])
+                    if (!isActive){
+                        umMarkItemChip(listChip[value])
+                    }
+                }
             }
         }
     }
 
-    private fun isChecked(check: Boolean,value:Int) {
+
+    private fun clickToUpdateProgress(chip: Chip) {
+        chip.apply {
+            setOnClickListener {
+                isChecked(isChecked, 15, chip.text.toString())
+            }
+        }
+    }
+
+     fun verifyChip(chipActive:Boolean){
+        isActive = chipActive
+         notifyDataSetChanged()
+    }
+
+    private fun umMarkItemChip(chip: Chip) {
+        when (chip.text) {
+            "M" -> chip.isChecked = false
+            "T" -> chip.isChecked = false
+            "W" -> chip.isChecked = false
+            "Th" -> chip.isChecked = false
+            "F" -> chip.isChecked = false
+            "Sa" -> chip.isChecked = false
+            "Su" -> chip.isChecked = false
+        }
+    }
+
+    private fun markItemChip(chip: Chip) {
+        when (chip.text) {
+            "M" -> chip.isChecked = true
+            "T" -> chip.isChecked = true
+            "W" -> chip.isChecked = true
+            "Th" -> chip.isChecked = true
+            "F" -> chip.isChecked = true
+            "Sa" -> chip.isChecked = true
+            "Su" -> chip.isChecked = true
+        }
+    }
+
+    private fun isChecked(check: Boolean, value: Int, text: String) {
         if (check) {
             newValue += value
             Observable.getValueProgress(newValue)
+            Observable.setVisibilityChip(text)
+            Observable.activeChipIsTrue(check)
         } else {
             newValue -= value
             Observable.getValueProgress(newValue)
+            Observable.setVisibilityChip(text)
+            Observable.activeChipIsTrue(check)
         }
     }
 
     fun openMark(openOrClose: Boolean) {
         isOpen = openOrClose
+        notifyDataSetChanged()
+    }
+
+    fun dayCheck(check: String) {
+        isMark = check
         notifyDataSetChanged()
     }
 

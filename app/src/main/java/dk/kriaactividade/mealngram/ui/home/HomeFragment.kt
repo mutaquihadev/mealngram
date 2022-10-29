@@ -16,11 +16,8 @@ import dk.kriaactividade.mealngram.utils.Observable
 
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
-    private var listFood = mutableListOf<FoodModel>()
     private var isRotate: Boolean = false
-    private val homeAdapter by lazy {
-        HomeAdapter(requireContext(), listFood)
-    }
+    private lateinit var homeAdapter: HomeAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -28,10 +25,11 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentHomeBinding.inflate(layoutInflater)
-        mockList(listFood)
         setupAdapter()
         setupEditMode()
         observeProgress()
+        observerDayOfWeekMark()
+        observeChip()
         return binding.root
     }
 
@@ -43,6 +41,18 @@ class HomeFragment : Fragment() {
             }else{
                 binding.buttonOk.gone()
             }
+        }
+    }
+
+    private fun observeChip(){
+        Observable.isActive.observe(viewLifecycleOwner) {
+            homeAdapter.verifyChip(it)
+        }
+    }
+
+    private fun observerDayOfWeekMark(){
+        Observable.verifyDayOfWeek.observe(viewLifecycleOwner) {
+           homeAdapter.dayCheck(it)
         }
     }
 
@@ -59,15 +69,19 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun mockList(foodList: MutableList<FoodModel>) {
+    private fun mockList():MutableList<FoodModel> {
+        val foodList = mutableListOf<FoodModel>()
         foodList.add(FoodModel(0, getString(R.string.text_lorem_ipsum)))
+        foodList.add(FoodModel(1, getString(R.string.text_lorem_ipsum)))
+        return foodList
     }
 
     private fun setupAdapter() {
         binding.recyclerHome.apply {
+            homeAdapter = HomeAdapter(context,mockList())
             layoutManager = LinearLayoutManager(requireContext())
             adapter = homeAdapter
-            homeAdapter.submitList(listFood)
+            homeAdapter.submitList(mockList())
         }
     }
 
