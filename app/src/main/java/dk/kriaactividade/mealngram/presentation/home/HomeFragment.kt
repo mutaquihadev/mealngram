@@ -43,6 +43,10 @@ class HomeFragment : Fragment() {
     private fun observerRequest(){
         recipesViewModel.recipes.observe(viewLifecycleOwner){
             setupAdapter(it)
+            binding.apply {
+                loading.gone()
+                layoutRecipes.visible()
+            }
         }
     }
 

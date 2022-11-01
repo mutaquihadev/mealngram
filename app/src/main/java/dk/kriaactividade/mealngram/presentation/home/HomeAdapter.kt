@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import com.example.projectx.utils.Extension.gone
 import com.example.projectx.utils.Extension.visible
 import dk.kriaactividade.mealngram.repository.remote.RecipesResponse
@@ -20,14 +21,16 @@ class HomeAdapter(
     private var isOpen = false
     private var isMark = ""
     private var isActive = true
-    var chipPosition = 0
     var newValue = 0
     val listChip = mutableListOf<Chip>()
 
     inner class HomeItemViewHolder(private val item: ItemRecyclerHomeBinding) :
         RecyclerView.ViewHolder(item.root) {
         fun binding(recipesResponse: RecipesResponse) {
-            item.textFood.text = recipesResponse.name
+            item.titleRecipe.text = recipesResponse.name
+            item.descriptionRecipe.text = recipesResponse.description
+            item.foodImage.load(recipesResponse.imagesUrl[0])
+
             item.noFavorite.setOnClickListener {
                 item.noFavorite.gone()
                 item.favorite.visible()

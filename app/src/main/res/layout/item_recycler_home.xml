@@ -70,18 +70,30 @@
                 app:layout_constraintTop_toBottomOf="@id/food_image" />
 
             <TextView
-                android:id="@+id/text_food"
+                android:id="@+id/title_recipe"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toStartOf="@+id/favorite_layout"
+                app:layout_constraintStart_toStartOf="@id/description_recipe"
+                app:layout_constraintTop_toBottomOf="@id/divider"
+                tools:text="Title recipe" />
+
+            <TextView
+                android:id="@+id/description_recipe"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
                 android:paddingBottom="8dp"
-                android:text="@string/text_lorem_ipsum"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toTopOf="@id/chip_group"
                 app:layout_constraintEnd_toStartOf="@id/favorite_layout"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/divider" />
+                app:layout_constraintTop_toBottomOf="@id/title_recipe"
+                tools:text="@string/text_lorem_ipsum" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/chip_group"
@@ -90,7 +102,7 @@
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/text_food">
+                app:layout_constraintTop_toBottomOf="@id/description_recipe">
 
                 <com.google.android.material.chip.ChipGroup
                     android:id="@+id/days_of_the_week"
@@ -102,9 +114,9 @@
                     app:layout_constraintTop_toTopOf="parent">
 
                     <com.google.android.material.chip.Chip
-                        android:layout_width="wrap_content"
                         android:id="@+id/monday"
                         style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="M" />
 
