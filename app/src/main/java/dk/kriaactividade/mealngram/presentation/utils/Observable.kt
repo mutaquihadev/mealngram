@@ -1,4 +1,4 @@
-package dk.kriaactividade.mealngram.utils
+package dk.kriaactividade.mealngram.presentation.utils
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

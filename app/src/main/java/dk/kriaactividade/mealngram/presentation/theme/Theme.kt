@@ -1,4 +1,4 @@
-package dk.kriaactividade.mealngram.ui.theme
+package dk.kriaactividade.mealngram.presentation.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme

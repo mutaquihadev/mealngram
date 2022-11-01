@@ -1,4 +1,4 @@
-package dk.kriaactividade.mealngram.ui.home
+package dk.kriaactividade.mealngram.presentation.home
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,15 +9,21 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.projectx.utils.Extension.gone
 import com.example.projectx.utils.Extension.visible
 import com.example.projectx.utils.ViewAnimation
+import dagger.hilt.android.AndroidEntryPoint
 import dk.kriaactividade.mealngram.R
 import dk.kriaactividade.mealngram.databinding.FragmentHomeBinding
-import dk.kriaactividade.mealngram.ui.FoodModel
-import dk.kriaactividade.mealngram.utils.Observable
+import dk.kriaactividade.mealngram.repository.remote.RecipesResponse
+import dk.kriaactividade.mealngram.presentation.utils.Observable
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
     private var isRotate: Boolean = false
     private lateinit var homeAdapter: HomeAdapter
+
+    @Inject
+    lateinit var recipesViewModel: HomeViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -25,12 +31,19 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentHomeBinding.inflate(layoutInflater)
-        setupAdapter()
         setupEditMode()
         observeProgress()
         observerDayOfWeekMark()
         observeChip()
+        recipesViewModel.getRecipesList()
+        observerRequest()
         return binding.root
+    }
+
+    private fun observerRequest(){
+        recipesViewModel.recipes.observe(viewLifecycleOwner){
+            setupAdapter(it)
+        }
     }
 
     private fun observeProgress() {
@@ -69,19 +82,13 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun mockList():MutableList<FoodModel> {
-        val foodList = mutableListOf<FoodModel>()
-        foodList.add(FoodModel(0, getString(R.string.text_lorem_ipsum)))
-        foodList.add(FoodModel(1, getString(R.string.text_lorem_ipsum)))
-        return foodList
-    }
 
-    private fun setupAdapter() {
+    private fun setupAdapter(listRecipes:MutableList<RecipesResponse>) {
         binding.recyclerHome.apply {
-            homeAdapter = HomeAdapter(context,mockList())
+            homeAdapter = HomeAdapter(context,listRecipes)
             layoutManager = LinearLayoutManager(requireContext())
             adapter = homeAdapter
-            homeAdapter.submitList(mockList())
+            homeAdapter.submitList(listRecipes)
         }
     }
 

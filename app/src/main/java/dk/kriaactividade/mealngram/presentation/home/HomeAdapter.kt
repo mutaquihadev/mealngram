@@ -1,24 +1,22 @@
-package dk.kriaactividade.mealngram.ui.home
+package dk.kriaactividade.mealngram.presentation.home
 
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.core.view.get
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.projectx.utils.Extension.gone
 import com.example.projectx.utils.Extension.visible
-import dk.kriaactividade.mealngram.ui.FoodModel
-import dk.kriaactividade.mealngram.utils.Observable
+import dk.kriaactividade.mealngram.repository.remote.RecipesResponse
+import dk.kriaactividade.mealngram.presentation.utils.Observable
 import com.google.android.material.chip.Chip
 import dk.kriaactividade.mealngram.databinding.ItemRecyclerHomeBinding
 
 class HomeAdapter(
     private val context: Context,
-    private val listFood: MutableList<FoodModel>
-) : ListAdapter<FoodModel, HomeAdapter.HomeItemViewHolder>(DiffUtilHome()) {
+    private val listFood: MutableList<RecipesResponse>
+) : ListAdapter<RecipesResponse, HomeAdapter.HomeItemViewHolder>(DiffUtilHome()) {
     private var isOpen = false
     private var isMark = ""
     private var isActive = true
@@ -28,8 +26,8 @@ class HomeAdapter(
 
     inner class HomeItemViewHolder(private val item: ItemRecyclerHomeBinding) :
         RecyclerView.ViewHolder(item.root) {
-        fun binding(foodModel: FoodModel) {
-            item.textFood.text = foodModel.text
+        fun binding(recipesResponse: RecipesResponse) {
+            item.textFood.text = recipesResponse.name
             item.noFavorite.setOnClickListener {
                 item.noFavorite.gone()
                 item.favorite.visible()
@@ -143,12 +141,12 @@ class HomeAdapter(
     }
 }
 
-class DiffUtilHome : DiffUtil.ItemCallback<FoodModel>() {
-    override fun areItemsTheSame(oldItem: FoodModel, newItem: FoodModel): Boolean {
+class DiffUtilHome : DiffUtil.ItemCallback<RecipesResponse>() {
+    override fun areItemsTheSame(oldItem: RecipesResponse, newItem: RecipesResponse): Boolean {
         return newItem.id == oldItem.id
     }
 
-    override fun areContentsTheSame(oldItem: FoodModel, newItem: FoodModel): Boolean {
+    override fun areContentsTheSame(oldItem: RecipesResponse, newItem: RecipesResponse): Boolean {
         return newItem == oldItem
     }
 
