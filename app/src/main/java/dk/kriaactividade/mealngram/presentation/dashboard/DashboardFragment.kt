@@ -8,6 +8,8 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
+import com.example.projectx.utils.Extension.gone
+import com.example.projectx.utils.Extension.visible
 import dagger.hilt.android.AndroidEntryPoint
 import dk.kriaactividade.mealngram.databinding.FragmentDashboardBinding
 import dk.kriaactividade.mealngram.repository.remote.RecipesResponse
@@ -28,6 +30,8 @@ class DashboardFragment : Fragment() {
         binding = FragmentDashboardBinding.inflate(layoutInflater)
         viewModel.myRecipes()
         viewModel.myRecipes.observe(viewLifecycleOwner){
+            binding.loading.gone()
+            binding.layoutMyRecipes.visible()
             setViewPager(it)
         }
 
