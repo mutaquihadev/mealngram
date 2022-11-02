@@ -2,5 +2,11 @@
     <!-- Base application theme. -->
     <style name="Theme.Mealngram" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <item name="android:statusBarColor">@color/purple_700</item>
+        <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.YourApp.LargeComponent</item>
+    </style>
+
+    <style name="ShapeAppearance.YourApp.LargeComponent" parent="ShapeAppearance.MaterialComponents.LargeComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">12dp</item>
     </style>
 </resources>
