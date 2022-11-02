@@ -22,6 +22,7 @@ class HomeAdapter(
     private var isOpen = false
     private var isMark = ""
     private var isActive = true
+    private var isClick = true
     var newValue = 0
     val listChip = mutableListOf<Chip>()
 
@@ -129,6 +130,11 @@ class HomeAdapter(
         notifyDataSetChanged()
     }
 
+    fun isClickable(click:Boolean){
+        isClick = click
+        notifyDataSetChanged()
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeItemViewHolder {
         val layoutInflater = LayoutInflater.from(context)
         val myView = ItemRecyclerHomeBinding.inflate(layoutInflater)
@@ -138,8 +144,13 @@ class HomeAdapter(
     override fun onBindViewHolder(holder: HomeItemViewHolder, position: Int) {
         val recipes = listRecipes[position]
         holder.binding(recipes)
-        holder.itemView.setOnClickListener {
-            listener.detailsRecipes(recipes)
+        if (isClick){
+            holder.itemView.isClickable = true
+            holder.itemView.setOnClickListener {
+                listener.detailsRecipes(recipes)
+            }
+        }else{
+            holder.itemView.isClickable = false
         }
     }
 

@@ -83,9 +83,11 @@ class HomeFragment : Fragment() {
             if (isRotate) {
                 homeAdapter.openMark(true)
                 binding.progress.visible()
+                homeAdapter.isClickable(false)
             } else {
                 homeAdapter.openMark(false)
                 binding.progress.gone()
+                homeAdapter.isClickable(true)
             }
         }
     }
