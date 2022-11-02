@@ -1,4 +1,4 @@
-package dk.kriaactividade.mealngram.ui.theme
+package dk.kriaactividade.mealngram.presentation.theme
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Shapes

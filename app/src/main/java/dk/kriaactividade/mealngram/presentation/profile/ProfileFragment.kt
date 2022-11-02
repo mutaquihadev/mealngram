@@ -1,4 +1,4 @@
-package dk.kriaactividade.mealngram.ui.profile
+package dk.kriaactividade.mealngram.presentation.profile
 
 import android.os.Bundle
 import android.view.LayoutInflater

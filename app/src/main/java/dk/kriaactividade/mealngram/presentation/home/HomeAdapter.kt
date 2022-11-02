@@ -1,35 +1,38 @@
-package dk.kriaactividade.mealngram.ui.home
+package dk.kriaactividade.mealngram.presentation.home
 
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.core.view.get
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import com.example.projectx.utils.Extension.gone
 import com.example.projectx.utils.Extension.visible
-import dk.kriaactividade.mealngram.ui.FoodModel
-import dk.kriaactividade.mealngram.utils.Observable
+import dk.kriaactividade.mealngram.repository.remote.RecipesResponse
+import dk.kriaactividade.mealngram.presentation.utils.Observable
 import com.google.android.material.chip.Chip
 import dk.kriaactividade.mealngram.databinding.ItemRecyclerHomeBinding
 
 class HomeAdapter(
     private val context: Context,
-    private val listFood: MutableList<FoodModel>
-) : ListAdapter<FoodModel, HomeAdapter.HomeItemViewHolder>(DiffUtilHome()) {
+    private val listRecipes: MutableList<RecipesResponse>,
+    private val listener: ClickToDetailsRecipes
+) : ListAdapter<RecipesResponse, HomeAdapter.HomeItemViewHolder>(DiffUtilHome()) {
     private var isOpen = false
     private var isMark = ""
     private var isActive = true
-    var chipPosition = 0
+    private var isClick = true
     var newValue = 0
     val listChip = mutableListOf<Chip>()
 
     inner class HomeItemViewHolder(private val item: ItemRecyclerHomeBinding) :
         RecyclerView.ViewHolder(item.root) {
-        fun binding(foodModel: FoodModel) {
-            item.textFood.text = foodModel.text
+        fun binding(recipesResponse: RecipesResponse) {
+            item.titleRecipe.text = recipesResponse.name
+            item.descriptionRecipe.text = recipesResponse.description
+            item.foodImage.load(recipesResponse.imagesUrl[0])
+
             item.noFavorite.setOnClickListener {
                 item.noFavorite.gone()
                 item.favorite.visible()
@@ -127,6 +130,11 @@ class HomeAdapter(
         notifyDataSetChanged()
     }
 
+    fun isClickable(click:Boolean){
+        isClick = click
+        notifyDataSetChanged()
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeItemViewHolder {
         val layoutInflater = LayoutInflater.from(context)
         val myView = ItemRecyclerHomeBinding.inflate(layoutInflater)
@@ -134,22 +142,34 @@ class HomeAdapter(
     }
 
     override fun onBindViewHolder(holder: HomeItemViewHolder, position: Int) {
-        val food = listFood[position]
-        holder.binding(food)
+        val recipes = listRecipes[position]
+        holder.binding(recipes)
+        if (isClick){
+            holder.itemView.isClickable = true
+            holder.itemView.setOnClickListener {
+                listener.detailsRecipes(recipes)
+            }
+        }else{
+            holder.itemView.isClickable = false
+        }
     }
 
     override fun getItemCount(): Int {
-        return listFood.size
+        return listRecipes.size
     }
 }
 
-class DiffUtilHome : DiffUtil.ItemCallback<FoodModel>() {
-    override fun areItemsTheSame(oldItem: FoodModel, newItem: FoodModel): Boolean {
+class DiffUtilHome : DiffUtil.ItemCallback<RecipesResponse>() {
+    override fun areItemsTheSame(oldItem: RecipesResponse, newItem: RecipesResponse): Boolean {
         return newItem.id == oldItem.id
     }
 
-    override fun areContentsTheSame(oldItem: FoodModel, newItem: FoodModel): Boolean {
+    override fun areContentsTheSame(oldItem: RecipesResponse, newItem: RecipesResponse): Boolean {
         return newItem == oldItem
     }
 
+}
+
+interface ClickToDetailsRecipes{
+    fun detailsRecipes(recipesResponse: RecipesResponse)
 }
