@@ -88,6 +88,8 @@
                 android:layout_margin="8dp"
                 android:paddingBottom="8dp"
                 android:textSize="16sp"
+                android:maxLines="2"
+                android:ellipsize="end"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toTopOf="@id/chip_group"
                 app:layout_constraintEnd_toStartOf="@id/favorite_layout"

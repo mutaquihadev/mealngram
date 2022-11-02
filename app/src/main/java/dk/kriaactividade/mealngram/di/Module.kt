@@ -5,6 +5,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import dk.kriaactividade.mealngram.data.domain.RecipesUseCase
 import dk.kriaactividade.mealngram.data.repository.RecipesRepository
+import dk.kriaactividade.mealngram.presentation.utils.Constants.BASE_URL_MOCK
 import dk.kriaactividade.mealngram.repository.service.RecipesService
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -22,7 +23,7 @@ class Module {
     @Provides
     fun providesRetrofit(): RecipesService {
         return Retrofit.Builder()
-            .baseUrl("https://5eef-89-23-224-153.eu.ngrok.io")
+            .baseUrl(BASE_URL_MOCK)
             .client(
                 OkHttpClient.Builder().addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                     .build()

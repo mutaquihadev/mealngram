@@ -16,7 +16,8 @@ import dk.kriaactividade.mealngram.databinding.ItemRecyclerHomeBinding
 
 class HomeAdapter(
     private val context: Context,
-    private val listFood: MutableList<RecipesResponse>
+    private val listRecipes: MutableList<RecipesResponse>,
+    private val listener: ClickToDetailsRecipes
 ) : ListAdapter<RecipesResponse, HomeAdapter.HomeItemViewHolder>(DiffUtilHome()) {
     private var isOpen = false
     private var isMark = ""
@@ -135,12 +136,15 @@ class HomeAdapter(
     }
 
     override fun onBindViewHolder(holder: HomeItemViewHolder, position: Int) {
-        val food = listFood[position]
-        holder.binding(food)
+        val recipes = listRecipes[position]
+        holder.binding(recipes)
+        holder.itemView.setOnClickListener {
+            listener.detailsRecipes(recipes)
+        }
     }
 
     override fun getItemCount(): Int {
-        return listFood.size
+        return listRecipes.size
     }
 }
 
@@ -153,4 +157,8 @@ class DiffUtilHome : DiffUtil.ItemCallback<RecipesResponse>() {
         return newItem == oldItem
     }
 
+}
+
+interface ClickToDetailsRecipes{
+    fun detailsRecipes(recipesResponse: RecipesResponse)
 }
