@@ -7,4 +7,7 @@ interface RecipesService {
 
     @GET("/recipes")
     suspend fun getRecipes():MutableList<RecipesResponse>
+
+    @GET("my_recipes")
+    suspend fun myRecipes():MutableList<RecipesResponse>
 }
