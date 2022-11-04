@@ -20,4 +20,5 @@ class HomeViewModel @Inject constructor(private val repository: RecipesRepositor
             _recipes.postValue(recipe)
         }
     }
+
 }

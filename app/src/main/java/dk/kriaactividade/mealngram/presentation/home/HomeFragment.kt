@@ -1,5 +1,6 @@
 package dk.kriaactividade.mealngram.presentation.home
 
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -7,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.projectx.utils.Extension.gone
 import com.example.projectx.utils.Extension.visible
@@ -14,10 +16,12 @@ import com.example.projectx.utils.ViewAnimation
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
+import dk.kriaactividade.mealngram.R
 import dk.kriaactividade.mealngram.databinding.FragmentHomeBinding
 import dk.kriaactividade.mealngram.databinding.LayoutBottonSheetDialogBinding
 import dk.kriaactividade.mealngram.presentation.utils.Observable
 import dk.kriaactividade.mealngram.repository.remote.RecipesResponse
+import java.io.Serializable
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -25,6 +29,7 @@ class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
     private var isRotate: Boolean = false
     private lateinit var homeAdapter: HomeAdapter
+    private lateinit var listRecipes: MutableList<RecipesResponse>
 
     @Inject
     lateinit var recipesViewModel: HomeViewModel
@@ -50,6 +55,7 @@ class HomeFragment : Fragment() {
             binding.apply {
                 loading.gone()
                 layoutRecipes.visible()
+                listRecipes = it
             }
         }
     }
@@ -59,6 +65,10 @@ class HomeFragment : Fragment() {
             binding.progress.progress = it
             if (it >= 100) {
                 binding.buttonOk.visible()
+                binding.buttonOk.setOnClickListener {
+                    val action = HomeFragmentDirections.goToMyRecipes()
+                    findNavController().navigate(action)
+                }
             } else {
                 binding.buttonOk.gone()
             }
@@ -91,7 +101,6 @@ class HomeFragment : Fragment() {
             }
         }
     }
-
 
     private fun setupAdapter(listRecipes: MutableList<RecipesResponse>) {
         binding.recyclerHome.apply {

@@ -11,4 +11,8 @@ class RecipesUseCase @Inject constructor(private val service: RecipesService) : 
         return service.getRecipes()
     }
 
+    override suspend fun myRecipes(): MutableList<RecipesResponse> {
+        return service.myRecipes()
+    }
+
 }
