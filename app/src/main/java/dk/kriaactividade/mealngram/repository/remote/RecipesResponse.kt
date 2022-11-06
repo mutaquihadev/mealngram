@@ -11,7 +11,7 @@ data class RecipesResponse(
     @SerializedName("images_url")
     val imagesUrl: MutableList<String>,
     @SerializedName("video_url")
-    val videoUrl: String,
+    val videoUrl: String?,
     @SerializedName("created_at")
     val createdAt: String,
     @SerializedName("update_at")

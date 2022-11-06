@@ -8,10 +8,10 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
-import com.example.projectx.utils.Extension.gone
-import com.example.projectx.utils.Extension.visible
 import dagger.hilt.android.AndroidEntryPoint
 import dk.kriaactividade.mealngram.databinding.FragmentDashboardBinding
+import dk.kriaactividade.mealngram.presentation.utils.gone
+import dk.kriaactividade.mealngram.presentation.utils.visible
 import dk.kriaactividade.mealngram.repository.remote.RecipesResponse
 import javax.inject.Inject
 import kotlin.properties.ReadWriteProperty

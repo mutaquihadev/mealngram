@@ -7,9 +7,9 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="dk.kriaactividade.mealngram.presentation.home.HomeFragment"
+        android:name="dk.kriaactividade.mealngram.presentation.home.RecipeListFragment"
         android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" >
+        tools:layout="@layout/fragment_recipe_list" >
         <action
             android:id="@+id/go_to_my_recipes"
             app:destination="@id/navigation_dashboard">
