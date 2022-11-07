@@ -1,4 +1,4 @@
-package dk.kriaactividade.mealngram.presentation.home
+package dk.kriaactividade.mealngram.presentation.recipeList
 
 import android.content.Context
 import android.view.LayoutInflater

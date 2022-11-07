@@ -3,7 +3,7 @@ package dk.kriaactividade.mealngram.repository.remote
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
-data class RecipesResponse(
+data class RecipeDTO(
     val id: Int,
     val name: String,
     val description: String,
@@ -17,4 +17,3 @@ data class RecipesResponse(
     @SerializedName("update_at")
     val updateAt: String
 ): Serializable
-

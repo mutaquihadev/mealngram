@@ -1,4 +1,4 @@
-package dk.kriaactividade.mealngram.presentation.home
+package dk.kriaactividade.mealngram.presentation.recipeList
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
@@ -8,18 +8,24 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
+import dk.kriaactividade.mealngram.R
 import dk.kriaactividade.mealngram.data.domain.Recipe
 import dk.kriaactividade.mealngram.databinding.FragmentRecipeListBinding
 import dk.kriaactividade.mealngram.databinding.LayoutBottonSheetDialogBinding
+import dk.kriaactividade.mealngram.presentation.recipeDetails.RecipeDetailsFragment
 import dk.kriaactividade.mealngram.presentation.utils.gone
 import dk.kriaactividade.mealngram.presentation.utils.visible
 import javax.inject.Inject
+
 
 @AndroidEntryPoint
 class RecipeListFragment : Fragment() {
@@ -37,16 +43,19 @@ class RecipeListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentRecipeListBinding.inflate(layoutInflater)
-
+        activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         setupObservers()
         setupAdapter()
         binding.fabAdd.setOnClickListener { recipesViewModel.updateEditMode() }
-
+        binding.buttonOk.visible()
+        binding.buttonOk.setOnClickListener {
+            findNavController().navigate(RecipeListFragmentDirections.goToMyRecipes())
+        }
         return binding.root
     }
 
     private fun setupObservers() {
-        observerProgress()
+        //observerProgress()
         observerRecipes()
         observerEditMode()
     }
@@ -73,9 +82,7 @@ class RecipeListFragment : Fragment() {
             binding.progress.progress = it
             if (it >= 100) {
                 binding.buttonOk.visible()
-                binding.buttonOk.setOnClickListener {
 
-                }
             } else {
                 binding.buttonOk.gone()
             }
