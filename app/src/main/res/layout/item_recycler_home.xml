@@ -104,6 +104,7 @@
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
+                tools:visibility="visible"
                 app:layout_constraintTop_toBottomOf="@id/description_recipe">
 
                 <com.google.android.material.chip.ChipGroup

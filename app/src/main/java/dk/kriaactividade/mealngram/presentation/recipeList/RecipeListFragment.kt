@@ -18,6 +18,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
 import dk.kriaactividade.mealngram.R
+import dk.kriaactividade.mealngram.data.domain.ChipState
 import dk.kriaactividade.mealngram.data.domain.Recipe
 import dk.kriaactividade.mealngram.databinding.FragmentRecipeListBinding
 import dk.kriaactividade.mealngram.databinding.LayoutBottonSheetDialogBinding
@@ -34,7 +35,7 @@ class RecipeListFragment : Fragment() {
     @Inject
     lateinit var recipesViewModel: RecipeListViewModel
     private val recipeListAdapter by lazy {
-        RecipeListAdapter(requireContext(), ::getDetailsRecipes)
+        RecipeListAdapter(requireContext(), ::getDetailsRecipes, ::getChipState)
     }
 
     override fun onCreateView(
@@ -125,5 +126,9 @@ class RecipeListFragment : Fragment() {
             indicator.setupWithViewPager(vpImageRecipes, true)
         }
         dialog.show()
+    }
+
+    private fun getChipState(chipId:Int, chipState:ChipState){
+        recipesViewModel.setStateChip(chipId,chipState)
     }
 }

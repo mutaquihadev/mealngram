@@ -1,9 +1,11 @@
 package dk.kriaactividade.mealngram.presentation.recipeList
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dk.kriaactividade.mealngram.data.domain.ChipState
 import dk.kriaactividade.mealngram.data.domain.Recipe
 import dk.kriaactividade.mealngram.data.repository.RecipesRepository
 import kotlinx.coroutines.launch
@@ -20,6 +22,9 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
         get() = _valueProgress
     private val _valueProgress = MutableLiveData<Int>()
 
+    val chipState:LiveData<Boolean>
+    get() = _chipState
+    private val _chipState = MutableLiveData<Boolean>()
 
     val isEditMode: LiveData<Boolean>
         get() = _isEditMode
@@ -61,6 +66,10 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
         } ?: emptyList()
 
         _recipes.postValue(recipes)
+    }
+
+    fun setStateChip(chipInt: Int, chipState: ChipState){
+
     }
 
 }

@@ -10,15 +10,17 @@ data class Recipe(
     val mainImage: String? = null,
     val isSelectionMode: Boolean = false,
 ) {
-    val dayOfWeekSelectedPair: List<Pair<String, Boolean>>
+    val dayOfWeekSelectedPair: List<ChipState>
         get() = listOf(
-            Pair("M", false),
-            Pair("T", false),
-            Pair("W", false),
-            Pair("Th", false),
-            Pair("F", false),
-            Pair("Sa", false),
-            Pair("Su", false)
+            ChipState("M"),
+            ChipState("T"),
+            ChipState("W"),
+            ChipState("Th"),
+            ChipState("F"),
+            ChipState("Sa"),
+            ChipState("Su")
         )
 
 }
+
+data class ChipState( val dayOfWeek:String,  val isActive:Boolean = false, val isVisible:Boolean = true)
