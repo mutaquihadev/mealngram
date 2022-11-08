@@ -1,0 +1,57 @@
+package dk.kriaactividade.mealngram.presentation.recipeDetails
+
+import android.os.Bundle
+import android.os.PersistableBundle
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
+import dagger.hilt.android.AndroidEntryPoint
+import dk.kriaactividade.mealngram.MainActivity
+import dk.kriaactividade.mealngram.R
+import dk.kriaactividade.mealngram.databinding.FragmentRecipeDetailsBinding
+import dk.kriaactividade.mealngram.presentation.utils.gone
+import dk.kriaactividade.mealngram.presentation.utils.visible
+import dk.kriaactividade.mealngram.repository.remote.RecipeDTO
+import javax.inject.Inject
+
+@AndroidEntryPoint
+class RecipeDetailsFragment : Fragment() {
+    private lateinit var binding : FragmentRecipeDetailsBinding
+    @Inject
+    lateinit var viewModel:RecipeDetailsViewModel
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentRecipeDetailsBinding.inflate(layoutInflater)
+
+        viewModel.myRecipes.observe(viewLifecycleOwner){
+            binding.loading.gone()
+            binding.layoutMyRecipes.visible()
+            setViewPager(it)
+        }
+        configureToolbar()
+        return binding.root
+    }
+
+    private fun configureToolbar() {
+        binding.toolbarRecipesDetails.apply {
+            textToolbar.text = getString(R.string.title_dashboard)
+            buttonBack.setOnClickListener {
+                findNavController().navigateUp()
+            }
+        }
+    }
+
+    private fun setViewPager(listRecipes: List<RecipeDTO>){
+        binding.vpMyRecipes.adapter = RecipesSelectedViewPagerAdapter(requireContext(),
+            listRecipes
+        )
+        binding.indicator.setupWithViewPager(binding.vpMyRecipes,false)
+    }
+}

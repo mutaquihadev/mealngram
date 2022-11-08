@@ -7,19 +7,26 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="dk.kriaactividade.mealngram.presentation.home.HomeFragment"
+        android:name="dk.kriaactividade.mealngram.presentation.recipeList.RecipeListFragment"
         android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" >
+        tools:layout="@layout/fragment_recipe_list" >
         <action
             android:id="@+id/go_to_my_recipes"
-            app:destination="@id/navigation_dashboard">
+            app:destination="@id/navigation_recipe_details">
         </action>
     </fragment>
 
     <fragment
+        android:id="@+id/navigation_recipe_details"
+        android:name="dk.kriaactividade.mealngram.presentation.recipeDetails.RecipeDetailsFragment"
+        android:label="@string/title_dashboard"
+        tools:layout="@layout/fragment_recipe_details"
+        />
+
+    <fragment
         android:id="@+id/navigation_dashboard"
         android:name="dk.kriaactividade.mealngram.presentation.dashboard.DashboardFragment"
-        android:label="@string/title_dashboard"
+        android:label="Dash"
         tools:layout="@layout/fragment_dashboard" />
 
     <fragment
