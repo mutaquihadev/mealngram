@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_home">
+
+    <fragment
+        android:id="@+id/navigation_home"
+        android:name="dk.kriaactividade.mealngram.presentation.recipeList.RecipeListFragment"
+        android:label="@string/title_home"
+        tools:layout="@layout/fragment_recipe_list" >
+        <action
+            android:id="@+id/go_to_my_recipes"
+            app:destination="@id/navigation_recipe_details">
+        </action>
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_recipe_details"
+        android:name="dk.kriaactividade.mealngram.presentation.recipeDetails.RecipeDetailsFragment"
+        android:label="@string/title_dashboard"
+        tools:layout="@layout/fragment_recipe_details"
+        />
+
+    <fragment
+        android:id="@+id/navigation_dashboard"
+        android:name="dk.kriaactividade.mealngram.presentation.dashboard.DashboardFragment"
+        android:label="Dash"
+        tools:layout="@layout/fragment_dashboard" />
+
+    <fragment
+        android:id="@+id/navigation_notifications"
+        android:name="dk.kriaactividade.mealngram.presentation.notifications.NotificationsFragment"
+        android:label="@string/title_notifications"
+        tools:layout="@layout/fragment_notifications" />
+
+    <fragment
+        android:id="@+id/navigation_profile"
+        android:name="dk.kriaactividade.mealngram.presentation.profile.ProfileFragment"
+        android:label="@string/profile"
+        tools:layout="@layout/fragment_profile" />
+</navigation>
