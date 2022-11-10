@@ -114,58 +114,8 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                    app:layout_constraintTop_toTopOf="parent"/>
 
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/monday"
-                        style="@style/Widget.MaterialComponents.Chip.Choice"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="M" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/tuesday"
-                        style="@style/Widget.MaterialComponents.Chip.Choice"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="T" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/wednesday"
-                        style="@style/Widget.MaterialComponents.Chip.Choice"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="W" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/thursday"
-                        style="@style/Widget.MaterialComponents.Chip.Choice"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Th" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/friday"
-                        style="@style/Widget.MaterialComponents.Chip.Choice"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="F" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/saturday"
-                        style="@style/Widget.MaterialComponents.Chip.Choice"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Sa" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/sunday"
-                        style="@style/Widget.MaterialComponents.Chip.Choice"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Su" />
-
-                </com.google.android.material.chip.ChipGroup>
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>

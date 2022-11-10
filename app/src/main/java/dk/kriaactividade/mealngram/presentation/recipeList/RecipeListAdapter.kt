@@ -8,14 +8,15 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
-import dk.kriaactividade.mealngram.data.domain.ChipState
+import com.google.android.material.chip.Chip
 import dk.kriaactividade.mealngram.data.domain.Recipe
+import dk.kriaactividade.mealngram.data.domain.WEEK
 import dk.kriaactividade.mealngram.databinding.ItemRecyclerHomeBinding
 
 class RecipeListAdapter(
   private val context: Context,
   private val onRecipeClicked: (Recipe) -> Unit,
-  private val onChipClicked: (Int, ChipState) -> Unit
+  private val onChipClicked: (recipeId: Int, weekDay:WEEK, selectedState: Boolean) -> Unit
 ) : ListAdapter< Recipe, RecipeListAdapter.RecipeItemViewHolder>(RecipeListAdapter) {
 
     inner class RecipeItemViewHolder(private val item: ItemRecyclerHomeBinding) :
@@ -27,18 +28,18 @@ class RecipeListAdapter(
             item.chipGroup.isVisible = recipe.isSelectionMode
 
             if(recipe.isSelectionMode){
-                item.monday.isVisible = recipe.dayOfWeekSelectedPair[0].isVisible
-                item.monday.isChecked = recipe.dayOfWeekSelectedPair[0].isActive
-                item.monday.setOnClickListener {
-                    onChipClicked(recipe.id, recipe.dayOfWeekSelectedPair[0])
-                }
+               item.daysOfTheWeek.removeAllViews()
+                recipe.dayOfWeekSelectedPair.forEach { chipState ->
+                    val chip = Chip(context)
+                    item.daysOfTheWeek.addView(chip)
 
-                item.tuesday.isChecked = recipe.dayOfWeekSelectedPair[1].isActive
-                item.wednesday.isChecked = recipe.dayOfWeekSelectedPair[2].isActive
-                item.thursday.isChecked = recipe.dayOfWeekSelectedPair[3].isActive
-                item.friday.isChecked = recipe.dayOfWeekSelectedPair[4].isActive
-                item.saturday.isChecked = recipe.dayOfWeekSelectedPair[5].isActive
-                item.sunday.isChecked = recipe.dayOfWeekSelectedPair[6].isActive
+                    chip.isChecked = chipState.isActive
+                    chip.isVisible = chipState.isVisible
+                    chip.text = chipState.dayOfWeek.label
+
+
+                    chip.setOnClickListener { onChipClicked(chipState.id, chipState.dayOfWeek, chipState.isActive) }
+                }
             }
         }
     }
