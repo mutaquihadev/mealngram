@@ -7,12 +7,23 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dk.kriaactividade.mealngram.data.domain.ChipState
 import dk.kriaactividade.mealngram.data.domain.Recipe
+import dk.kriaactividade.mealngram.data.domain.WEEK
 import dk.kriaactividade.mealngram.data.repository.RecipesRepository
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class RecipeListViewModel @Inject constructor(private val repository: RecipesRepository) :
     ViewModel() {
+
+    private val selectedChipStates = mutableListOf(
+        SelectedChip(WEEK.MONDAY),
+        SelectedChip(WEEK.TUESDAY),
+        SelectedChip(WEEK.WEDNESDAY),
+        SelectedChip(WEEK.THURSDAY),
+        SelectedChip(WEEK.FRIDAY),
+        SelectedChip(WEEK.SATURDAY),
+        SelectedChip(WEEK.SUNDAY)
+    )
 
     val recipes: LiveData<List<Recipe>>
         get() = _recipes
@@ -22,8 +33,8 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
         get() = _valueProgress
     private val _valueProgress = MutableLiveData<Int>()
 
-    val chipState:LiveData<Boolean>
-    get() = _chipState
+    val chipState: LiveData<Boolean>
+        get() = _chipState
     private val _chipState = MutableLiveData<Boolean>()
 
     val isEditMode: LiveData<Boolean>
@@ -51,8 +62,9 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
         }
     }
 
-    private fun updateRecipes(updatedEditMode: Boolean) {
+    private fun updateRecipes(isSelectionMode: Boolean = true) {
         val recipes = _recipes.value?.map { recipe ->
+
             Recipe(
                 id = recipe.id,
                 name = recipe.name,
@@ -61,15 +73,66 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
                 images = recipe.images,
                 video = recipe.video,
                 mainImage = recipe.mainImage,
-                isSelectionMode = updatedEditMode
+                isSelectionMode = isSelectionMode
+            )
+        } ?: emptyList()
+
+        clearSelectedRecipes()
+
+        _recipes.postValue(recipes)
+    }
+
+    private fun clearSelectedRecipes() {
+        selectedChipStates.forEach { it.recipeId = null }
+    }
+
+    fun updateChipState(recipeId: Int, weekDay: WEEK, selectedState: Boolean) {
+        val updatedSelectedState = !selectedState
+
+        selectedChipStates.first { it.weekDay == weekDay }.recipeId = if (updatedSelectedState) recipeId else null
+
+        val recipes = _recipes.value?.map { recipe ->
+
+            val updatedChipStates = selectedChipStates.mapIndexed { index, selectedChipState ->
+
+                val recipeChipState = recipe.dayOfWeekSelectedPair[index]
+                selectedChipState.recipeId?.let { selectedId ->
+
+                    if(selectedId == recipe.id){
+
+                        ChipState(
+                            id = recipeChipState.id,
+                            isActive = !recipeChipState.isActive,
+                            isVisible = true,
+                            dayOfWeek = recipeChipState.dayOfWeek
+                        )
+                    } else {
+                        ChipState(
+                            id = recipeChipState.id,
+                            isActive = false,
+                            isVisible = false,
+                            dayOfWeek = recipeChipState.dayOfWeek
+                        )
+                    }
+
+                } ?: ChipState(id = recipeChipState.id, dayOfWeek = recipeChipState.dayOfWeek)
+            }
+
+            Recipe(
+                id = recipe.id,
+                name = recipe.name,
+                description = recipe.description,
+                ingredients = recipe.ingredients,
+                images = recipe.images,
+                video = recipe.video,
+                mainImage = recipe.mainImage,
+                isSelectionMode = true,
+                dayOfWeekSelectedPair = updatedChipStates
             )
         } ?: emptyList()
 
         _recipes.postValue(recipes)
     }
-
-    fun setStateChip(chipInt: Int, chipState: ChipState){
-
-    }
-
 }
+
+data class SelectedChip(val weekDay: WEEK, var recipeId: Int? = null)

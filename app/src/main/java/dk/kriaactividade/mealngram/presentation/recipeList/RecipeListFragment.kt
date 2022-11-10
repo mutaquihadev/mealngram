@@ -35,7 +35,7 @@ class RecipeListFragment : Fragment() {
     @Inject
     lateinit var recipesViewModel: RecipeListViewModel
     private val recipeListAdapter by lazy {
-        RecipeListAdapter(requireContext(), ::getDetailsRecipes, ::getChipState)
+        RecipeListAdapter(requireContext(), ::getDetailsRecipes, recipesViewModel::updateChipState)
     }
 
     override fun onCreateView(
@@ -126,9 +126,5 @@ class RecipeListFragment : Fragment() {
             indicator.setupWithViewPager(vpImageRecipes, true)
         }
         dialog.show()
-    }
-
-    private fun getChipState(chipId:Int, chipState:ChipState){
-        recipesViewModel.setStateChip(chipId,chipState)
     }
 }
