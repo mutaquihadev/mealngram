@@ -19,6 +19,7 @@
         android:id="@+id/layout_recipes"
         android:layout_width="match_parent"
         android:visibility="gone"
+        tools:visibility="visible"
         android:layout_height="match_parent">
 
         <com.google.android.material.progressindicator.LinearProgressIndicator
@@ -48,6 +49,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:src="@drawable/ic_baseline_add_24"
+            android:tint="@color/color_default"
             app:layout_constraintBottom_toTopOf="@id/button_ok"
             app:layout_constraintEnd_toEndOf="parent"
             tools:ignore="SpeakableTextPresentCheck" />
@@ -58,6 +60,7 @@
             android:layout_height="wrap_content"
             android:text="FEITO"
             android:visibility="gone"
+            tools:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />

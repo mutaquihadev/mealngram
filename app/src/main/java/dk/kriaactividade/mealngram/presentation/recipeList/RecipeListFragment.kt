@@ -48,7 +48,6 @@ class RecipeListFragment : Fragment() {
         setupObservers()
         setupAdapter()
         binding.fabAdd.setOnClickListener { recipesViewModel.updateEditMode() }
-        binding.buttonOk.visible()
         binding.buttonOk.setOnClickListener {
             findNavController().navigate(RecipeListFragmentDirections.goToMyRecipes())
         }
@@ -56,9 +55,10 @@ class RecipeListFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        //observerProgress()
+        observerProgress()
         observerRecipes()
         observerEditMode()
+        observerButton()
     }
 
     private fun observerEditMode() {
@@ -81,12 +81,12 @@ class RecipeListFragment : Fragment() {
     private fun observerProgress() {
         recipesViewModel.valueProgress.observe(viewLifecycleOwner) {
             binding.progress.progress = it
-            if (it >= 100) {
-                binding.buttonOk.visible()
+        }
+    }
 
-            } else {
-                binding.buttonOk.gone()
-            }
+    private fun observerButton(){
+        recipesViewModel.showButton.observe(viewLifecycleOwner){
+            binding.buttonOk.isVisible = it
         }
     }
 
