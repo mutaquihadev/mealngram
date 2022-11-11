@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "919808895213",
+    "project_id": "mealngram",
+    "storage_bucket": "mealngram.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:919808895213:android:758b18c6fadf4ba91584e4",
+        "android_client_info": {
+          "package_name": "dk.kriaactividade.mealngram"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "919808895213-cfhfhace10ve2oq0oi2m8r8ss1t63u4d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBxocoouUcntNigDZgWLSfW8EUWxiGl10g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "919808895213-cfhfhace10ve2oq0oi2m8r8ss1t63u4d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

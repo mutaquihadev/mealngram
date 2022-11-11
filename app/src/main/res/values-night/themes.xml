@@ -11,4 +11,5 @@
     </style>
 
     <color name="color_default">#fff</color>
+    <color name="inverter_color">#000</color>
 </resources>
