@@ -1,12 +1,12 @@
 package dk.kriaactividade.mealngram.data.domain
 
 data class Recipe(
-    val id: Int,
-    val name: String,
-    val description: String,
-    val ingredients: List<String>,
-    val images: List<String>,
-    val video: String?,
+    val id: Int = 0,
+    val name: String = "",
+    val description: String = "",
+    val ingredients: List<String> = listOf(),
+    val image: String = "",
+    val video: String? = "",
     val mainImage: String? = null,
     val isSelectionMode: Boolean = false,
     var dayOfWeekSelectedPair: List<ChipState> = listOf(

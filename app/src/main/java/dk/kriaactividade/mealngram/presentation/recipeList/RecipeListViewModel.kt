@@ -1,6 +1,5 @@
 package dk.kriaactividade.mealngram.presentation.recipeList
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -44,8 +43,9 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
 
     init {
         viewModelScope.launch {
-            val recipe = repository.getRecipes()
-            _recipes.postValue(recipe)
+            repository.getRecipes{
+                _recipes.postValue(it)
+            }
         }
     }
 
@@ -93,7 +93,7 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
                 name = recipe.name,
                 description = recipe.description,
                 ingredients = recipe.ingredients,
-                images = recipe.images,
+                image = recipe.image,
                 video = recipe.video,
                 mainImage = recipe.mainImage,
                 isSelectionMode = isSelectionMode
@@ -151,7 +151,7 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
                 name = recipe.name,
                 description = recipe.description,
                 ingredients = recipe.ingredients,
-                images = recipe.images,
+                image = recipe.image,
                 video = recipe.video,
                 mainImage = recipe.mainImage,
                 isSelectionMode = true,

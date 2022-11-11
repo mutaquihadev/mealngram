@@ -11,18 +11,14 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
-import dk.kriaactividade.mealngram.R
-import dk.kriaactividade.mealngram.data.domain.ChipState
 import dk.kriaactividade.mealngram.data.domain.Recipe
 import dk.kriaactividade.mealngram.databinding.FragmentRecipeListBinding
 import dk.kriaactividade.mealngram.databinding.LayoutBottonSheetDialogBinding
-import dk.kriaactividade.mealngram.presentation.recipeDetails.RecipeDetailsFragment
 import dk.kriaactividade.mealngram.presentation.utils.gone
 import dk.kriaactividade.mealngram.presentation.utils.visible
 import javax.inject.Inject
@@ -70,11 +66,14 @@ class RecipeListFragment : Fragment() {
 
     private fun observerRecipes() {
         recipesViewModel.recipes.observe(viewLifecycleOwner) {
-            recipeListAdapter.submitList(it)
-            binding.apply {
-                loading.gone()
-                layoutRecipes.visible()
+            if (it.isNotEmpty()){
+                recipeListAdapter.submitList(it)
+                binding.apply {
+                    loading.gone()
+                    layoutRecipes.visible()
+                }
             }
+
         }
     }
 
@@ -121,8 +120,10 @@ class RecipeListFragment : Fragment() {
                 chipGroupRecipes.addView(chip)
                 chip.text = recipes.ingredients[ingredient]
             }
+            val listImage = mutableListOf<String>()
+            listImage.add(recipes.image)
             vpImageRecipes.adapter =
-                DetailsRecipesViewPageAdapter(requireContext(), recipes.images)
+                DetailsRecipesViewPageAdapter(requireContext(), listImage)
             indicator.setupWithViewPager(vpImageRecipes, true)
         }
         dialog.show()
