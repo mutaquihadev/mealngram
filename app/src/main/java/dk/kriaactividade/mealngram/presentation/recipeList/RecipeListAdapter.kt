@@ -24,7 +24,7 @@ class RecipeListAdapter(
         fun binding(recipe: Recipe) {
             item.titleRecipe.text = recipe.name
             item.descriptionRecipe.text = recipe.description
-            item.foodImage.load(recipe.mainImage)
+            item.foodImage.load(recipe.image)
             item.chipGroup.isVisible = recipe.isSelectionMode
 
             if(recipe.isSelectionMode){
