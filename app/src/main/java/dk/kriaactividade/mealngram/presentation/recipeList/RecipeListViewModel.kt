@@ -11,10 +11,11 @@ import dk.kriaactividade.mealngram.data.domain.WEEK
 import dk.kriaactividade.mealngram.data.repository.RecipesRepository
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.math.roundToInt
 
 class RecipeListViewModel @Inject constructor(private val repository: RecipesRepository) :
     ViewModel() {
-
+    private var countProgress = 0
     private val selectedChipStates = mutableListOf(
         SelectedChip(WEEK.MONDAY),
         SelectedChip(WEEK.TUESDAY),
@@ -33,9 +34,9 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
         get() = _valueProgress
     private val _valueProgress = MutableLiveData<Int>()
 
-    val chipState: LiveData<Boolean>
-        get() = _chipState
-    private val _chipState = MutableLiveData<Boolean>()
+    val showButton: LiveData<Boolean>
+        get() = _showButton
+    private val _showButton = MutableLiveData<Boolean>()
 
     val isEditMode: LiveData<Boolean>
         get() = _isEditMode
@@ -48,10 +49,32 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
         }
     }
 
-    fun getValueProgress(value: Int) {
-        _valueProgress.postValue(value)
+    private fun getValueProgress(value: Boolean) {
+        val valueProgress: Double = 10.0 / 0.7 + 1
+        val valueInt = valueProgress.roundToInt()
+        if (value) {
+            countProgress += valueInt
+            _valueProgress.postValue(countProgress)
+            if (countProgress > 100) {
+                _showButton.postValue(true)
+            }
+        } else {
+            countProgress -= valueInt
+            _valueProgress.postValue(countProgress)
+            if (countProgress < 100) {
+                _showButton.postValue(false)
+            }
+        }
     }
 
+    private fun hideButton(){
+        _showButton.postValue(false)
+    }
+
+    private fun clearProgress(){
+        _valueProgress.postValue(0)
+        countProgress = 0
+    }
 
     fun updateEditMode() {
         isEditMode.value?.let { currentEditMode ->
@@ -78,7 +101,8 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
         } ?: emptyList()
 
         clearSelectedRecipes()
-
+        hideButton()
+        clearProgress()
         _recipes.postValue(recipes)
     }
 
@@ -88,8 +112,9 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
 
     fun updateChipState(recipeId: Int, weekDay: WEEK, selectedState: Boolean) {
         val updatedSelectedState = !selectedState
-
-        selectedChipStates.first { it.weekDay == weekDay }.recipeId = if (updatedSelectedState) recipeId else null
+        getValueProgress(updatedSelectedState)
+        selectedChipStates.first { it.weekDay == weekDay }.recipeId =
+            if (updatedSelectedState) recipeId else null
 
         val recipes = _recipes.value?.map { recipe ->
 
@@ -98,7 +123,7 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
                 val recipeChipState = recipe.dayOfWeekSelectedPair[index]
                 selectedChipState.recipeId?.let { selectedId ->
 
-                    if(selectedId == recipe.id){
+                    if (selectedId == recipe.id) {
 
                         ChipState(
                             id = recipeChipState.id,
@@ -106,6 +131,8 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
                             isVisible = true,
                             dayOfWeek = recipeChipState.dayOfWeek
                         )
+
+
                     } else {
                         ChipState(
                             id = recipeChipState.id,
@@ -113,6 +140,7 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
                             isVisible = false,
                             dayOfWeek = recipeChipState.dayOfWeek
                         )
+
                     }
 
                 } ?: ChipState(id = recipeChipState.id, dayOfWeek = recipeChipState.dayOfWeek)
