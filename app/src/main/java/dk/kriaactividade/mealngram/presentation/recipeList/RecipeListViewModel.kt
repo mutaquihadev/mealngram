@@ -67,6 +67,12 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
         }
     }
 
+    private fun hideButton(){
+        _showButton.postValue(false)
+    }
+    private fun clearProgress(){
+        _valueProgress.postValue(0)
+    }
 
     fun updateEditMode() {
         isEditMode.value?.let { currentEditMode ->
@@ -93,7 +99,8 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
         } ?: emptyList()
 
         clearSelectedRecipes()
-
+        hideButton()
+        clearProgress()
         _recipes.postValue(recipes)
     }
 
