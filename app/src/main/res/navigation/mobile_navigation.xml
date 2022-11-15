@@ -21,7 +21,11 @@
         android:name="dk.kriaactividade.mealngram.presentation.recipeDetails.RecipeDetailsFragment"
         android:label="@string/title_dashboard"
         tools:layout="@layout/fragment_recipe_details"
-        />
+        >
+        <argument
+            android:name="detailsRecipes"
+            app:argType="dk.kriaactividade.mealngram.data.domain.DetailsRecipes[]" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_dashboard"

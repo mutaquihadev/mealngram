@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
+import dk.kriaactividade.mealngram.data.domain.DetailsRecipes
 import dk.kriaactividade.mealngram.data.domain.Recipe
 import dk.kriaactividade.mealngram.databinding.FragmentRecipeListBinding
 import dk.kriaactividade.mealngram.databinding.LayoutBottonSheetDialogBinding
@@ -33,6 +34,7 @@ class RecipeListFragment : Fragment() {
     private val recipeListAdapter by lazy {
         RecipeListAdapter(requireContext(), ::getDetailsRecipes, recipesViewModel::updateChipState)
     }
+    private var listDetails = mutableListOf<DetailsRecipes>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,8 +47,11 @@ class RecipeListFragment : Fragment() {
         setupAdapter()
         binding.fabAdd.setOnClickListener { recipesViewModel.updateEditMode() }
         binding.buttonOk.setOnClickListener {
-            findNavController().navigate(RecipeListFragmentDirections.goToMyRecipes())
+            findNavController().navigate(RecipeListFragmentDirections.goToMyRecipes(listDetails.toTypedArray()))
         }
+
+
+
         return binding.root
     }
 
@@ -55,6 +60,7 @@ class RecipeListFragment : Fragment() {
         observerRecipes()
         observerEditMode()
         observerButton()
+        observerDetailsList()
     }
 
     private fun observerEditMode() {
@@ -66,7 +72,7 @@ class RecipeListFragment : Fragment() {
 
     private fun observerRecipes() {
         recipesViewModel.recipes.observe(viewLifecycleOwner) {
-            if (it.isNotEmpty()){
+            if (it.isNotEmpty()) {
                 recipeListAdapter.submitList(it)
                 binding.apply {
                     loading.gone()
@@ -83,9 +89,19 @@ class RecipeListFragment : Fragment() {
         }
     }
 
-    private fun observerButton(){
-        recipesViewModel.showButton.observe(viewLifecycleOwner){
+    private fun observerButton() {
+        recipesViewModel.showButton.observe(viewLifecycleOwner) {
             binding.buttonOk.isVisible = it
+        }
+    }
+
+    private fun observerDetailsList() {
+        recipesViewModel.addDetailsRecipes.observe(viewLifecycleOwner) { details ->
+                listDetails.add(details)
+
+        }
+        recipesViewModel.removeDetailsRecipes.observe(viewLifecycleOwner){
+            listDetails.remove(it)
         }
     }
 

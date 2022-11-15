@@ -8,12 +8,13 @@ import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import coil.load
 import com.google.android.material.chip.Chip
+import dk.kriaactividade.mealngram.data.domain.DetailsRecipes
 import dk.kriaactividade.mealngram.databinding.ItemViewPagerRecipesSelectedBinding
 import dk.kriaactividade.mealngram.repository.remote.RecipeDTO
 
 class RecipesSelectedViewPagerAdapter(
     private val context: Context,
-    private val listRecipesSelected: List<RecipeDTO>
+    private val listRecipesSelected: List<DetailsRecipes>
 ) : PagerAdapter() {
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
@@ -25,17 +26,10 @@ class RecipesSelectedViewPagerAdapter(
         return itemView.root
     }
 
-    private fun setupCard(layout: ItemViewPagerRecipesSelectedBinding, item:RecipeDTO){
-        for (image in 0 until item.imagesUrl.size){
-            layout.imageRecipes.load(item.imagesUrl[image])
-        }
+    private fun setupCard(layout: ItemViewPagerRecipesSelectedBinding, item:DetailsRecipes){
+            layout.imageRecipes.load(item.image)
         layout.titleRecipe.text = item.name
         layout.descriptionDetails.text = item.description
-        for(chipName in 0 until item.ingredients.size){
-            val chip = Chip(context)
-            layout.chipGroupRecipes.addView(chip)
-            chip.text = item.ingredients[chipName]
-        }
     }
 
     override fun getCount(): Int {
