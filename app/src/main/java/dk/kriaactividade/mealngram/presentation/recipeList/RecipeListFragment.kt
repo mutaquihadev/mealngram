@@ -97,11 +97,7 @@ class RecipeListFragment : Fragment() {
 
     private fun observerDetailsList() {
         recipesViewModel.addDetailsRecipes.observe(viewLifecycleOwner) { details ->
-                listDetails.add(details)
-
-        }
-        recipesViewModel.removeDetailsRecipes.observe(viewLifecycleOwner){
-            listDetails.remove(it)
+            listDetails.add(details)
         }
     }
 

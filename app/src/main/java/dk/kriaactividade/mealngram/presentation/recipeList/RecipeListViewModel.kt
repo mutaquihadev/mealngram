@@ -31,10 +31,6 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
         get() = _addDetailsRecipes
     private val _addDetailsRecipes = MutableLiveData<DetailsRecipes>()
 
-    val removeDetailsRecipes: LiveData<DetailsRecipes>
-        get() = _removeDetailsRecipes
-    private val _removeDetailsRecipes = MutableLiveData<DetailsRecipes>()
-
     val valueProgress: LiveData<Int>
         get() = _valueProgress
     private val _valueProgress = MutableLiveData<Int>()
@@ -123,7 +119,6 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
         selectedChipStates.first { it.weekDay == weekDay }.recipeId =
             if (updatedSelectedState) recipeId else null
 
-
         val recipes = _recipes.value?.map { recipe ->
 
             val updatedChipStates = selectedChipStates.mapIndexed { index, selectedChipState ->
@@ -132,7 +127,7 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
                 selectedChipState.recipeId?.let { selectedId ->
 
                     if (selectedId == recipe.id) {
-                        getDetailsList(weekDay, recipe, !recipeChipState.isActive)
+                        createDetailsList(recipe,weekDay)
                         ChipState(
                             id = recipeChipState.id,
                             isActive = !recipeChipState.isActive,
@@ -169,45 +164,18 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
         _recipes.postValue(recipes)
     }
 
-    private fun getDetailsList(dayOfWeek: WEEK, recipe: Recipe, isRemoved: Boolean) {
-        if(isRemoved){
-            createDetailsList(recipe, dayOfWeek, true)
-        }else{
-            removeDetailsList(recipe,dayOfWeek,false)
-        }
-
-    }
-
     private fun createDetailsList(
         recipe: Recipe,
-        dayOfWeek: WEEK,
-        isRemoved: Boolean
+        dayOfWeek: WEEK
     ) {
         val details = DetailsRecipes(
             id = recipe.id,
             name = recipe.name,
             description = recipe.description,
             image = recipe.image,
-            dayOfWeek = dayOfWeek,
-            isRemove = isRemoved
+            dayOfWeek = dayOfWeek
         )
         _addDetailsRecipes.postValue(details)
-    }
-
-    private fun removeDetailsList(
-        recipe: Recipe,
-        dayOfWeek: WEEK,
-        isRemoved: Boolean
-    ) {
-        val details = DetailsRecipes(
-            id = recipe.id,
-            name = recipe.name,
-            description = recipe.description,
-            image = recipe.image,
-            dayOfWeek = dayOfWeek,
-            isRemove = isRemoved
-        )
-        _removeDetailsRecipes.postValue(details)
     }
 }
 

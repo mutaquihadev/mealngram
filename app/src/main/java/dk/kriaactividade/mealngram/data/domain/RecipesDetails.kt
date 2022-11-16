@@ -9,6 +9,5 @@ import kotlinx.android.parcel.Parcelize
     val name: String,
     val description: String,
     val image: String,
-    val dayOfWeek: WEEK,
-    val isRemove:Boolean = false
+    val dayOfWeek: WEEK
 ) : Parcelable
