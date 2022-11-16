@@ -7,6 +7,9 @@ import androidx.lifecycle.viewModelScope
 import dk.kriaactividade.mealngram.data.domain.*
 import dk.kriaactividade.mealngram.data.repository.RecipesRepository
 import kotlinx.coroutines.launch
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.*
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
@@ -127,7 +130,7 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
                 selectedChipState.recipeId?.let { selectedId ->
 
                     if (selectedId == recipe.id) {
-                        createDetailsList(recipe,weekDay)
+                        createDetailsList(recipe, weekDay)
                         ChipState(
                             id = recipeChipState.id,
                             isActive = !recipeChipState.isActive,
@@ -164,6 +167,37 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
         _recipes.postValue(recipes)
     }
 
+    private fun getDay(day:Int): String {
+        val dateFormat: DateFormat = SimpleDateFormat("dd/MM/yyyy",Locale("pt","BR"))
+        val calendar = Calendar.getInstance()
+        calendar.firstDayOfWeek = Calendar.SUNDAY
+        val dayWeek = calendar[Calendar.DAY_OF_WEEK]
+        when(day){
+            0 -> {
+                calendar.add(Calendar.DAY_OF_MONTH, Calendar.MONDAY - dayWeek)
+            }
+            1 -> {
+                calendar.add(Calendar.DAY_OF_MONTH, Calendar.TUESDAY - dayWeek )
+            }
+            2 -> {
+                calendar.add(Calendar.DAY_OF_MONTH, Calendar.WEDNESDAY - dayWeek )
+            }
+            3 -> {
+                calendar.add(Calendar.DAY_OF_MONTH, Calendar.THURSDAY - dayWeek)
+            }
+            4 -> {
+                calendar.add(Calendar.DAY_OF_MONTH, Calendar.FRIDAY - dayWeek )
+            }
+            5 -> {
+                calendar.add(Calendar.DAY_OF_MONTH, Calendar.SATURDAY - dayWeek )
+            }
+            6 -> {
+                calendar.add(Calendar.DAY_OF_MONTH, Calendar.SUNDAY - dayWeek )
+            }
+        }
+        return dateFormat.format(calendar.time)
+    }
+
     private fun createDetailsList(
         recipe: Recipe,
         dayOfWeek: WEEK
@@ -173,9 +207,14 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
             name = recipe.name,
             description = recipe.description,
             image = recipe.image,
-            dayOfWeek = dayOfWeek
+            dayOfWeek = dayOfWeek,
+            day = setDay(dayOfWeek)
         )
         _addDetailsRecipes.postValue(details)
+    }
+
+    private fun setDay(dayOfWeek: WEEK):String{
+       return getDay(dayOfWeek.id)
     }
 }
 
