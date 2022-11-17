@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -20,6 +21,7 @@ import dk.kriaactividade.mealngram.data.domain.DetailsRecipes
 import dk.kriaactividade.mealngram.data.domain.Recipe
 import dk.kriaactividade.mealngram.databinding.FragmentRecipeListBinding
 import dk.kriaactividade.mealngram.databinding.LayoutBottonSheetDialogBinding
+import dk.kriaactividade.mealngram.presentation.utils.Constants.RESULT_FROM_DETAILS
 import dk.kriaactividade.mealngram.presentation.utils.gone
 import dk.kriaactividade.mealngram.presentation.utils.visible
 import javax.inject.Inject
@@ -47,6 +49,12 @@ class RecipeListFragment : Fragment() {
         setupAdapter()
         binding.fabAdd.setOnClickListener { recipesViewModel.updateEditMode() }
         binding.buttonOk.setOnClickListener {
+            val currentBackStackEntry = findNavController().currentBackStackEntry
+            val savedStateHandle = currentBackStackEntry?.savedStateHandle
+            savedStateHandle?.getLiveData<Boolean>(RESULT_FROM_DETAILS)
+                ?.observe(currentBackStackEntry, Observer { result ->
+                    recipesViewModel.clearSelectionMode(result)
+                })
             findNavController().navigate(RecipeListFragmentDirections.goToMyRecipes(listDetails.toTypedArray()))
         }
 

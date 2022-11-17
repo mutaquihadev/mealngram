@@ -14,6 +14,7 @@ import dk.kriaactividade.mealngram.MainActivity
 import dk.kriaactividade.mealngram.R
 import dk.kriaactividade.mealngram.data.domain.DetailsRecipes
 import dk.kriaactividade.mealngram.databinding.FragmentRecipeDetailsBinding
+import dk.kriaactividade.mealngram.presentation.utils.Constants.RESULT_FROM_DETAILS
 import dk.kriaactividade.mealngram.presentation.utils.gone
 import dk.kriaactividade.mealngram.presentation.utils.visible
 import dk.kriaactividade.mealngram.repository.remote.RecipeDTO
@@ -32,12 +33,17 @@ class RecipeDetailsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentRecipeDetailsBinding.inflate(layoutInflater)
-        viewModel.setDetailsList(args.detailsRecipes.toList())
-        viewModel.myRecipes.observe(viewLifecycleOwner){
-            binding.loading.gone()
-            binding.layoutMyRecipes.visible()
-            setViewPager(it)
+        setViewPager(args.detailsRecipes.toList())
+        binding.loading.gone()
+        binding.layoutMyRecipes.visible()
+
+        binding.btnToFinish.setOnClickListener {
+            viewModel.setDetailsList(args.detailsRecipes.toList())
+            val savedStateHandle = findNavController().previousBackStackEntry?.savedStateHandle
+            savedStateHandle?.set(RESULT_FROM_DETAILS, true)
+            findNavController().navigateUp()
         }
+
         configureToolbar()
         return binding.root
     }

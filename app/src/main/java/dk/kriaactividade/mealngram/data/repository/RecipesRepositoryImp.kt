@@ -1,8 +1,10 @@
 package dk.kriaactividade.mealngram.data.repository
 
+import android.content.ContentValues.TAG
+import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
+import dk.kriaactividade.mealngram.data.domain.DetailsRecipes
 import dk.kriaactividade.mealngram.data.domain.Recipe
-import dk.kriaactividade.mealngram.repository.remote.RecipeDTO
 import javax.inject.Inject
 
 class RecipesRepositoryImp @Inject constructor(private val database: FirebaseFirestore) :
@@ -18,8 +20,19 @@ class RecipesRepositoryImp @Inject constructor(private val database: FirebaseFir
         }
     }
 
-    override suspend fun myRecipes(): List<RecipeDTO> {
-        return listOf()
+    override suspend fun selectedRecipes(details: List<DetailsRecipes>) {
+        details.map { detail ->
+            database.collection("selected-recipes").add(
+                DetailsRecipes(
+                    id = detail.id,
+                    name = detail.name,
+                    description = detail.description,
+                    image = detail.image,
+                    day = detail.day,
+                    dayOfWeek = detail.dayOfWeek
+                )
+            )
+        }
     }
 
 }
