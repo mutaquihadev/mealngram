@@ -4,6 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.dashboard.DashboardFragment">
+    tools:context=".presentation.recipesSelected.RecipesSelectedFragment">
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_recipes_selected"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

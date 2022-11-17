@@ -29,9 +29,9 @@
 
     <fragment
         android:id="@+id/navigation_dashboard"
-        android:name="dk.kriaactividade.mealngram.presentation.dashboard.DashboardFragment"
+        android:name="dk.kriaactividade.mealngram.presentation.recipesSelected.RecipesSelectedFragment"
         android:label="Dash"
-        tools:layout="@layout/fragment_dashboard" />
+        tools:layout="@layout/fragment_recipes_selected" />
 
     <fragment
         android:id="@+id/navigation_notifications"

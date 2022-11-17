@@ -2,6 +2,7 @@ package dk.kriaactividade.mealngram.data.domain
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
+import java.io.Serializable
 import java.util.Date
 
 @Parcelize
