@@ -1,6 +1,15 @@
 package dk.kriaactividade.mealngram.data.domain
 
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import androidx.room.TypeConverters
+import dk.kriaactividade.mealngram.database.converter.Converters
+
+@Entity(tableName = "table_recipe")
 data class Recipe(
+    @PrimaryKey(autoGenerate = true) val myId: Int = 0,
+    @ColumnInfo(name = "recipe")
     val id: Int = 0,
     val name: String = "",
     val description: String = "",
