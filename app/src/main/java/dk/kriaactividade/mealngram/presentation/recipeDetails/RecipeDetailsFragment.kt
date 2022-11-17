@@ -34,8 +34,13 @@ class RecipeDetailsFragment : Fragment() {
     ): View {
         binding = FragmentRecipeDetailsBinding.inflate(layoutInflater)
         setViewPager(args.detailsRecipes.toList())
-        binding.loading.gone()
-        binding.layoutMyRecipes.visible()
+        binding.apply {
+            loading.gone()
+            layoutMyRecipes.visible()
+            toolbarRecipesDetails.also {
+                it.buttonBack.visible()
+            }
+        }
 
         binding.btnToFinish.setOnClickListener {
             viewModel.setDetailsList(args.detailsRecipes.toList())

@@ -10,6 +10,7 @@ class DetailsRecipes(
     val id: Int,
     val name: String,
     val description: String,
+    val ingredients: List<String>,
     val image: String,
     val dayOfWeek: WEEK,
     val day: String

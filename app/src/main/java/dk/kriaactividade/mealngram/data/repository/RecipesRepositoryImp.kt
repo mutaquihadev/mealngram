@@ -28,7 +28,8 @@ class RecipesRepositoryImp @Inject constructor(private val database: FirebaseFir
                     description = detail.description,
                     image = detail.image,
                     day = detail.day,
-                    dayOfWeek = detail.dayOfWeek
+                    dayOfWeek = detail.dayOfWeek,
+                    ingredients = detail.ingredients
                 )
             )
         }
