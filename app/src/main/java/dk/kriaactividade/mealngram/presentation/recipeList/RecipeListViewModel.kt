@@ -213,7 +213,8 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
             description = recipe.description,
             image = recipe.image,
             dayOfWeek = dayOfWeek,
-            day = setDay(dayOfWeek)
+            day = setDay(dayOfWeek),
+            ingredients = recipe.ingredients
         )
         _addDetailsRecipes.postValue(details)
     }

@@ -35,9 +35,9 @@
 
     <fragment
         android:id="@+id/navigation_notifications"
-        android:name="dk.kriaactividade.mealngram.presentation.notifications.NotificationsFragment"
+        android:name="dk.kriaactividade.mealngram.presentation.recipeDay.RecipeOfDayFragment"
         android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
+        tools:layout="@layout/fragment_recipe_of_day" />
 
     <fragment
         android:id="@+id/navigation_profile"
