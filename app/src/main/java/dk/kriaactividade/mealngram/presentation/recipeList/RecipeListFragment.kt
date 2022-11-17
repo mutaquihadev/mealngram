@@ -11,14 +11,17 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
+import dk.kriaactividade.mealngram.data.domain.DetailsRecipes
 import dk.kriaactividade.mealngram.data.domain.Recipe
 import dk.kriaactividade.mealngram.databinding.FragmentRecipeListBinding
 import dk.kriaactividade.mealngram.databinding.LayoutBottonSheetDialogBinding
+import dk.kriaactividade.mealngram.presentation.utils.Constants.RESULT_FROM_DETAILS
 import dk.kriaactividade.mealngram.presentation.utils.gone
 import dk.kriaactividade.mealngram.presentation.utils.visible
 import javax.inject.Inject
@@ -33,6 +36,7 @@ class RecipeListFragment : Fragment() {
     private val recipeListAdapter by lazy {
         RecipeListAdapter(requireContext(), ::getDetailsRecipes, recipesViewModel::updateChipState)
     }
+    private var listDetails = mutableListOf<DetailsRecipes>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,8 +49,17 @@ class RecipeListFragment : Fragment() {
         setupAdapter()
         binding.fabAdd.setOnClickListener { recipesViewModel.updateEditMode() }
         binding.buttonOk.setOnClickListener {
-            findNavController().navigate(RecipeListFragmentDirections.goToMyRecipes())
+            val currentBackStackEntry = findNavController().currentBackStackEntry
+            val savedStateHandle = currentBackStackEntry?.savedStateHandle
+            savedStateHandle?.getLiveData<Boolean>(RESULT_FROM_DETAILS)
+                ?.observe(currentBackStackEntry, Observer { result ->
+                    recipesViewModel.clearSelectionMode(result)
+                })
+            findNavController().navigate(RecipeListFragmentDirections.goToMyRecipes(listDetails.toTypedArray()))
         }
+
+
+
         return binding.root
     }
 
@@ -55,6 +68,7 @@ class RecipeListFragment : Fragment() {
         observerRecipes()
         observerEditMode()
         observerButton()
+        observerDetailsList()
     }
 
     private fun observerEditMode() {
@@ -66,7 +80,7 @@ class RecipeListFragment : Fragment() {
 
     private fun observerRecipes() {
         recipesViewModel.recipes.observe(viewLifecycleOwner) {
-            if (it.isNotEmpty()){
+            if (it.isNotEmpty()) {
                 recipeListAdapter.submitList(it)
                 binding.apply {
                     loading.gone()
@@ -83,9 +97,15 @@ class RecipeListFragment : Fragment() {
         }
     }
 
-    private fun observerButton(){
-        recipesViewModel.showButton.observe(viewLifecycleOwner){
+    private fun observerButton() {
+        recipesViewModel.showButton.observe(viewLifecycleOwner) {
             binding.buttonOk.isVisible = it
+        }
+    }
+
+    private fun observerDetailsList() {
+        recipesViewModel.addDetailsRecipes.observe(viewLifecycleOwner) { details ->
+            listDetails.add(details)
         }
     }
 

@@ -4,11 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dk.kriaactividade.mealngram.data.domain.ChipState
-import dk.kriaactividade.mealngram.data.domain.Recipe
-import dk.kriaactividade.mealngram.data.domain.WEEK
+import dk.kriaactividade.mealngram.data.domain.*
 import dk.kriaactividade.mealngram.data.repository.RecipesRepository
 import kotlinx.coroutines.launch
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.*
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
@@ -29,6 +30,10 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
         get() = _recipes
     private val _recipes = MutableLiveData<List<Recipe>>()
 
+    val addDetailsRecipes: LiveData<DetailsRecipes>
+        get() = _addDetailsRecipes
+    private val _addDetailsRecipes = MutableLiveData<DetailsRecipes>()
+
     val valueProgress: LiveData<Int>
         get() = _valueProgress
     private val _valueProgress = MutableLiveData<Int>()
@@ -43,7 +48,7 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
 
     init {
         viewModelScope.launch {
-            repository.getRecipes{
+            repository.getRecipes {
                 _recipes.postValue(it)
             }
         }
@@ -67,11 +72,11 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
         }
     }
 
-    private fun hideButton(){
+    private fun hideButton() {
         _showButton.postValue(false)
     }
 
-    private fun clearProgress(){
+    private fun clearProgress() {
         _valueProgress.postValue(0)
         countProgress = 0
     }
@@ -83,6 +88,11 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
 
             updateRecipes(updatedEditMode)
         }
+    }
+
+    fun clearSelectionMode(clear:Boolean){
+       updateRecipes(!clear)
+        _isEditMode.postValue(!clear)
     }
 
     private fun updateRecipes(isSelectionMode: Boolean = true) {
@@ -113,6 +123,7 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
     fun updateChipState(recipeId: Int, weekDay: WEEK, selectedState: Boolean) {
         val updatedSelectedState = !selectedState
         getValueProgress(updatedSelectedState)
+
         selectedChipStates.first { it.weekDay == weekDay }.recipeId =
             if (updatedSelectedState) recipeId else null
 
@@ -124,14 +135,13 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
                 selectedChipState.recipeId?.let { selectedId ->
 
                     if (selectedId == recipe.id) {
-
+                        createDetailsList(recipe, weekDay)
                         ChipState(
                             id = recipeChipState.id,
                             isActive = !recipeChipState.isActive,
                             isVisible = true,
                             dayOfWeek = recipeChipState.dayOfWeek
                         )
-
 
                     } else {
                         ChipState(
@@ -161,6 +171,57 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
 
         _recipes.postValue(recipes)
     }
+
+    private fun getDay(day: Int): String {
+        val dateFormat: DateFormat = SimpleDateFormat("dd/MM/yyyy", Locale("pt", "BR"))
+        val calendar = Calendar.getInstance()
+        calendar.firstDayOfWeek = Calendar.SUNDAY
+        val dayWeek = calendar[Calendar.DAY_OF_WEEK]
+        when (day) {
+            0 -> {
+                calendar.add(Calendar.DAY_OF_MONTH, Calendar.MONDAY - dayWeek)
+            }
+            1 -> {
+                calendar.add(Calendar.DAY_OF_MONTH, Calendar.TUESDAY - dayWeek)
+            }
+            2 -> {
+                calendar.add(Calendar.DAY_OF_MONTH, Calendar.WEDNESDAY - dayWeek)
+            }
+            3 -> {
+                calendar.add(Calendar.DAY_OF_MONTH, Calendar.THURSDAY - dayWeek)
+            }
+            4 -> {
+                calendar.add(Calendar.DAY_OF_MONTH, Calendar.FRIDAY - dayWeek)
+            }
+            5 -> {
+                calendar.add(Calendar.DAY_OF_MONTH, Calendar.SATURDAY - dayWeek)
+            }
+            6 -> {
+                calendar.add(Calendar.DAY_OF_MONTH, Calendar.SUNDAY - dayWeek)
+            }
+        }
+        return dateFormat.format(calendar.time)
+    }
+
+    private fun createDetailsList(
+        recipe: Recipe,
+        dayOfWeek: WEEK
+    ) {
+        val details = DetailsRecipes(
+            id = recipe.id,
+            name = recipe.name,
+            description = recipe.description,
+            image = recipe.image,
+            dayOfWeek = dayOfWeek,
+            day = setDay(dayOfWeek)
+        )
+        _addDetailsRecipes.postValue(details)
+    }
+
+    private fun setDay(dayOfWeek: WEEK): String {
+        return getDay(dayOfWeek.id)
+    }
 }
+
 
 data class SelectedChip(val weekDay: WEEK, var recipeId: Int? = null)

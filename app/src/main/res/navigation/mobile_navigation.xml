@@ -21,13 +21,17 @@
         android:name="dk.kriaactividade.mealngram.presentation.recipeDetails.RecipeDetailsFragment"
         android:label="@string/title_dashboard"
         tools:layout="@layout/fragment_recipe_details"
-        />
+        >
+        <argument
+            android:name="detailsRecipes"
+            app:argType="dk.kriaactividade.mealngram.data.domain.DetailsRecipes[]" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_dashboard"
-        android:name="dk.kriaactividade.mealngram.presentation.dashboard.DashboardFragment"
+        android:name="dk.kriaactividade.mealngram.presentation.recipesSelected.RecipesSelectedFragment"
         android:label="Dash"
-        tools:layout="@layout/fragment_dashboard" />
+        tools:layout="@layout/fragment_recipes_selected" />
 
     <fragment
         android:id="@+id/navigation_notifications"
