@@ -20,4 +20,20 @@ class RoomViewModel @Inject constructor(private val repository: RoomRepository) 
     fun remove(movieId: Int) = viewModelScope.launch {
         repository.remove(movieId)
     }
+
+    fun insertList(listRecipe: List<Recipe>) {
+        listRecipe.map { recipe ->
+            insert(
+                Recipe(
+                    id = recipe.id,
+                    name = recipe.name,
+                    description = recipe.description,
+                    ingredients = recipe.ingredients,
+                    image = recipe.image,
+                    video = recipe.video,
+                    dayOfWeekSelectedPair = recipe.dayOfWeekSelectedPair
+                )
+            )
+        }
+    }
 }

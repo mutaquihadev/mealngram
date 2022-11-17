@@ -98,19 +98,7 @@ class RecipeListFragment : Fragment() {
     private fun saveInCache(recipeList: List<Recipe>) {
         roomViewModel.allPerson.observe(viewLifecycleOwner) {
             if (it.isEmpty()) {
-                recipeList.map { recipe ->
-                    roomViewModel.insert(
-                        Recipe(
-                            id = recipe.id,
-                            name = recipe.name,
-                            description = recipe.description,
-                            ingredients = recipe.ingredients,
-                            image = recipe.image,
-                            video = recipe.video,
-                            dayOfWeekSelectedPair = recipe.dayOfWeekSelectedPair
-                        )
-                    )
-                }
+                roomViewModel.insertList(recipeList)
             }
         }
 
