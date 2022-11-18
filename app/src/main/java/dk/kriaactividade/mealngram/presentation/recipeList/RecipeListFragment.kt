@@ -19,6 +19,7 @@ import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
 import dk.kriaactividade.mealngram.data.domain.DetailsRecipes
 import dk.kriaactividade.mealngram.data.domain.Recipe
+import dk.kriaactividade.mealngram.database.room.RoomViewModel
 import dk.kriaactividade.mealngram.databinding.FragmentRecipeListBinding
 import dk.kriaactividade.mealngram.databinding.LayoutBottonSheetDialogBinding
 import dk.kriaactividade.mealngram.presentation.utils.Constants.RESULT_FROM_DETAILS
@@ -33,6 +34,9 @@ class RecipeListFragment : Fragment() {
 
     @Inject
     lateinit var recipesViewModel: RecipeListViewModel
+
+    @Inject
+    lateinit var roomViewModel: RoomViewModel
     private val recipeListAdapter by lazy {
         RecipeListAdapter(requireContext(), ::getDetailsRecipes, recipesViewModel::updateChipState)
     }
@@ -87,8 +91,17 @@ class RecipeListFragment : Fragment() {
                     layoutRecipes.visible()
                 }
             }
-
+            saveInCache(it)
         }
+    }
+
+    private fun saveInCache(recipeList: List<Recipe>) {
+        roomViewModel.allPerson.observe(viewLifecycleOwner) {
+            if (it.isEmpty()) {
+                roomViewModel.insertList(recipeList)
+            }
+        }
+
     }
 
     private fun observerProgress() {
