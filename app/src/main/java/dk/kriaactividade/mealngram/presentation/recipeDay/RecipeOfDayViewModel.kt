@@ -1,15 +1,13 @@
 package dk.kriaactividade.mealngram.presentation.recipeDay
 
-import android.icu.util.Calendar
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dk.kriaactividade.mealngram.presentation.utils.Util.getCurrentDate
 import dk.kriaactividade.mealngram.data.domain.RecipesSelected
 import dk.kriaactividade.mealngram.data.repository.RecipesRepository
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.*
 import javax.inject.Inject
 
 class RecipeOfDayViewModel @Inject constructor(private val repository: RecipesRepository) : ViewModel() {
@@ -38,9 +36,4 @@ class RecipeOfDayViewModel @Inject constructor(private val repository: RecipesRe
         }
     }
 
-    private fun getCurrentDate():String{
-        val calendar = Calendar.getInstance()
-        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale("pt", "BR"))
-       return dateFormat.format(calendar.time.time)
-    }
 }

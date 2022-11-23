@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dk.kriaactividade.mealngram.data.domain.*
 import dk.kriaactividade.mealngram.data.repository.RecipesRepository
+import dk.kriaactividade.mealngram.presentation.utils.Util.getCurrentDate
+import dk.kriaactividade.mealngram.presentation.utils.Util.getDay
 import kotlinx.coroutines.launch
 import java.text.DateFormat
 import java.text.SimpleDateFormat
@@ -16,6 +18,7 @@ import kotlin.math.roundToInt
 class RecipeListViewModel @Inject constructor(private val repository: RecipesRepository) :
     ViewModel() {
     private var countProgress = 0
+    private var listDays = mutableListOf<Int>()
     private val selectedChipStates = mutableListOf(
         SelectedChip(WEEK.MONDAY),
         SelectedChip(WEEK.TUESDAY),
@@ -54,17 +57,27 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
         }
     }
 
+    private fun getSizeWeek(){
+        if (listDays.isEmpty()){
+            selectedChipStates.map {
+                if (getDay(it.weekDay.id) >= getCurrentDate()){
+                    listDays.add(it.weekDay.id)
+                }
+            }
+        }
+    }
+
     private fun getValueProgress(value: Boolean) {
-        val valueProgress: Double = 10.0 / 0.7 + 1
-        val valueInt = valueProgress.roundToInt()
+        getSizeWeek()
+        val valueProgress =  100 / listDays.size + 1
         if (value) {
-            countProgress += valueInt
+            countProgress += valueProgress
             _valueProgress.postValue(countProgress)
             if (countProgress > 100) {
                 _showButton.postValue(true)
             }
         } else {
-            countProgress -= valueInt
+            countProgress -= valueProgress
             _valueProgress.postValue(countProgress)
             if (countProgress < 100) {
                 _showButton.postValue(false)
@@ -122,12 +135,14 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
 
     fun updateChipState(recipeId: Int, weekDay: WEEK, selectedState: Boolean) {
         val updatedSelectedState = !selectedState
+
         getValueProgress(updatedSelectedState)
 
         selectedChipStates.first { it.weekDay == weekDay }.recipeId =
             if (updatedSelectedState) recipeId else null
 
         val recipes = _recipes.value?.map { recipe ->
+
 
             val updatedChipStates = selectedChipStates.mapIndexed { index, selectedChipState ->
 
@@ -170,37 +185,6 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
         } ?: emptyList()
 
         _recipes.postValue(recipes)
-    }
-
-    private fun getDay(day: Int): String {
-        val dateFormat: DateFormat = SimpleDateFormat("dd/MM/yyyy", Locale("pt", "BR"))
-        val calendar = Calendar.getInstance()
-        calendar.firstDayOfWeek = Calendar.SUNDAY
-        val dayWeek = calendar[Calendar.DAY_OF_WEEK]
-        when (day) {
-            0 -> {
-                calendar.add(Calendar.DAY_OF_MONTH, Calendar.MONDAY - dayWeek)
-            }
-            1 -> {
-                calendar.add(Calendar.DAY_OF_MONTH, Calendar.TUESDAY - dayWeek)
-            }
-            2 -> {
-                calendar.add(Calendar.DAY_OF_MONTH, Calendar.WEDNESDAY - dayWeek)
-            }
-            3 -> {
-                calendar.add(Calendar.DAY_OF_MONTH, Calendar.THURSDAY - dayWeek)
-            }
-            4 -> {
-                calendar.add(Calendar.DAY_OF_MONTH, Calendar.FRIDAY - dayWeek)
-            }
-            5 -> {
-                calendar.add(Calendar.DAY_OF_MONTH, Calendar.SATURDAY - dayWeek)
-            }
-            6 -> {
-                calendar.add(Calendar.DAY_OF_MONTH, Calendar.SUNDAY - dayWeek)
-            }
-        }
-        return dateFormat.format(calendar.time)
     }
 
     private fun createDetailsList(

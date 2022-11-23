@@ -12,12 +12,17 @@ import com.google.android.material.chip.Chip
 import dk.kriaactividade.mealngram.data.domain.Recipe
 import dk.kriaactividade.mealngram.data.domain.WEEK
 import dk.kriaactividade.mealngram.databinding.ItemRecyclerHomeBinding
+import dk.kriaactividade.mealngram.presentation.utils.Util
+import dk.kriaactividade.mealngram.presentation.utils.Util.getCurrentDate
+import dk.kriaactividade.mealngram.presentation.utils.Util.getDay
 
 class RecipeListAdapter(
   private val context: Context,
   private val onRecipeClicked: (Recipe) -> Unit,
   private val onChipClicked: (recipeId: Int, weekDay:WEEK, selectedState: Boolean) -> Unit
 ) : ListAdapter< Recipe, RecipeListAdapter.RecipeItemViewHolder>(RecipeListAdapter) {
+
+    private var count = 0
 
     inner class RecipeItemViewHolder(private val item: ItemRecyclerHomeBinding) :
         RecyclerView.ViewHolder(item.root) {
@@ -31,8 +36,9 @@ class RecipeListAdapter(
                item.daysOfTheWeek.removeAllViews()
                 recipe.dayOfWeekSelectedPair.forEach { chipState ->
                     val chip = Chip(context)
-                    item.daysOfTheWeek.addView(chip)
-
+                    if (getDay(chipState.dayOfWeek.id) >= getCurrentDate()){
+                        item.daysOfTheWeek.addView(chip)
+                    }
                     chip.isChecked = chipState.isActive
                     chip.isVisible = chipState.isVisible
                     chip.text = chipState.dayOfWeek.label
