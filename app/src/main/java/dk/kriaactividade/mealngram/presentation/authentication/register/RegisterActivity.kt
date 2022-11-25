@@ -2,6 +2,8 @@ package dk.kriaactividade.mealngram.presentation.authentication.register
 
 import android.app.DatePickerDialog
 import android.os.Bundle
+import android.text.TextUtils
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import dagger.hilt.android.AndroidEntryPoint
 import dk.kriaactividade.mealngram.databinding.ActivityRegisterBinding
@@ -22,6 +24,54 @@ class RegisterActivity : AppCompatActivity() {
 
         openDataPicker()
         observerBirthday()
+        observerEmail()
+        observerPassword()
+        confirmRegister()
+    }
+
+    private fun confirmRegister() {
+        binding.btnRegister.setOnClickListener {
+            binding.apply {
+                viewModel.validateEmail(editEmail.text.toString())
+                viewModel.confirmPassword(
+                    editPassword.text.toString(),
+                    editConfirmPassword.text.toString()
+                )
+            }
+        }
+    }
+
+    private fun observerPassword() {
+        viewModel.isPassword.observe(this) {
+            binding.apply {
+                if (it) {
+                    inputPassword.isErrorEnabled = false
+                    inputPassword.error = ""
+                    inputConfirmPassword.isErrorEnabled = false
+                    inputConfirmPassword.error = ""
+                } else {
+                    inputPassword.isErrorEnabled = true
+                    inputPassword.error = "Suas senhas não conferem"
+                    inputConfirmPassword.isErrorEnabled = true
+                    inputConfirmPassword.error = "Suas senhas não conferem"
+                }
+            }
+        }
+    }
+
+    private fun observerEmail() {
+        viewModel.isErrorEmail.observe(this) {
+            binding.apply {
+                if (it) {
+                    inputEmail.isErrorEnabled = false
+                    inputEmail.error = ""
+                } else {
+                    inputEmail.isErrorEnabled = true
+                    inputEmail.error = "E-mail inválido"
+                }
+
+            }
+        }
     }
 
     private fun observerBirthday() {

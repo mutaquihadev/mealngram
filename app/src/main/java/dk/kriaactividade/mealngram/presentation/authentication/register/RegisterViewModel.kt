@@ -1,5 +1,6 @@
 package dk.kriaactividade.mealngram.presentation.authentication.register
 
+import android.text.TextUtils
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,6 +9,14 @@ import java.util.Calendar.*
 import javax.inject.Inject
 
 class RegisterViewModel @Inject constructor() : ViewModel() {
+
+    val isErrorEmail:LiveData<Boolean>
+    get() = _isErrorEmail
+    private val _isErrorEmail = MutableLiveData<Boolean>()
+
+    val isPassword:LiveData<Boolean>
+        get() = _isPassword
+    private val _isPassword = MutableLiveData<Boolean>()
 
     val birthday: LiveData<String>
         get() = _birthday
@@ -24,6 +33,24 @@ class RegisterViewModel @Inject constructor() : ViewModel() {
         }else{
             _birthday.postValue("$day/$monthInter/$year")
         }
+    }
+
+    fun confirmPassword(password:String, confirmPassword:String){
+        if (TextUtils.isEmpty(password) && TextUtils.isEmpty(confirmPassword)){
+            _isPassword.postValue(false)
+        }else if (password == confirmPassword){
+            _isPassword.postValue(true)
+        }else{
+            _isPassword.postValue(false)
+        }
+    }
+
+     fun validateEmail(target:CharSequence){
+         if (TextUtils.isEmpty(target)){
+             _isErrorEmail.postValue(false)
+         }else{
+             _isErrorEmail.postValue(android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches())
+         }
     }
 
     private fun getCalendar():Calendar{
