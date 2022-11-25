@@ -11,14 +11,14 @@ import javax.inject.Inject
 class RoomViewModel @Inject constructor(private val repository: RoomRepository) :
     ViewModel() {
 
-    val allPerson: LiveData<MutableList<Recipe>> = repository.allPerson.asLiveData()
+    val allRecipes: LiveData<MutableList<Recipe>> = repository.allRecipes.asLiveData()
 
-    fun insert(movieDetails: Recipe) = viewModelScope.launch {
-        repository.insert(movieDetails)
+    fun insert(recipes: Recipe) = viewModelScope.launch {
+        repository.insert(recipes)
     }
 
-    fun remove(movieId: Int) = viewModelScope.launch {
-        repository.remove(movieId)
+    fun remove(recipeId: Int) = viewModelScope.launch {
+        repository.remove(recipeId)
     }
 
     fun insertList(listRecipe: List<Recipe>) {

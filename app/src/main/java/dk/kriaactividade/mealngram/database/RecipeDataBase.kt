@@ -25,7 +25,7 @@ abstract class RecipeDataBase  : RoomDatabase() {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     RecipeDataBase::class.java,
-                    "movie_database"
+                    "recipe_database"
                 )
                     .fallbackToDestructiveMigration()
 

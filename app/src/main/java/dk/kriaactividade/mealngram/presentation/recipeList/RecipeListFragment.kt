@@ -96,7 +96,7 @@ class RecipeListFragment : Fragment() {
     }
 
     private fun saveInCache(recipeList: List<Recipe>) {
-        roomViewModel.allPerson.observe(viewLifecycleOwner) {
+        roomViewModel.allRecipes.observe(viewLifecycleOwner) {
             if (it.isEmpty()) {
                 roomViewModel.insertList(recipeList)
             }

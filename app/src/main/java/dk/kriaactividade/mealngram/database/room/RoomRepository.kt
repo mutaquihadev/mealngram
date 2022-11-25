@@ -7,16 +7,16 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class RoomRepository @Inject constructor(private val recipeDAO: RecipeDAO) {
-    val allPerson: Flow<MutableList<Recipe>> = recipeDAO.getAllRecipes()
+    val allRecipes: Flow<MutableList<Recipe>> = recipeDAO.getAllRecipes()
 
     @Suppress("RedundantSuspendModifier")
     @WorkerThread
-    suspend fun insert(movieDetails: Recipe) {
-        recipeDAO.insertRecipe(movieDetails)
+    suspend fun insert(recipe: Recipe) {
+        recipeDAO.insertRecipe(recipe)
     }
 
-    suspend fun remove(movieId: Int) {
-        recipeDAO.removeRecipe(movieId)
+    suspend fun remove(recipeId: Int) {
+        recipeDAO.removeRecipe(recipeId)
     }
 
 }
