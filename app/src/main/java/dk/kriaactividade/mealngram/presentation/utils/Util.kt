@@ -42,4 +42,11 @@ object Util {
         }
         return dateFormat.format(calendar.time)
     }
+
+    fun getWeek():String{
+        val calendar = java.util.Calendar.getInstance()
+        calendar.firstDayOfWeek = java.util.Calendar.SUNDAY
+        val dayWeek = calendar[java.util.Calendar.DAY_OF_WEEK_IN_MONTH]
+        return "$dayWeek˚ semana"
+    }
 }

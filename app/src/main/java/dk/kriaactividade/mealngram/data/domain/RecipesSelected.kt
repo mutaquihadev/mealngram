@@ -8,5 +8,6 @@ data class RecipesSelected(
     val image: String = "",
     val day: String = "",
     val dayOfWeek: WEEK?= null,
-    val ingredients: List<String> = listOf()
+    val ingredients: List<String> = listOf(),
+    val isOpen :Boolean = true
 ) : Serializable

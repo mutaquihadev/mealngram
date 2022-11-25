@@ -6,9 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
-import dk.kriaactividade.mealngram.data.domain.DetailsRecipes
 import dk.kriaactividade.mealngram.databinding.FragmentRecipesSelectedBinding
 import javax.inject.Inject
 
@@ -18,7 +16,7 @@ class RecipesSelectedFragment : Fragment() {
     @Inject
     lateinit var viewModel: RecipesSelectedViewModel
     private val recipesSelectedAdapter: RecipesSelectedAdapter by lazy {
-        RecipesSelectedAdapter(requireContext())
+        RecipesSelectedAdapter( ::onShowList )
     }
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -30,7 +28,12 @@ class RecipesSelectedFragment : Fragment() {
         viewModel.recipesSelected.observe(viewLifecycleOwner){
             recipesSelectedAdapter.submitList(it)
         }
+
         return binding.root
+    }
+
+    private fun onShowList(isOpen:Boolean){
+        viewModel.listIsOpen(isOpen)
     }
 
     private fun setupAdapter(){

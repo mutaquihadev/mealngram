@@ -18,6 +18,7 @@ class RecipesSelectedViewModel @Inject constructor(private val repository: Recip
         get() = _recipesSelected
     private val _recipesSelected = MutableLiveData<List<RecipesSelected>>()
 
+
     init {
         viewModelScope.launch {
             repository.getSelectedRecipes {
@@ -25,4 +26,21 @@ class RecipesSelectedViewModel @Inject constructor(private val repository: Recip
             }
         }
     }
+
+    fun listIsOpen(value:Boolean){
+        val recipesSelected = _recipesSelected.value?.map { recipe ->
+            RecipesSelected(
+                name = recipe.name,
+                description = recipe.description,
+                image = recipe.image,
+                day = recipe.day,
+                dayOfWeek = recipe.dayOfWeek,
+                ingredients = recipe.ingredients,
+                isOpen = value
+
+            )
+        }?: listOf()
+        _recipesSelected.postValue(recipesSelected)
+    }
+
 }
