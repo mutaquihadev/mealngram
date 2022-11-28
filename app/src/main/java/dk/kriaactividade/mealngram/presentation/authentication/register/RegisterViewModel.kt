@@ -68,4 +68,8 @@ class RegisterViewModel @Inject constructor() : ViewModel() {
     fun getDay():Int{
         return getCalendar().get(DAY_OF_MONTH)
     }
+
+    fun registerUser(email:String, password:String){
+
+    }
 }

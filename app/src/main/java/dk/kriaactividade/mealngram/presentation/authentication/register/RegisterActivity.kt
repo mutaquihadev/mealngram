@@ -2,17 +2,19 @@ package dk.kriaactividade.mealngram.presentation.authentication.register
 
 import android.app.DatePickerDialog
 import android.os.Bundle
-import android.text.TextUtils
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 import dk.kriaactividade.mealngram.databinding.ActivityRegisterBinding
-import java.util.*
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class RegisterActivity : AppCompatActivity() {
     private lateinit var binding: ActivityRegisterBinding
+    private lateinit var auth: FirebaseAuth
 
     @Inject
     lateinit var viewModel: RegisterViewModel
@@ -21,6 +23,7 @@ class RegisterActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        auth = Firebase.auth
 
         openDataPicker()
         observerBirthday()
@@ -37,6 +40,34 @@ class RegisterActivity : AppCompatActivity() {
                     editPassword.text.toString(),
                     editConfirmPassword.text.toString()
                 )
+                register()
+            }
+        }
+    }
+
+    private fun register() {
+        viewModel.isPassword.value?.let { password ->
+            viewModel.isErrorEmail.value?.let { email ->
+                if (password && email) {
+                    binding.apply {
+                        auth.createUserWithEmailAndPassword(
+                            editEmail.text.toString(),
+                            editPassword.text.toString()
+                        )
+                            .addOnCompleteListener(this@RegisterActivity) { task ->
+                                if (task.isSuccessful) {
+                                    finish()
+                                } else {
+                                    Toast.makeText(
+                                        this@RegisterActivity,
+                                        "Não foi possivel registar",
+                                        Toast.LENGTH_SHORT
+                                    )
+                                        .show()
+                                }
+                            }
+                    }
+                }
             }
         }
     }
