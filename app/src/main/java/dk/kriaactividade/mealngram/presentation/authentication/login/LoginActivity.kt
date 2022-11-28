@@ -33,6 +33,7 @@ class LoginActivity : AppCompatActivity() {
         viewModel.loginSuccess.observe(this) {
             if (it) {
                 startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                finish()
             } else {
                 Toast.makeText(
                     this@LoginActivity,

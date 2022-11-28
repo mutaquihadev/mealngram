@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 class RegisterViewModel @Inject constructor() : ViewModel() {
 
-    private lateinit var auth: FirebaseAuth
+    private var auth: FirebaseAuth = Firebase.auth
     val isErrorEmail:LiveData<Boolean>
     get() = _isErrorEmail
     private val _isErrorEmail = MutableLiveData<Boolean>()
@@ -31,10 +31,6 @@ class RegisterViewModel @Inject constructor() : ViewModel() {
     val successRegister:LiveData<Boolean>
     get() = _successRegister
     private val _successRegister = MutableLiveData<Boolean>()
-
-    init {
-        auth = Firebase.auth
-    }
 
     fun getBirthday(day: Int, month: Int, year: Int) {
         val monthInter = month + 1
