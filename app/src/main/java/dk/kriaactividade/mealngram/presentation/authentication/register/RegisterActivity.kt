@@ -14,7 +14,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class RegisterActivity : AppCompatActivity() {
     private lateinit var binding: ActivityRegisterBinding
-    private lateinit var auth: FirebaseAuth
+
 
     @Inject
     lateinit var viewModel: RegisterViewModel
@@ -23,13 +23,13 @@ class RegisterActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        auth = Firebase.auth
 
         openDataPicker()
         observerBirthday()
         observerEmail()
         observerPassword()
         confirmRegister()
+        observerRegister()
     }
 
     private fun confirmRegister() {
@@ -50,24 +50,20 @@ class RegisterActivity : AppCompatActivity() {
             viewModel.isErrorEmail.value?.let { email ->
                 if (password && email) {
                     binding.apply {
-                        auth.createUserWithEmailAndPassword(
-                            editEmail.text.toString(),
-                            editPassword.text.toString()
-                        )
-                            .addOnCompleteListener(this@RegisterActivity) { task ->
-                                if (task.isSuccessful) {
-                                    finish()
-                                } else {
-                                    Toast.makeText(
-                                        this@RegisterActivity,
-                                        "Não foi possivel registar",
-                                        Toast.LENGTH_SHORT
-                                    )
-                                        .show()
-                                }
-                            }
+                        viewModel.registerUser(this@RegisterActivity,editEmail.text.toString(),
+                            editPassword.text.toString())
                     }
                 }
+            }
+        }
+    }
+
+    private fun observerRegister(){
+        viewModel.successRegister.observe(this){
+            if (it){
+                finish()
+            }else{
+                Toast.makeText(this, "Falha ao registrar", Toast.LENGTH_SHORT).show()
             }
         }
     }

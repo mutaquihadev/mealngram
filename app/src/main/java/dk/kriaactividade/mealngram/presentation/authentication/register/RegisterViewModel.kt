@@ -1,15 +1,21 @@
 package dk.kriaactividade.mealngram.presentation.authentication.register
 
+import android.app.Activity
 import android.text.TextUtils
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import java.util.Calendar
 import java.util.Calendar.*
 import javax.inject.Inject
 
 class RegisterViewModel @Inject constructor() : ViewModel() {
 
+    private lateinit var auth: FirebaseAuth
     val isErrorEmail:LiveData<Boolean>
     get() = _isErrorEmail
     private val _isErrorEmail = MutableLiveData<Boolean>()
@@ -21,6 +27,14 @@ class RegisterViewModel @Inject constructor() : ViewModel() {
     val birthday: LiveData<String>
         get() = _birthday
     private val _birthday = MutableLiveData<String>()
+
+    val successRegister:LiveData<Boolean>
+    get() = _successRegister
+    private val _successRegister = MutableLiveData<Boolean>()
+
+    init {
+        auth = Firebase.auth
+    }
 
     fun getBirthday(day: Int, month: Int, year: Int) {
         val monthInter = month + 1
@@ -69,7 +83,17 @@ class RegisterViewModel @Inject constructor() : ViewModel() {
         return getCalendar().get(DAY_OF_MONTH)
     }
 
-    fun registerUser(email:String, password:String){
-
+    fun registerUser(activity:RegisterActivity, email:String, password:String){
+        auth.createUserWithEmailAndPassword(
+            email,
+           password
+        )
+            .addOnCompleteListener(activity) { task ->
+                if (task.isSuccessful) {
+                    _successRegister.postValue(true)
+                } else {
+                   _successRegister.postValue(false)
+                }
+            }
     }
 }
