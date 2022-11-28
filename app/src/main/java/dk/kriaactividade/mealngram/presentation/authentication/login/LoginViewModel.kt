@@ -18,6 +18,10 @@ class LoginViewModel @Inject constructor(): ViewModel() {
     get() = _loginSuccess
     private val _loginSuccess = MutableLiveData<Boolean>()
 
+    val userLogged: LiveData<Boolean>
+        get() = _userLogged
+    private val _userLogged = MutableLiveData<Boolean>()
+
     fun login(activity: LoginActivity, email:String, password:String){
         auth.signInWithEmailAndPassword(
         email, password
@@ -29,5 +33,14 @@ class LoginViewModel @Inject constructor(): ViewModel() {
                    _loginSuccess.postValue(false)
                 }
             }
+    }
+
+    fun verifyUserLogin(){
+        val currentUser = auth.currentUser
+        if(currentUser != null){
+           _userLogged.postValue(true)
+        }else{
+            _userLogged.postValue(false)
+        }
     }
 }

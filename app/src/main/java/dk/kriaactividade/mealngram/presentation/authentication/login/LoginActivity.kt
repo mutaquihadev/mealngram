@@ -11,6 +11,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import dk.kriaactividade.mealngram.MainActivity
 import dk.kriaactividade.mealngram.databinding.ActivityLoginBinding
 import dk.kriaactividade.mealngram.presentation.authentication.register.RegisterActivity
+import dk.kriaactividade.mealngram.presentation.utils.gone
+import dk.kriaactividade.mealngram.presentation.utils.visible
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -27,6 +29,12 @@ class LoginActivity : AppCompatActivity() {
         goToRegister()
         goToHome()
         observerLogin()
+        observerUserLogged()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        viewModel.verifyUserLogin()
     }
 
     private fun observerLogin() {
@@ -40,6 +48,15 @@ class LoginActivity : AppCompatActivity() {
                     "Nã foi possivel logar",
                     Toast.LENGTH_SHORT
                 ).show()
+            }
+        }
+    }
+
+    private fun observerUserLogged(){
+        viewModel.userLogged.observe(this){
+            if (it){
+                startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                finish()
             }
         }
     }
