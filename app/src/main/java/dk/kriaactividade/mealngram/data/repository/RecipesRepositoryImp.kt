@@ -51,18 +51,33 @@ class RecipesRepositoryImp @Inject constructor(private val database: FirebaseFir
         activity: Activity,
         email: String,
         password: String,
-        onLogged: (Boolean) -> Unit
+        onLogged: (Boolean,String?) -> Unit
     ) {
         auth.signInWithEmailAndPassword(
             email, password
         )
             .addOnCompleteListener(activity) { task ->
-                onLogged(task.isSuccessful)
+                onLogged(task.isSuccessful,task.exception?.message)
             }
     }
 
     override suspend fun getIsLogged(onLogged: (Boolean) -> Unit) {
         onLogged(auth.currentUser != null)
+    }
+
+    override suspend fun registerUser(
+        activity: Activity,
+        email: String,
+        password: String,
+        onRegister: (Boolean,String?) -> Unit
+    ) {
+        auth.createUserWithEmailAndPassword(
+            email,
+            password
+        )
+            .addOnCompleteListener(activity) { task ->
+                onRegister(task.isSuccessful,task.exception?.message)
+            }
     }
 
 }

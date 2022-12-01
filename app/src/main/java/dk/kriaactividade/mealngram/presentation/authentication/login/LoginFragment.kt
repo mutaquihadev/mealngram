@@ -36,15 +36,18 @@ class LoginFragment : Fragment() {
 
     private fun observerLogin() {
         viewModel.loginSuccess.observe(viewLifecycleOwner) {
-            if (it) {
-                findNavController().navigate(R.id.navigation_home)
-            } else {
-                Toast.makeText(
-                    requireContext(),
-                    "Nã foi possivel logar",
-                    Toast.LENGTH_SHORT
-                ).show()
+            it.keys.map {isSuccess ->
+                if (isSuccess) {
+                    findNavController().navigate(R.id.navigation_home)
+                } else {
+                    Toast.makeText(
+                        requireContext(),
+                        it[isSuccess],
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
+
         }
     }
 

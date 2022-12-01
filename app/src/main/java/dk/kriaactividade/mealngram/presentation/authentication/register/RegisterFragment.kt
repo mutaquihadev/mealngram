@@ -51,28 +51,28 @@ class RegisterFragment : Fragment() {
     }
 
     private fun register() {
-        viewModel.isPassword.value?.let { password ->
-            viewModel.isErrorEmail.value?.let { email ->
-                if (password && email) {
-                    binding.apply {
-                        activity?.let {
-                            viewModel.registerUser(
-                                it,editEmail.text.toString(),
-                                editPassword.text.toString())
-                        }
-                    }
-                }
+        binding.apply {
+            activity?.let {
+                viewModel.register(
+                    it,
+                    editEmail.text.toString(),
+                    editPassword.text.toString()
+                )
             }
         }
+
     }
 
-    private fun observerRegister(){
-        viewModel.successRegister.observe(viewLifecycleOwner){
-            if (it){
-                findNavController().navigateUp()
-            }else{
-                Toast.makeText(requireContext(), "Falha ao registrar", Toast.LENGTH_SHORT).show()
+    private fun observerRegister() {
+        viewModel.successRegister.observe(viewLifecycleOwner) {
+            it.keys.map { success->
+                if (success){
+                    findNavController().navigate(RegisterFragmentDirections.actionNavigationRegisterToNavigationHome())
+                } else {
+                    Toast.makeText(requireContext(), it[success], Toast.LENGTH_SHORT).show()
+                }
             }
+
         }
     }
 
@@ -95,7 +95,7 @@ class RegisterFragment : Fragment() {
     }
 
     private fun observerEmail() {
-        viewModel.isErrorEmail.observe(viewLifecycleOwner) {
+        viewModel.isEmail.observe(viewLifecycleOwner) {
             binding.apply {
                 if (it) {
                     inputEmail.isErrorEnabled = false

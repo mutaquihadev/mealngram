@@ -12,12 +12,13 @@ import dk.kriaactividade.mealngram.data.repository.RecipesRepositoryImp
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class LoginViewModel @Inject constructor(private val repositoryImp: RecipesRepositoryImp): ViewModel() {
+class LoginViewModel @Inject constructor(private val repositoryImp: RecipesRepositoryImp) :
+    ViewModel() {
 
 
-    val loginSuccess: LiveData<Boolean>
-    get() = _loginSuccess
-    private val _loginSuccess = MutableLiveData<Boolean>()
+    val loginSuccess: LiveData<HashMap<Boolean, String?>>
+        get() = _loginSuccess
+    private val _loginSuccess = MutableLiveData<HashMap<Boolean, String?>>()
 
     val userLogged: LiveData<Boolean>
         get() = _userLogged
@@ -31,10 +32,14 @@ class LoginViewModel @Inject constructor(private val repositoryImp: RecipesRepos
         }
     }
 
-    fun loginSuccess(activity: Activity, email:String, password:String){
+    fun loginSuccess(activity: Activity, email: String, password: String) {
         viewModelScope.launch {
-            repositoryImp.getLogin(activity,email,password){
-                _loginSuccess.postValue(it)
+            if (email.isNotEmpty() && password.isNotEmpty()) {
+                repositoryImp.getLogin(activity, email, password) { success, message ->
+                    val map = hashMapOf<Boolean, String?>()
+                    map[success] = message
+                    _loginSuccess.postValue(map)
+                }
             }
         }
     }

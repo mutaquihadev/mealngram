@@ -21,7 +21,11 @@
         android:name="dk.kriaactividade.mealngram.presentation.authentication.register.RegisterFragment"
         android:label="Register"
         tools:layout="@layout/fragment_register"
-        />
+        >
+        <action
+            android:id="@+id/action_navigation_register_to_navigation_home"
+            app:destination="@id/navigation_home" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_home"
