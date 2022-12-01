@@ -1,14 +1,17 @@
 package dk.kriaactividade.mealngram.data.repository
 
+import android.app.Activity
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.ktx.Firebase
 import dk.kriaactividade.mealngram.data.domain.DetailsRecipes
 import dk.kriaactividade.mealngram.data.domain.Recipe
 import dk.kriaactividade.mealngram.data.domain.RecipesSelected
 import javax.inject.Inject
 
-class RecipesRepositoryImp @Inject constructor(private val database: FirebaseFirestore) :
+class RecipesRepositoryImp @Inject constructor(private val database: FirebaseFirestore,private val auth: FirebaseAuth) :
     RecipesRepository {
-
 
     override suspend fun getRecipes(onRecipesRetrieved: (List<Recipe>) -> Unit) {
         database.collection("recipes").get().addOnCompleteListener { task ->
@@ -42,6 +45,24 @@ class RecipesRepositoryImp @Inject constructor(private val database: FirebaseFir
                 onRecipesSelected(recipesSelected)
             }
         }
+    }
+
+    override suspend fun getLogin(
+        activity: Activity,
+        email: String,
+        password: String,
+        onLogged: (Boolean) -> Unit
+    ) {
+        auth.signInWithEmailAndPassword(
+            email, password
+        )
+            .addOnCompleteListener(activity) { task ->
+                onLogged(task.isSuccessful)
+            }
+    }
+
+    override suspend fun getIsLogged(onLogged: (Boolean) -> Unit) {
+        onLogged(auth.currentUser != null)
     }
 
 }

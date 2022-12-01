@@ -34,11 +34,6 @@ class LoginFragment : Fragment() {
         return binding.root
     }
 
-    override fun onStart() {
-        super.onStart()
-        viewModel.verifyUserLogin()
-    }
-
     private fun observerLogin() {
         viewModel.loginSuccess.observe(viewLifecycleOwner) {
             if (it) {
@@ -65,7 +60,7 @@ class LoginFragment : Fragment() {
         binding.btnLogin.setOnClickListener {
             binding.apply {
                 activity?.let { it1 ->
-                    viewModel.login(
+                    viewModel.loginSuccess(
                         it1,editEmailLogin.text.toString(),
                         editPasswordLogin.text.toString())
                 }

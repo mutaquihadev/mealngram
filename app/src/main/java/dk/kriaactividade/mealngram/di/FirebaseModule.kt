@@ -1,5 +1,6 @@
 package dk.kriaactividade.mealngram.di
 
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
@@ -15,5 +16,11 @@ object FirebaseModule {
     @Singleton
     fun providesFireStoreInstance(): FirebaseFirestore {
         return FirebaseFirestore.getInstance()
+    }
+
+    @Provides
+    @Singleton
+    fun providesAuthFirebase():FirebaseAuth{
+        return FirebaseAuth.getInstance()
     }
 }
