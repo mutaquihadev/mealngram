@@ -2,7 +2,6 @@ package dk.kriaactividade.mealngram.presentation.authentication.register
 
 import android.app.Activity
 import android.text.TextUtils
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -79,7 +78,7 @@ class RegisterViewModel @Inject constructor() : ViewModel() {
         return getCalendar().get(DAY_OF_MONTH)
     }
 
-    fun registerUser(activity:RegisterActivity, email:String, password:String){
+    fun registerUser(activity:Activity, email:String, password:String){
         auth.createUserWithEmailAndPassword(
             email,
            password

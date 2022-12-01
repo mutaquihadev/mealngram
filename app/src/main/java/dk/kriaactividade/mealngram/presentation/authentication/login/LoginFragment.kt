@@ -1,0 +1,81 @@
+package dk.kriaactividade.mealngram.presentation.authentication.login
+
+import android.content.Intent
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import dagger.hilt.android.AndroidEntryPoint
+import dk.kriaactividade.mealngram.R
+import dk.kriaactividade.mealngram.databinding.FragmentLoginBinding
+import dk.kriaactividade.mealngram.presentation.authentication.register.RegisterFragment
+import javax.inject.Inject
+
+@AndroidEntryPoint
+class LoginFragment : Fragment() {
+    private lateinit var binding:FragmentLoginBinding
+
+    @Inject
+    lateinit var viewModel: LoginViewModel
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentLoginBinding.inflate(layoutInflater)
+        goToRegister()
+        goToHome()
+        observerLogin()
+        observerUserLogged()
+        return binding.root
+    }
+
+    override fun onStart() {
+        super.onStart()
+        viewModel.verifyUserLogin()
+    }
+
+    private fun observerLogin() {
+        viewModel.loginSuccess.observe(viewLifecycleOwner) {
+            if (it) {
+                findNavController().navigate(R.id.navigation_home)
+            } else {
+                Toast.makeText(
+                    requireContext(),
+                    "Nã foi possivel logar",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+    }
+
+    private fun observerUserLogged(){
+        viewModel.userLogged.observe(viewLifecycleOwner){
+            if (it){
+                findNavController().navigate(R.id.navigation_home)
+            }
+        }
+    }
+
+    private fun goToHome() {
+        binding.btnLogin.setOnClickListener {
+            binding.apply {
+                activity?.let { it1 ->
+                    viewModel.login(
+                        it1,editEmailLogin.text.toString(),
+                        editPasswordLogin.text.toString())
+                }
+            }
+        }
+    }
+
+    private fun goToRegister() {
+        binding.btnRegisterInLogin.setOnClickListener {
+            findNavController().navigate(LoginFragmentDirections.actionNavigationLoginToNavigationRegister())
+        }
+    }
+}

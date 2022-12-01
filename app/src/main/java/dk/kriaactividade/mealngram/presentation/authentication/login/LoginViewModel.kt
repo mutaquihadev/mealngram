@@ -1,14 +1,12 @@
 package dk.kriaactividade.mealngram.presentation.authentication.login
 
-import android.content.Intent
-import android.widget.Toast
+import android.app.Activity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import dk.kriaactividade.mealngram.MainActivity
 import javax.inject.Inject
 
 class LoginViewModel @Inject constructor(): ViewModel() {
@@ -22,7 +20,7 @@ class LoginViewModel @Inject constructor(): ViewModel() {
         get() = _userLogged
     private val _userLogged = MutableLiveData<Boolean>()
 
-    fun login(activity: LoginActivity, email:String, password:String){
+    fun login(activity: Activity, email:String, password:String){
         auth.signInWithEmailAndPassword(
         email, password
         )
