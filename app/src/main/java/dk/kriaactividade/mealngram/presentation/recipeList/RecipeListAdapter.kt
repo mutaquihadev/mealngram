@@ -32,7 +32,12 @@ class RecipeListAdapter(
 
             item.daysOfTheWeek.removeAllViews()
             recipeItem.selectedDays.forEach { chipState ->
+                val chip = Chip(context, null, R.attr.CustomChipChoiceStyle)
+                item.daysOfTheWeek.addView(chip)
 
+                chip.isChecked = chipState.isActive
+                chip.text = chipState.week.label
+                chip.setOnClickListener { onChipClicked(chipState.id, chipState.week, chipState.isActive) }
             }
         }
     }

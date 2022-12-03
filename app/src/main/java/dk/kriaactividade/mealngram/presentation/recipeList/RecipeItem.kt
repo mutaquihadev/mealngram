@@ -19,7 +19,7 @@ data class RecipeItem(
 }
 
 data class SelectedChipState(
-    val id: Int, val date: Date, val isActive: Boolean = false, val isVisible: Boolean = true, val week : WEEK
+    val id: Int, val date: Date, val isActive: Boolean = false, val week : WEEK
 )
 
 fun Calendar.daysUntilTheEndOfWeek(): List<Date> {

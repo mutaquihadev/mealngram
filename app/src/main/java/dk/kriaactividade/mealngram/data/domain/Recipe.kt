@@ -35,11 +35,11 @@ data class ChipState(
 )
 
 enum class WEEK(val id: Int, val label: String) {
-    MONDAY(id = 0, label = "M"),
-    TUESDAY(id = 1, label = "T"),
-    WEDNESDAY(id = 2, label = "W"),
-    THURSDAY(id = 3, label = "Th"),
-    FRIDAY(id = 4, label = "F"),
-    SATURDAY(id = 5, "Sa"),
-    SUNDAY(id = 6, label = "S")
+    MONDAY(id = 0, label = "Seg"),
+    TUESDAY(id = 1, label = "Ter"),
+    WEDNESDAY(id = 2, label = "Qua"),
+    THURSDAY(id = 3, label = "Qui"),
+    FRIDAY(id = 4, label = "Sex"),
+    SATURDAY(id = 5, "Sab"),
+    SUNDAY(id = 6, label = "Dom")
 }

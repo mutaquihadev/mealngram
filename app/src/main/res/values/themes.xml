@@ -3,6 +3,7 @@
     <style name="Theme.Mealngram" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="android:statusBarColor">@color/purple_700</item>
         <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.YourApp.LargeComponent</item>
+        <item name="CustomChipChoiceStyle">@style/ChipCustomStyle</item>
     </style>
 
     <style name="ShapeAppearance.YourApp.LargeComponent" parent="ShapeAppearance.MaterialComponents.LargeComponent">
@@ -10,7 +11,10 @@
         <item name="cornerSize">12dp</item>
     </style>
 
-
+    <style name="ChipCustomStyle" parent="@style/Widget.MaterialComponents.Chip.Choice">
+        <item name="chipBackgroundColor">@drawable/chip_background_color</item>
+        <item name="android:textColor">@drawable/chip_text_color</item>
+    </style>
 
     <color name="color_default">#000</color>
     <color name="inverter_color">#fff</color>
