@@ -9,37 +9,33 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.google.android.material.chip.Chip
-import dk.kriaactividade.mealngram.data.domain.Recipe
 import dk.kriaactividade.mealngram.data.domain.WEEK
 import dk.kriaactividade.mealngram.databinding.ItemRecyclerHomeBinding
 
 class RecipeListAdapter(
-  private val context: Context,
-  private val onRecipeClicked: (Recipe) -> Unit,
-  private val onChipClicked: (recipeId: Int, weekDay:WEEK, selectedState: Boolean) -> Unit
-) : ListAdapter< Recipe, RecipeListAdapter.RecipeItemViewHolder>(RecipeListAdapter) {
+    private val context: Context,
+    private val onChipClicked: (recipeId: Int, weekDay: WEEK, selectedState: Boolean) -> Unit
+) : ListAdapter<RecipeItem, RecipeListAdapter.RecipeItemViewHolder>(RecipeListAdapter) {
 
     inner class RecipeItemViewHolder(private val item: ItemRecyclerHomeBinding) :
         RecyclerView.ViewHolder(item.root) {
-        fun binding(recipe: Recipe) {
-            item.titleRecipe.text = recipe.name
-            item.descriptionRecipe.text = recipe.description
-            item.foodImage.load(recipe.image)
-            item.chipGroup.isVisible = recipe.isSelectionMode
+        fun binding(recipeItem: RecipeItem) {
+            item.titleRecipe.text = recipeItem.name
+            item.descriptionRecipe.text = recipeItem.description
+            item.foodImage.load(recipeItem.image)
+            item.chipGroup.isVisible = recipeItem.isSelectionMode
 
-            if(recipe.isSelectionMode){
-               item.daysOfTheWeek.removeAllViews()
-                recipe.dayOfWeekSelectedPair.forEach { chipState ->
-                    val chip = Chip(context)
-                    item.daysOfTheWeek.addView(chip)
+            item.daysOfTheWeek.removeAllViews()
+            recipeItem.selectedDays.forEach { chipState ->
+                val chip = Chip(context)
+                item.daysOfTheWeek.addView(chip)
 
-                    chip.isChecked = chipState.isActive
-                    chip.isVisible = chipState.isVisible
-                    chip.text = chipState.dayOfWeek.label
+                chip.isChecked = chipState.isActive
+                chip.isVisible = chipState.isVisible
+                chip.text = chipState.week.label
 
 
-                    chip.setOnClickListener { onChipClicked(chipState.id, chipState.dayOfWeek, chipState.isActive) }
-                }
+                chip.setOnClickListener { onChipClicked(chipState.id, chipState.week, chipState.isActive) }
             }
         }
     }
@@ -51,21 +47,18 @@ class RecipeListAdapter(
     }
 
     override fun onBindViewHolder(holder: RecipeItemViewHolder, position: Int) {
-        val recipe = getItem(position)
+        val recipe: RecipeItem = getItem(position)
         holder.binding(recipe)
-        if (!recipe.isSelectionMode){
-            holder.itemView.setOnClickListener { onRecipeClicked(recipe) }
-        }
     }
 
-   private companion object DiffUtilCallBack : DiffUtil.ItemCallback<Recipe>(){
-        override fun areItemsTheSame(oldItem: Recipe, newItem: Recipe): Boolean {
+    private companion object DiffUtilCallBack : DiffUtil.ItemCallback<RecipeItem>() {
+        override fun areItemsTheSame(oldItem: RecipeItem, newItem: RecipeItem): Boolean {
             return newItem.id == oldItem.id
         }
 
         override fun areContentsTheSame(
-            oldItem: Recipe,
-            newItem: Recipe
+            oldItem: RecipeItem,
+            newItem: RecipeItem
         ): Boolean {
             return newItem == oldItem
         }

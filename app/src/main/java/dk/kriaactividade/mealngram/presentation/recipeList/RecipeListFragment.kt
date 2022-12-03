@@ -35,7 +35,7 @@ class RecipeListFragment : Fragment() {
     @Inject
     lateinit var roomViewModel: RoomViewModel
     private val recipeListAdapter by lazy {
-        RecipeListAdapter(requireContext(), ::getDetailsRecipes, recipesViewModel::onChipSelected)
+        RecipeListAdapter(requireContext() , recipesViewModel::onChipSelected)
     }
     private var listDetails = mutableListOf<DetailsRecipes>()
 

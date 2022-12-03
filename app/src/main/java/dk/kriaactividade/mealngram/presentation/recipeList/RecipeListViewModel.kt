@@ -3,13 +3,13 @@ package dk.kriaactividade.mealngram.presentation.recipeList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dk.kriaactividade.mealngram.data.domain.ChipState
-import dk.kriaactividade.mealngram.data.domain.Recipe
 import dk.kriaactividade.mealngram.data.domain.WEEK
 import dk.kriaactividade.mealngram.data.repository.RecipesRepository
 import dk.kriaactividade.mealngram.helpers.DataState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.util.Calendar
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
@@ -17,7 +17,7 @@ data class RecipeListUiData(
     val showButton: Boolean = false,
     val showProgress: Boolean = false,
     val progressValue: Int = 0,
-    val recipes: List<Recipe>
+    val recipes: List<RecipeItem>
 )
 
 sealed interface RecipeListUiState {
@@ -34,17 +34,14 @@ class RecipeListViewModel @Inject constructor(repository: RecipesRepository) : V
         MutableStateFlow(RecipeListUiState.Loading)
     val uiState = _uiState.asStateFlow()
 
-    private val recipes = mutableListOf<Recipe>()
+    private val recipes = mutableListOf<RecipeItem>()
 
-    private val selectedChipStates = listOf(
-        SelectedChip(WEEK.MONDAY),
-        SelectedChip(WEEK.TUESDAY),
-        SelectedChip(WEEK.WEDNESDAY),
-        SelectedChip(WEEK.THURSDAY),
-        SelectedChip(WEEK.FRIDAY),
-        SelectedChip(WEEK.SATURDAY),
-        SelectedChip(WEEK.SUNDAY)
-    )
+    private val selectedChipStates : List<SelectedChip> by lazy {
+        val calendar = Calendar.getInstance()
+        val weeks = calendar.daysUntilTheEndOfWeek().map { it.toWeek() }
+
+        weeks.map { SelectedChip(weekDay = it) }
+    }
 
     init {
         viewModelScope.launch {
@@ -52,7 +49,7 @@ class RecipeListViewModel @Inject constructor(repository: RecipesRepository) : V
         }
     }
 
-    private fun handleGetAllRecipes(state: DataState<List<Recipe>>) {
+    private fun handleGetAllRecipes(state: DataState<List<RecipeItem>>) {
         when (state) {
             is DataState.Error -> {}
             is DataState.Data -> {
@@ -69,14 +66,12 @@ class RecipeListViewModel @Inject constructor(repository: RecipesRepository) : V
         isEditMode = !isEditMode
 
         val updatedRecipes = recipes.map { recipe ->
-            Recipe(
+            RecipeItem(
                 id = recipe.id,
                 name = recipe.name,
                 description = recipe.description,
                 ingredients = recipe.ingredients,
                 image = recipe.image,
-                video = recipe.video,
-                mainImage = recipe.mainImage,
                 isSelectionMode = isEditMode
             )
         }
@@ -93,14 +88,12 @@ class RecipeListViewModel @Inject constructor(repository: RecipesRepository) : V
 
     private fun clearSelectionMode() {
         val clearedRecipes = recipes.map { recipe ->
-            Recipe(
+            RecipeItem(
                 id = recipe.id,
                 name = recipe.name,
                 description = recipe.description,
                 ingredients = recipe.ingredients,
                 image = recipe.image,
-                video = recipe.video,
-                mainImage = recipe.mainImage,
                 isSelectionMode = false,
             )
         }
@@ -126,16 +119,13 @@ class RecipeListViewModel @Inject constructor(repository: RecipesRepository) : V
                 updateChipStates(recipe, index, selectedChipState)
             }
 
-            Recipe(
+            RecipeItem(
                 id = recipe.id,
                 name = recipe.name,
                 description = recipe.description,
                 ingredients = recipe.ingredients,
                 image = recipe.image,
-                video = recipe.video,
-                mainImage = recipe.mainImage,
                 isSelectionMode = true,
-                dayOfWeekSelectedPair = updatedChipStates
             )
         }
 
@@ -156,32 +146,36 @@ class RecipeListViewModel @Inject constructor(repository: RecipesRepository) : V
     }
 
     private fun updateChipStates(
-        recipe: Recipe,
+        recipe: RecipeItem,
         index: Int,
         selectedChipState: SelectedChip,
-    ): ChipState {
-        val recipeChipState = recipe.dayOfWeekSelectedPair[index]
-        return selectedChipState.recipeId?.let { selectedId ->
+    ): ChipState? {
 
-            if (selectedId == recipe.id) {
-                ChipState(
-                    id = recipeChipState.id,
-                    isActive = !recipeChipState.isActive,
-                    isVisible = true,
-                    dayOfWeek = recipeChipState.dayOfWeek
-                )
 
-            } else {
-                ChipState(
-                    id = recipeChipState.id,
-                    isActive = false,
-                    isVisible = false,
-                    dayOfWeek = recipeChipState.dayOfWeek
-                )
+//        val recipeChipState = recipe.dayOfWeekSelectedPair[index]
+//        return selectedChipState.recipeId?.let { selectedId ->
+//
+//            if (selectedId == recipe.id) {
+//                ChipState(
+//                    id = recipeChipState.id,
+//                    isActive = !recipeChipState.isActive,
+//                    isVisible = true,
+//                    dayOfWeek = recipeChipState.dayOfWeek
+//                )
+//
+//            } else {
+//                ChipState(
+//                    id = recipeChipState.id,
+//                    isActive = false,
+//                    isVisible = false,
+//                    dayOfWeek = recipeChipState.dayOfWeek
+//                )
+//
+//            }
+//
+//        } ?: ChipState(id = recipeChipState.id, dayOfWeek = recipeChipState.dayOfWeek)
 
-            }
-
-        } ?: ChipState(id = recipeChipState.id, dayOfWeek = recipeChipState.dayOfWeek)
+        return null
     }
 }
 

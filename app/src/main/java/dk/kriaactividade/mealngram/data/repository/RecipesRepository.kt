@@ -5,6 +5,7 @@ import dk.kriaactividade.mealngram.data.domain.DetailsRecipes
 import dk.kriaactividade.mealngram.data.domain.Recipe
 import dk.kriaactividade.mealngram.data.domain.RecipesSelected
 import dk.kriaactividade.mealngram.helpers.DataState
+import dk.kriaactividade.mealngram.presentation.recipeList.RecipeItem
 import kotlinx.coroutines.flow.Flow
 
 interface RecipesRepository {
@@ -14,5 +15,5 @@ interface RecipesRepository {
     suspend fun getLogin(activity: Activity,email:String,password:String,onLogged:(Boolean,String?)->Unit)
     suspend fun getIsLogged(onLogged:(Boolean)->Unit)
     suspend fun registerUser(activity: Activity,email:String,password:String,onRegister:(Boolean,String?)->Unit)
-    fun getAllRecipes() : Flow<DataState<List<Recipe>>>
+    fun getAllRecipes() : Flow<DataState<List<RecipeItem>>>
 }
