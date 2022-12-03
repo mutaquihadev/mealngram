@@ -2,12 +2,15 @@ package dk.kriaactividade.mealngram.data.repository
 
 import android.app.Activity
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.ktx.Firebase
 import dk.kriaactividade.mealngram.data.domain.DetailsRecipes
 import dk.kriaactividade.mealngram.data.domain.Recipe
 import dk.kriaactividade.mealngram.data.domain.RecipesSelected
+import dk.kriaactividade.mealngram.helpers.DataState
+import dk.kriaactividade.mealngram.helpers.LoadingState
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class RecipesRepositoryImp @Inject constructor(private val database: FirebaseFirestore,private val auth: FirebaseAuth) :
@@ -80,4 +83,12 @@ class RecipesRepositoryImp @Inject constructor(private val database: FirebaseFir
             }
     }
 
+    override fun getAllRecipes(): Flow<DataState<List<Recipe>>> = flow {
+        emit(DataState.Loading(loadingState = LoadingState.Loading))
+
+        val snapshot = database.collection(RECIPE).get().await()
+        val recipes = snapshot.toObjects(Recipe::class.java)
+
+        emit(DataState.Data(data = recipes))
+    }
 }

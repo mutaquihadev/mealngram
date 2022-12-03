@@ -31,5 +31,4 @@ object RepositoryModule {
     fun providesRepository(recipeDAO: RecipeDAO): RoomRepository {
         return RoomRepository(recipeDAO)
     }
-
 }

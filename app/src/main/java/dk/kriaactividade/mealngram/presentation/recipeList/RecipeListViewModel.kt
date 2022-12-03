@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dk.kriaactividade.mealngram.data.domain.*
 import dk.kriaactividade.mealngram.data.repository.RecipesRepository
+import dk.kriaactividade.mealngram.helpers.DataState
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.text.DateFormat
 import java.text.SimpleDateFormat
@@ -47,9 +49,20 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
     private val _isEditMode = MutableLiveData<Boolean>(false)
 
     init {
-        viewModelScope.launch {
-            repository.getRecipes {
-                _recipes.postValue(it)
+        viewModelScope.launch { repository.getAllRecipes().collect(::handleGetAllRecipesResult) }
+    }
+
+    private fun handleGetAllRecipesResult(state: DataState<List<Recipe>>) {
+        when(state) {
+            is DataState.Data -> {
+                val recipes = state.data
+                _recipes.postValue(recipes)
+            }
+            is DataState.Error -> {
+
+            }
+            is DataState.Loading -> {
+
             }
         }
     }
