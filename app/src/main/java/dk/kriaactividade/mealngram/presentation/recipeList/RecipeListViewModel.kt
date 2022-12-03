@@ -79,11 +79,6 @@ class RecipeListViewModel @Inject constructor(repository: RecipesRepository) : V
         _uiState.value = RecipeListUiState.Success(
             uiData = RecipeListUiData(recipes = updatedRecipes, showProgress = isEditMode)
         )
-
-        if(!isEditMode) {
-            clearSelectedRecipes()
-            clearSelectionMode()
-        }
     }
 
     private fun clearSelectionMode() {

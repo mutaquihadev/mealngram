@@ -2,13 +2,18 @@ package dk.kriaactividade.mealngram.presentation.recipeList
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipDrawable
+import dk.kriaactividade.mealngram.R
 import dk.kriaactividade.mealngram.data.domain.WEEK
 import dk.kriaactividade.mealngram.databinding.ItemRecyclerHomeBinding
 
@@ -27,15 +32,7 @@ class RecipeListAdapter(
 
             item.daysOfTheWeek.removeAllViews()
             recipeItem.selectedDays.forEach { chipState ->
-                val chip = Chip(context)
-                item.daysOfTheWeek.addView(chip)
 
-                chip.isChecked = chipState.isActive
-                chip.isVisible = chipState.isVisible
-                chip.text = chipState.week.label
-
-
-                chip.setOnClickListener { onChipClicked(chipState.id, chipState.week, chipState.isActive) }
             }
         }
     }
