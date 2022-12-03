@@ -7,10 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
-import dk.kriaactividade.mealngram.R
 import dk.kriaactividade.mealngram.databinding.FragmentProfileBinding
-import dk.kriaactividade.mealngram.presentation.authentication.login.LoginActivity
+import dk.kriaactividade.mealngram.presentation.authentication.login.LoginFragment
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -33,8 +33,7 @@ class ProfileFragment : Fragment() {
 
         viewModel.logoutSuccess.observe(viewLifecycleOwner) {
             if (it) {
-                startActivity(Intent(requireContext(), LoginActivity::class.java))
-                activity?.finish()
+                findNavController().navigate(ProfileFragmentDirections.actionNavigationProfileToNavigationLogin())
             } else {
                 Toast.makeText(requireContext(), "Não foi possivel deslogar", Toast.LENGTH_SHORT)
                     .show()

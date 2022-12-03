@@ -1,6 +1,7 @@
 package dk.kriaactividade.mealngram.di
 
 import android.content.Context
+import com.google.firebase.auth.FirebaseAuth
 import dk.kriaactividade.mealngram.database.room.RoomRepository
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
@@ -17,8 +18,8 @@ import dk.kriaactividade.mealngram.database.RecipeDataBase
 @Module
 object RepositoryModule {
     @Provides
-    fun providesRecipesRepository(database:FirebaseFirestore): RecipesRepository {
-        return RecipesRepositoryImp(database)
+    fun providesRecipesRepository(database:FirebaseFirestore,auth: FirebaseAuth): RecipesRepository {
+        return RecipesRepositoryImp(database,auth)
     }
 
     @Provides

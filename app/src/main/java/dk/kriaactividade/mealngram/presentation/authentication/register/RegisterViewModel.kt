@@ -2,23 +2,21 @@ package dk.kriaactividade.mealngram.presentation.authentication.register
 
 import android.app.Activity
 import android.text.TextUtils
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
+import androidx.lifecycle.viewModelScope
+import dk.kriaactividade.mealngram.data.repository.RecipesRepositoryImp
+import kotlinx.coroutines.launch
 import java.util.Calendar
 import java.util.Calendar.*
 import javax.inject.Inject
 
-class RegisterViewModel @Inject constructor() : ViewModel() {
+class RegisterViewModel @Inject constructor(private val repositoryImp: RecipesRepositoryImp) : ViewModel() {
 
-    private var auth: FirebaseAuth = Firebase.auth
-    val isErrorEmail:LiveData<Boolean>
-    get() = _isErrorEmail
-    private val _isErrorEmail = MutableLiveData<Boolean>()
+    val isEmail:LiveData<Boolean>
+    get() = _isEmail
+    private val _isEmail = MutableLiveData<Boolean>()
 
     val isPassword:LiveData<Boolean>
         get() = _isPassword
@@ -28,9 +26,9 @@ class RegisterViewModel @Inject constructor() : ViewModel() {
         get() = _birthday
     private val _birthday = MutableLiveData<String>()
 
-    val successRegister:LiveData<Boolean>
+    val successRegister:LiveData<HashMap<Boolean,String?>>
     get() = _successRegister
-    private val _successRegister = MutableLiveData<Boolean>()
+    private val _successRegister = MutableLiveData<HashMap<Boolean,String?>>()
 
     fun getBirthday(day: Int, month: Int, year: Int) {
         val monthInter = month + 1
@@ -45,7 +43,7 @@ class RegisterViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    fun confirmPassword(password:String, confirmPassword:String){
+    fun confirmPassword(password:CharSequence, confirmPassword:CharSequence){
         if (TextUtils.isEmpty(password) && TextUtils.isEmpty(confirmPassword)){
             _isPassword.postValue(false)
         }else if (password == confirmPassword){
@@ -57,9 +55,9 @@ class RegisterViewModel @Inject constructor() : ViewModel() {
 
      fun validateEmail(target:CharSequence){
          if (TextUtils.isEmpty(target)){
-             _isErrorEmail.postValue(false)
+             _isEmail.postValue(false)
          }else{
-             _isErrorEmail.postValue(android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches())
+             _isEmail.postValue(android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches())
          }
     }
 
@@ -79,17 +77,16 @@ class RegisterViewModel @Inject constructor() : ViewModel() {
         return getCalendar().get(DAY_OF_MONTH)
     }
 
-    fun registerUser(activity:RegisterActivity, email:String, password:String){
-        auth.createUserWithEmailAndPassword(
-            email,
-           password
-        )
-            .addOnCompleteListener(activity) { task ->
-                if (task.isSuccessful) {
-                    _successRegister.postValue(true)
-                } else {
-                   _successRegister.postValue(false)
-                }
-            }
-    }
+  fun register(activity: Activity, email:String,password:String){
+      viewModelScope.launch {
+          if (email.isNotEmpty() && password.isNotEmpty()){
+              repositoryImp.registerUser(activity,email,password){response, message ->
+                  val map = hashMapOf<Boolean,String?>()
+                  map[response] = message
+                  _successRegister.postValue(map)
+              }
+          }
+
+      }
+  }
 }

@@ -2,27 +2,30 @@ package dk.kriaactividade.mealngram.presentation.authentication.register
 
 import android.app.DatePickerDialog
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
-import dk.kriaactividade.mealngram.databinding.ActivityRegisterBinding
+import dk.kriaactividade.mealngram.databinding.FragmentRegisterBinding
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class RegisterActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityRegisterBinding
+class RegisterFragment : Fragment() {
+    private lateinit var binding: FragmentRegisterBinding
 
 
     @Inject
     lateinit var viewModel: RegisterViewModel
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityRegisterBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentRegisterBinding.inflate(layoutInflater)
 
         openDataPicker()
         observerBirthday()
@@ -30,6 +33,8 @@ class RegisterActivity : AppCompatActivity() {
         observerPassword()
         confirmRegister()
         observerRegister()
+
+        return binding.root
     }
 
     private fun confirmRegister() {
@@ -46,30 +51,33 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun register() {
-        viewModel.isPassword.value?.let { password ->
-            viewModel.isErrorEmail.value?.let { email ->
-                if (password && email) {
-                    binding.apply {
-                        viewModel.registerUser(this@RegisterActivity,editEmail.text.toString(),
-                            editPassword.text.toString())
-                    }
-                }
+        binding.apply {
+            activity?.let {
+                viewModel.register(
+                    it,
+                    editEmail.text.toString(),
+                    editPassword.text.toString()
+                )
             }
         }
+
     }
 
-    private fun observerRegister(){
-        viewModel.successRegister.observe(this){
-            if (it){
-                finish()
-            }else{
-                Toast.makeText(this, "Falha ao registrar", Toast.LENGTH_SHORT).show()
+    private fun observerRegister() {
+        viewModel.successRegister.observe(viewLifecycleOwner) {
+            it.keys.map { success->
+                if (success){
+                    findNavController().navigate(RegisterFragmentDirections.actionNavigationRegisterToNavigationHome())
+                } else {
+                    Toast.makeText(requireContext(), it[success], Toast.LENGTH_SHORT).show()
+                }
             }
+
         }
     }
 
     private fun observerPassword() {
-        viewModel.isPassword.observe(this) {
+        viewModel.isPassword.observe(viewLifecycleOwner) {
             binding.apply {
                 if (it) {
                     inputPassword.isErrorEnabled = false
@@ -87,7 +95,7 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun observerEmail() {
-        viewModel.isErrorEmail.observe(this) {
+        viewModel.isEmail.observe(viewLifecycleOwner) {
             binding.apply {
                 if (it) {
                     inputEmail.isErrorEnabled = false
@@ -102,7 +110,7 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun observerBirthday() {
-        viewModel.birthday.observe(this) {
+        viewModel.birthday.observe(viewLifecycleOwner) {
             binding.editBirthday.setText(it)
         }
     }
@@ -110,7 +118,7 @@ class RegisterActivity : AppCompatActivity() {
     private fun openDataPicker() {
         binding.btnCalendar.setOnClickListener {
             val datePickerDialog = DatePickerDialog(
-                this,
+                requireContext(),
                 { _, year, month, day ->
                     viewModel.getBirthday(day, month, year)
                 }, viewModel.getYear(), viewModel.getMonth(), viewModel.getDay()
