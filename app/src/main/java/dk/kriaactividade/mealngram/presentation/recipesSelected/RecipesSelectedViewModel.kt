@@ -10,9 +10,6 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class RecipeListDetailsUiData(
-    val showButton: Boolean = false,
-    val showProgress: Boolean = false,
-    val progressValue: Int = 0,
     val recipes: List<RecipesSelectedItem>
 )
 
