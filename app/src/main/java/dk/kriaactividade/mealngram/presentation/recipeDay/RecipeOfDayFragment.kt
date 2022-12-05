@@ -26,16 +26,6 @@ class RecipeOfDayFragment : Fragment() {
     ): View {
         binding = FragmentRecipeOfDayBinding.inflate(layoutInflater)
 
-        viewModel.recipeOfDay.observe(viewLifecycleOwner){recipe ->
-            binding.apply {
-                textRecipeOfDay.text = recipe.name
-                imageRecipeOfDay.load(recipe.image)
-                textDescriptionRecipeofDay.text = recipe.description
-                toolbarRecipeOfDay.also {
-                    it.textToolbar.text = recipe.dayOfWeek.toString()
-                }
-            }
-        }
 
         return binding.root
     }

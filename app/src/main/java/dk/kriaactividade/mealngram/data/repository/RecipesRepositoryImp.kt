@@ -5,11 +5,12 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import dk.kriaactividade.mealngram.data.domain.DetailsRecipes
 import dk.kriaactividade.mealngram.data.domain.Recipe
-import dk.kriaactividade.mealngram.data.domain.RecipesSelected
 import dk.kriaactividade.mealngram.helpers.DataState
 import dk.kriaactividade.mealngram.helpers.LoadingState
 import dk.kriaactividade.mealngram.presentation.recipeList.RecipeItem
 import dk.kriaactividade.mealngram.presentation.recipeList.toRecipeItems
+import dk.kriaactividade.mealngram.presentation.recipesSelected.RecipesSelectedItem
+import dk.kriaactividade.mealngram.presentation.recipesSelected.toRecipeSelected
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
@@ -43,13 +44,14 @@ class RecipesRepositoryImp @Inject constructor(private val database: FirebaseFir
         }
     }
 
-    override suspend fun getSelectedRecipes(onRecipesSelected: (List<RecipesSelected>) -> Unit) {
-        database.collection("selected-recipes").get().addOnCompleteListener { task ->
-            if (task.isSuccessful){
-                val recipesSelected = task.result.toObjects(RecipesSelected::class.java)
-                onRecipesSelected(recipesSelected)
-            }
-        }
+    override fun getSelectedRecipes(): Flow<DataState<List<RecipesSelectedItem>>> = flow {
+        emit(DataState.Loading(loadingState = LoadingState.Loading))
+
+        val snapshot = database.collection(SELECTED_RECIPES).get().await()
+        val recipesSelected = snapshot.toObjects(Recipe::class.java)
+
+        val recipesItem = recipesSelected.toRecipeSelected()
+        emit(DataState.Data(data = recipesItem))
     }
 
     override suspend fun getLogin(

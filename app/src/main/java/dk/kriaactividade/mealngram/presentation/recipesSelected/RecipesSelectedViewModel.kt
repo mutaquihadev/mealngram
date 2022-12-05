@@ -1,28 +1,54 @@
 package dk.kriaactividade.mealngram.presentation.recipesSelected
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dk.kriaactividade.mealngram.data.domain.DetailsRecipes
-import dk.kriaactividade.mealngram.data.domain.RecipesSelected
 import dk.kriaactividade.mealngram.data.repository.RecipesRepository
+import dk.kriaactividade.mealngram.helpers.DataState
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
+data class RecipeListDetailsUiData(
+    val showButton: Boolean = false,
+    val showProgress: Boolean = false,
+    val progressValue: Int = 0,
+    val recipes: List<RecipesSelectedItem>
+)
+
+sealed interface RecipeListDetailsUiState {
+    object Loading : RecipeListDetailsUiState
+    object Error : RecipeListDetailsUiState
+    data class Success(val uiData: RecipeListDetailsUiData) : RecipeListDetailsUiState
+}
+
 
 
 class RecipesSelectedViewModel @Inject constructor(private val repository: RecipesRepository) :
     ViewModel() {
 
-    val recipesSelected: LiveData<List<RecipesSelected>>
-        get() = _recipesSelected
-    private val _recipesSelected = MutableLiveData<List<RecipesSelected>>()
+    private val recipesSelected = mutableListOf<RecipesSelectedItem>()
+
+    private val _uiState: MutableStateFlow<RecipeListDetailsUiState> =
+        MutableStateFlow(RecipeListDetailsUiState.Loading)
+    val uiState = _uiState.asStateFlow()
 
     init {
         viewModelScope.launch {
-            repository.getSelectedRecipes {
-                _recipesSelected.postValue(it)
-            }
+            repository.getSelectedRecipes().collect(::handleGetRecipesDetails)
         }
     }
+    private fun handleGetRecipesDetails(state: DataState<List<RecipesSelectedItem>>) {
+        when (state) {
+            is DataState.Error -> {}
+            is DataState.Data -> {
+                recipesSelected.clear()
+                recipesSelected.addAll(state.data)
+                _uiState.value =
+                    RecipeListDetailsUiState.Success(uiData = RecipeListDetailsUiData(recipes = recipesSelected))
+            }
+            is DataState.Loading -> _uiState.value = RecipeListDetailsUiState.Loading
+        }
+    }
+
 }
