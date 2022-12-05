@@ -12,8 +12,8 @@ class RecipesSelectedAdapter :
     ListAdapter<RecipesSelectedItem, RecipesSelectedAdapter.ItemViewHolder>(RecipesSelectedAdapter) {
     inner class ItemViewHolder(private val itemRecycler: ItemRecyclerRecipesSelectedBinding) :
         RecyclerView.ViewHolder(itemRecycler.root) {
-        fun binding(detailsRecipes: RecipesSelectedItem) {
-            itemRecycler.setVariable(BR.recipeDetails, detailsRecipes)
+        fun binding(recipesSelected: RecipesSelectedItem) {
+            itemRecycler.setVariable(BR.recipeDetails, recipesSelected)
         }
     }
 

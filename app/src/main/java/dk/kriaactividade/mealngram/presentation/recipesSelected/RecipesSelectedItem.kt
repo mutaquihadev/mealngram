@@ -13,7 +13,7 @@ data class RecipesSelectedItem(
     val ingredients: List<String>
 )
 
-fun List<Recipe>.toRecipeSelected(): List<RecipesSelectedItem> {
+fun List<Recipe>.toRecipeSelectedItem(): List<RecipesSelectedItem> {
     return this.map { recipe ->
         RecipesSelectedItem(
             id = recipe.id,

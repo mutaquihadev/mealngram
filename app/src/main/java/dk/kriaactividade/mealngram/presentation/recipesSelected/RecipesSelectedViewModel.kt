@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dk.kriaactividade.mealngram.data.repository.RecipesRepository
 import dk.kriaactividade.mealngram.helpers.DataState
+import dk.kriaactividade.mealngram.helpers.HandleGetState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -19,10 +20,8 @@ sealed interface RecipeListDetailsUiState {
     data class Success(val uiData: RecipeListDetailsUiData) : RecipeListDetailsUiState
 }
 
-
-
 class RecipesSelectedViewModel @Inject constructor(private val repository: RecipesRepository) :
-    ViewModel() {
+    ViewModel(), HandleGetState<List<RecipesSelectedItem>> {
 
     private val recipesSelected = mutableListOf<RecipesSelectedItem>()
 
@@ -32,10 +31,11 @@ class RecipesSelectedViewModel @Inject constructor(private val repository: Recip
 
     init {
         viewModelScope.launch {
-            repository.getSelectedRecipes().collect(::handleGetRecipesDetails)
+            repository.getSelectedRecipes().collect(::handleGetState)
         }
     }
-    private fun handleGetRecipesDetails(state: DataState<List<RecipesSelectedItem>>) {
+
+    override fun handleGetState(state: DataState<List<RecipesSelectedItem>>) {
         when (state) {
             is DataState.Error -> {}
             is DataState.Data -> {
@@ -47,5 +47,6 @@ class RecipesSelectedViewModel @Inject constructor(private val repository: Recip
             is DataState.Loading -> _uiState.value = RecipeListDetailsUiState.Loading
         }
     }
+
 
 }

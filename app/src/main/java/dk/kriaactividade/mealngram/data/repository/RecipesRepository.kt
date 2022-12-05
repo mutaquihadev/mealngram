@@ -9,11 +9,10 @@ import dk.kriaactividade.mealngram.presentation.recipesSelected.RecipesSelectedI
 import kotlinx.coroutines.flow.Flow
 
 interface RecipesRepository {
-    suspend fun getRecipes(onRecipesRetrieved: (List<Recipe>) -> Unit)
     suspend fun selectedRecipes(details:List<DetailsRecipes>)
-    fun getSelectedRecipes() : Flow<DataState<List<RecipesSelectedItem>>>
+    suspend fun getSelectedRecipes() : Flow<DataState<List<RecipesSelectedItem>>>
     suspend fun getLogin(activity: Activity,email:String,password:String,onLogged:(Boolean,String?)->Unit)
     suspend fun getIsLogged(onLogged:(Boolean)->Unit)
     suspend fun registerUser(activity: Activity,email:String,password:String,onRegister:(Boolean,String?)->Unit)
-    fun getAllRecipes() : Flow<DataState<List<RecipeItem>>>
+    suspend fun getAllRecipes() : Flow<DataState<List<RecipeItem>>>
 }

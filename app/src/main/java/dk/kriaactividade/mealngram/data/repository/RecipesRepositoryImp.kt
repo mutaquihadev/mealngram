@@ -10,7 +10,7 @@ import dk.kriaactividade.mealngram.helpers.LoadingState
 import dk.kriaactividade.mealngram.presentation.recipeList.RecipeItem
 import dk.kriaactividade.mealngram.presentation.recipeList.toRecipeItems
 import dk.kriaactividade.mealngram.presentation.recipesSelected.RecipesSelectedItem
-import dk.kriaactividade.mealngram.presentation.recipesSelected.toRecipeSelected
+import dk.kriaactividade.mealngram.presentation.recipesSelected.toRecipeSelectedItem
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
@@ -18,15 +18,6 @@ import javax.inject.Inject
 
 class RecipesRepositoryImp @Inject constructor(private val database: FirebaseFirestore,private val auth: FirebaseAuth) :
     RecipesRepository {
-
-    override suspend fun getRecipes(onRecipesRetrieved: (List<Recipe>) -> Unit) {
-        database.collection("recipes").get().addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                val recipes = task.result.toObjects(Recipe::class.java)
-                onRecipesRetrieved(recipes)
-            }
-        }
-    }
 
     override suspend fun selectedRecipes(details: List<DetailsRecipes>) {
         details.map { detail ->
@@ -44,14 +35,14 @@ class RecipesRepositoryImp @Inject constructor(private val database: FirebaseFir
         }
     }
 
-    override fun getSelectedRecipes(): Flow<DataState<List<RecipesSelectedItem>>> = flow {
+    override suspend fun getSelectedRecipes(): Flow<DataState<List<RecipesSelectedItem>>> = flow {
         emit(DataState.Loading(loadingState = LoadingState.Loading))
 
         val snapshot = database.collection(SELECTED_RECIPES).get().await()
-        val recipesSelected = snapshot.toObjects(Recipe::class.java)
+        val recipes = snapshot.toObjects(Recipe::class.java)
 
-        val recipesItem = recipesSelected.toRecipeSelected()
-        emit(DataState.Data(data = recipesItem))
+        val recipesSelectedItem = recipes.toRecipeSelectedItem()
+        emit(DataState.Data(data = recipesSelectedItem))
     }
 
     override suspend fun getLogin(
@@ -87,7 +78,7 @@ class RecipesRepositoryImp @Inject constructor(private val database: FirebaseFir
             }
     }
 
-    override fun getAllRecipes(): Flow<DataState<List<RecipeItem>>> = flow {
+    override suspend fun getAllRecipes(): Flow<DataState<List<RecipeItem>>> = flow {
         emit(DataState.Loading(loadingState = LoadingState.Loading))
 
         val snapshot = database.collection(RECIPE).get().await()

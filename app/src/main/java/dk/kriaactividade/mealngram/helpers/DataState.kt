@@ -18,3 +18,7 @@ sealed class LoadingState{
     object Loading: LoadingState()
     object Idle: LoadingState()
 }
+
+interface HandleGetState<T>{
+    fun handleGetState(state: DataState<T>)
+}
