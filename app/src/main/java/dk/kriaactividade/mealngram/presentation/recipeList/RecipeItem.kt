@@ -4,7 +4,6 @@ import dk.kriaactividade.mealngram.data.domain.Recipe
 import dk.kriaactividade.mealngram.data.domain.WEEK
 import java.util.*
 
-
 data class RecipeItem(
     val id: Int,
     val name: String,
@@ -13,9 +12,13 @@ data class RecipeItem(
     val image: String,
     val isSelectionMode: Boolean = false,
 ) {
-    private val calendar = Calendar.getInstance()
     val selectedDays: List<SelectedChipState>
-        get() = calendar.daysUntilTheEndOfWeek().map { SelectedChipState(id = id, date = it, week = it.toWeek()) }
+        get()  {
+            val calendar = Calendar.getInstance()
+            return calendar.daysUntilTheEndOfWeek().map {
+                SelectedChipState(id = id, date = it, week = it.toWeek())
+            }
+        }
 }
 
 data class SelectedChipState(

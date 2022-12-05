@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import androidx.databinding.library.baseAdapters.BR
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -25,20 +26,31 @@ class RecipeListAdapter(
     inner class RecipeItemViewHolder(private val item: ItemRecyclerHomeBinding) :
         RecyclerView.ViewHolder(item.root) {
         fun binding(recipeItem: RecipeItem) {
-            item.titleRecipe.text = recipeItem.name
-            item.descriptionRecipe.text = recipeItem.description
-            item.foodImage.load(recipeItem.image)
-            item.chipGroup.isVisible = recipeItem.isSelectionMode
-
-            item.daysOfTheWeek.removeAllViews()
-            recipeItem.selectedDays.forEach { chipState ->
-                val chip = Chip(context, null, R.attr.CustomChipChoiceStyle)
-                item.daysOfTheWeek.addView(chip)
-
-                chip.isChecked = chipState.isActive
-                chip.text = chipState.week.label
-                chip.setOnClickListener { onChipClicked(chipState.id, chipState.week, chipState.isActive) }
-            }
+            item.setVariable(BR.recipe, recipeItem)
+            //binding.setVariable(BR.capsule, capsule)
+//            item.titleRecipe.text = recipeItem.name
+//            item.descriptionRecipe.text = recipeItem.description
+//            item.foodImage.load(recipeItem.image)
+//            item.chipGroup.isVisible = recipeItem.isSelectionMode
+//
+//            item.daysOfTheWeek.removeAllViews()
+//            item.daysOfTheWeek.setChipSpacing(2)
+//            recipeItem.selectedDays.forEachIndexed {  index, chipState ->
+//                val chip = Chip(context, null, R.attr.CustomChipChoiceStyle)
+//                item.daysOfTheWeek.addView(chip)
+//
+//                chip.isCheckable = true
+//                chip.elevation = if(index == 0) 0f else 10f
+//                //chip.chipStrokeWidth = 6f
+//                //chip.chipStrokeColor = ContextCompat.getColorStateList(context, R.color.red)
+//
+//                //chip.isChecked = chipState.isActive
+//                chip.text = chipState.week.label
+//                chip.setOnCheckedChangeListener { compoundButton, b ->
+//
+//                }
+//                //chip.setOnClickListener { onChipClicked(chipState.id, chipState.week, chipState.isActive) }
+//            }
         }
     }
 

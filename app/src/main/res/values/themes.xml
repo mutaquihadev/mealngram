@@ -14,6 +14,7 @@
     <style name="ChipCustomStyle" parent="@style/Widget.MaterialComponents.Chip.Choice">
         <item name="chipBackgroundColor">@drawable/chip_background_color</item>
         <item name="android:textColor">@drawable/chip_text_color</item>
+        <item name="strokeColor">@color/teal_200</item>
     </style>
 
     <color name="color_default">#000</color>
