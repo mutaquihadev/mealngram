@@ -1,6 +1,5 @@
 package dk.kriaactividade.mealngram.presentation.recipeList
 
-import dk.kriaactividade.mealngram.data.domain.Recipe
 import dk.kriaactividade.mealngram.data.domain.WEEK
 import java.util.*
 
@@ -11,18 +10,15 @@ data class RecipeItem(
     val ingredients: List<String>,
     val image: String,
     val isSelectionMode: Boolean = false,
-) {
     val selectedDays: List<SelectedChipState>
-        get()  {
-            val calendar = Calendar.getInstance()
-            return calendar.daysUntilTheEndOfWeek().map {
-                SelectedChipState(id = id, date = it, week = it.toWeek())
-            }
-        }
-}
+)
 
 data class SelectedChipState(
-    val id: Int, val date: Date, val isActive: Boolean = false, val week : WEEK
+    val id: Int,
+    val date: Date,
+    val isChecked: Boolean = false,
+    val isSelectable: Boolean = true,
+    val week: WEEK
 )
 
 fun Calendar.daysUntilTheEndOfWeek(): List<Date> {
@@ -33,18 +29,6 @@ fun Calendar.daysUntilTheEndOfWeek(): List<Date> {
     } while (this.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY)
 
     return dates.toList()
-}
-
-fun List<Recipe>.toRecipeItems(): List<RecipeItem> {
-    return this.map { recipe ->
-        RecipeItem(
-            id = recipe.id,
-            name = recipe.name,
-            image = recipe.image,
-            description = recipe.description,
-            ingredients = recipe.ingredients,
-        )
-    }
 }
 
 fun Date.toWeek(): WEEK {

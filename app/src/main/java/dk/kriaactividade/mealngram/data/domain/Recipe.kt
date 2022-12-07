@@ -31,7 +31,7 @@ data class Recipe(
 )
 
 data class ChipState(
-    val id: Int, val dayOfWeek: WEEK, val isActive: Boolean = false, val isVisible: Boolean = true
+    val id: Int, val dayOfWeek: WEEK, val isActive: Boolean = false, val isSelectable: Boolean = true
 )
 
 enum class WEEK(val id: Int, val label: String) {
