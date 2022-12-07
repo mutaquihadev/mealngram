@@ -7,6 +7,10 @@
         <variable
             name="recipe"
             type="dk.kriaactividade.mealngram.presentation.recipeList.RecipeItem" />
+
+        <variable
+            name="actions"
+            type="dk.kriaactividade.mealngram.presentation.recipeList.RecipeListViewModelItemActions" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -137,7 +141,9 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             app:singleLine="true"
-                            app:selectableDays="@{recipe.selectedDays}">
+                            app:selectableDays="@{recipe.selectedDays}"
+                            app:onDaySelected="@{actions}"
+                            >
 
                             <com.google.android.material.chip.Chip
                                 android:layout_width="wrap_content"
