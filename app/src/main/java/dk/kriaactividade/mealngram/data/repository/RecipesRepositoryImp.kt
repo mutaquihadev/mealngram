@@ -94,7 +94,7 @@ class RecipesRepositoryImp @Inject constructor(private val database: FirebaseFir
         val snapshot = database.collection(RECIPE).get().await()
         val recipes = snapshot.toObjects(Recipe::class.java)
 
-        val recipeItems = recipes.take(2).map {
+        val recipeItems = recipes.map {
             RecipeItem(
                 id = it.id,
                 name = it.name,
