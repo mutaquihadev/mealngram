@@ -3,6 +3,7 @@ package dk.kriaactividade.mealngram.presentation.recipeList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dk.kriaactividade.mealngram.data.domain.RecipesDetails
 import dk.kriaactividade.mealngram.data.domain.WEEK
 import dk.kriaactividade.mealngram.data.repository.RecipesRepository
 import dk.kriaactividade.mealngram.helpers.DataState
@@ -16,13 +17,15 @@ data class RecipeListUiData(
     val showButton: Boolean = false,
     val showProgress: Boolean = false,
     val progressValue: Int = 0,
-    val recipes: List<RecipeItem>
+    val recipes: List<RecipeItem> = listOf(),
+    val completeSelection: MutableList<RecipesDetails> = mutableListOf()
 )
 
 sealed interface RecipeListUiState {
     object Loading : RecipeListUiState
     object Error : RecipeListUiState
     data class Success(val uiData: RecipeListUiData) : RecipeListUiState
+    data class CompleteSelection(val complete: RecipeListUiData) : RecipeListUiState
 }
 
 interface RecipeListViewModelItemActions {
@@ -30,10 +33,15 @@ interface RecipeListViewModelItemActions {
 }
 
 @HiltViewModel
-class RecipeListViewModel @Inject constructor(repository: RecipesRepository) : ViewModel(),
+class RecipeListViewModel @Inject constructor(private val repository: RecipesRepository) :
+    ViewModel(),
     RecipeListViewModelItemActions {
 
     private var isEditMode: Boolean = false
+    private var valueProgress: Int = 0
+    private var updatedSelectedDays = listOf<SelectedChipState>()
+    private var showButton = false
+    private val recipeListLocal = mutableListOf<RecipesDetails>()
 
     private val _uiState: MutableStateFlow<RecipeListUiState> =
         MutableStateFlow(RecipeListUiState.Loading)
@@ -65,9 +73,8 @@ class RecipeListViewModel @Inject constructor(repository: RecipesRepository) : V
 
     fun updateEditMode() {
         isEditMode = !isEditMode
-
         _uiState.value.let {
-            when(it) {
+            when (it) {
                 RecipeListUiState.Error -> {}
                 RecipeListUiState.Loading -> {}
                 is RecipeListUiState.Success -> {
@@ -84,11 +91,15 @@ class RecipeListViewModel @Inject constructor(repository: RecipesRepository) : V
                     }
 
                     _uiState.value = RecipeListUiState.Success(
-                        uiData = RecipeListUiData(recipes = updatedRecipes, showProgress = isEditMode)
+                        uiData = RecipeListUiData(
+                            recipes = updatedRecipes,
+                            showProgress = isEditMode
+                        )
                     )
                 }
             }
         }
+
     }
 
     private fun clearSelectionMode() {
@@ -114,7 +125,7 @@ class RecipeListViewModel @Inject constructor(repository: RecipesRepository) : V
     }
 
 
-    override fun onDaySelected(recipeId: Int, weekDay : WEEK, date : Date) {
+    override fun onDaySelected(recipeId: Int, weekDay: WEEK, date: Date) {
 
         _uiState.value.let {
             when (it) {
@@ -124,18 +135,24 @@ class RecipeListViewModel @Inject constructor(repository: RecipesRepository) : V
                     val recipe = it.uiData.recipes.first { recipeItem -> recipeItem.id == recipeId }
                     val selectableDays = recipe.selectedDays
 
-                    val isCurrentSelectedDayChecked = selectableDays.first { selectableDay ->  selectableDay.week == weekDay }.isChecked
+                    val isCurrentSelectedDayChecked =
+                        selectableDays.first { selectableDay -> selectableDay.week == weekDay }.isChecked
                     val isCurrentSelectedDayCheckedUpdated = !isCurrentSelectedDayChecked
 
-                    val selected = selectedChipStates.first { selectedChipState -> selectedChipState.weekDay == weekDay }
+                    val selected =
+                        selectedChipStates.first { selectedChipState -> selectedChipState.weekDay == weekDay }
 
-                    val (updatedRecipeId, updatedIsChecked) = if (isCurrentSelectedDayCheckedUpdated) Pair(recipeId, true) else Pair(null,false)
+                    val (updatedRecipeId, updatedIsChecked) = if (isCurrentSelectedDayCheckedUpdated) Pair(
+                        recipeId,
+                        true
+                    ) else Pair(null, false)
                     selected.recipeId = updatedRecipeId
                     selected.isChecked = updatedIsChecked
 
                     val updatedRecipes = it.uiData.recipes.map { recipeItem ->
 
-                        val updatedSelectedDays = selectedChipStates.toSelectedChipStates(recipeItemId = recipeItem.id)
+                        updatedSelectedDays =
+                            selectedChipStates.toSelectedChipStates(recipeItemId = recipeItem.id)
 
                         RecipeItem(
                             id = recipeItem.id,
@@ -148,33 +165,80 @@ class RecipeListViewModel @Inject constructor(repository: RecipesRepository) : V
                         )
                     }
 
+                    if (recipeId == selected.recipeId) {
+                        goToCompleteSelection(recipe, false)
+                    } else {
+                        goToCompleteSelection(recipe, true)
+                    }
+
+
+                    if (updatedIsChecked) {
+                        valueProgress += 100 / updatedSelectedDays.size + 1
+                    } else {
+                        valueProgress -= 100 / updatedSelectedDays.size + 1
+                    }
+
+                    showButton = valueProgress >= 100
+
                     _uiState.value = RecipeListUiState.Success(
-                        uiData = RecipeListUiData(recipes = updatedRecipes, showProgress = true)
+                        uiData = RecipeListUiData(
+                            recipes = updatedRecipes,
+                            showProgress = true,
+                            progressValue = valueProgress,
+                            showButton = showButton
+                        )
                     )
+
                 }
             }
         }
     }
+
+    private fun goToCompleteSelection(selectedItem: RecipeItem, removeIt: Boolean) {
+        val recipeDetails = RecipesDetails(
+            id = selectedItem.id,
+            name = selectedItem.name,
+            description = selectedItem.description,
+            ingredients = selectedItem.ingredients,
+            image = selectedItem.image,
+        )
+
+        if (removeIt) {
+            recipeListLocal.remove(recipeDetails)
+        } else {
+            recipeListLocal.add(recipeDetails)
+        }
+        _uiState.value = RecipeListUiState.CompleteSelection(
+            RecipeListUiData(
+                completeSelection = recipeListLocal
+            )
+        )
+    }
 }
 
-data class SelectedChip(val date : Date, val weekDay: WEEK,  var recipeId: Int? = null, var isChecked : Boolean = false)
+data class SelectedChip(
+    val date: Date,
+    val weekDay: WEEK,
+    var recipeId: Int? = null,
+    var isChecked: Boolean = false
+)
 
-fun List<SelectedChip>.toSelectedChipStates(recipeItemId: Int) : List<SelectedChipState> {
-    return this.map {  selectedChip ->
+fun List<SelectedChip>.toSelectedChipStates(recipeItemId: Int): List<SelectedChipState> {
+    return this.map { selectedChip ->
 
-        val chipState = if(selectedChip.recipeId == null) {
+        val chipState = if (selectedChip.recipeId == null) {
             ChipStateOptions.NOT_SELECTED
-        } else if (selectedChip.recipeId != recipeItemId){
+        } else if (selectedChip.recipeId != recipeItemId) {
             ChipStateOptions.DISABLED
-        } else  {
-            if(selectedChip.isChecked) {
+        } else {
+            if (selectedChip.isChecked) {
                 ChipStateOptions.SELECTED
             } else {
                 ChipStateOptions.NOT_SELECTED
             }
         }
 
-         when(chipState) {
+        when (chipState) {
             ChipStateOptions.NOT_SELECTED -> {
                 SelectedChipState(
                     date = selectedChip.date,
@@ -206,7 +270,7 @@ fun List<SelectedChip>.toSelectedChipStates(recipeItemId: Int) : List<SelectedCh
     }
 }
 
-enum class ChipStateOptions{
+enum class ChipStateOptions {
     NOT_SELECTED,
     SELECTED,
     DISABLED

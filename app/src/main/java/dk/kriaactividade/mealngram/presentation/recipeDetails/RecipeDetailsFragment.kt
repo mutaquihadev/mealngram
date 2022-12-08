@@ -1,23 +1,22 @@
 package dk.kriaactividade.mealngram.presentation.recipeDetails
 
 import android.os.Bundle
-import android.os.PersistableBundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.navigation.findNavController
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
-import dk.kriaactividade.mealngram.MainActivity
 import dk.kriaactividade.mealngram.R
-import dk.kriaactividade.mealngram.data.domain.DetailsRecipes
+import dk.kriaactividade.mealngram.data.domain.RecipesDetails
 import dk.kriaactividade.mealngram.databinding.FragmentRecipeDetailsBinding
+import dk.kriaactividade.mealngram.presentation.recipeList.RecipeItem
+import dk.kriaactividade.mealngram.presentation.recipeList.RecipeListUiData
+import dk.kriaactividade.mealngram.presentation.recipeList.RecipeListUiState
 import dk.kriaactividade.mealngram.presentation.utils.Constants.RESULT_FROM_DETAILS
 import dk.kriaactividade.mealngram.presentation.utils.gone
 import dk.kriaactividade.mealngram.presentation.utils.visible
-import dk.kriaactividade.mealngram.repository.remote.RecipeDTO
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -44,25 +43,27 @@ class RecipeDetailsFragment : Fragment() {
 
         binding.btnToFinish.setOnClickListener {
             viewModel.setDetailsList(args.detailsRecipes.toList())
-            val savedStateHandle = findNavController().previousBackStackEntry?.savedStateHandle
-            savedStateHandle?.set(RESULT_FROM_DETAILS, true)
-            findNavController().navigateUp()
+            backToRecipeList()
         }
 
         configureToolbar()
         return binding.root
     }
 
+    private fun backToRecipeList(){
+        findNavController().navigateUp()
+    }
+
     private fun configureToolbar() {
         binding.toolbarRecipesDetails.apply {
             textToolbar.text = getString(R.string.title_dashboard)
             buttonBack.setOnClickListener {
-                findNavController().navigateUp()
+                backToRecipeList()
             }
         }
     }
 
-    private fun setViewPager(listRecipes: List<DetailsRecipes>){
+    private fun setViewPager(listRecipes: List<RecipesDetails>){
         binding.vpMyRecipes.adapter = RecipesSelectedViewPagerAdapter(requireContext(),
             listRecipes
         )

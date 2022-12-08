@@ -6,12 +6,12 @@ import java.io.Serializable
 import java.util.Date
 
 @Parcelize
-class DetailsRecipes(
+class RecipesDetails(
     val id: Int,
     val name: String,
     val description: String,
     val ingredients: List<String>,
     val image: String,
-    val dayOfWeek: WEEK,
-    val day: String
+    val dayOfWeek: WEEK? = null,
+    val day: String? = null
 ) : Parcelable

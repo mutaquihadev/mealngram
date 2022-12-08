@@ -9,9 +9,12 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import dk.kriaactividade.mealngram.databinding.FragmentRecipeListBinding
+import dk.kriaactividade.mealngram.presentation.utils.Constants
+import dk.kriaactividade.mealngram.presentation.utils.Constants.RESULT_FROM_DETAILS
 import dk.kriaactividade.mealngram.presentation.utils.gone
 import dk.kriaactividade.mealngram.presentation.utils.visible
 import kotlinx.coroutines.launch
@@ -20,7 +23,7 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class RecipeListFragment : Fragment() {
 
-   private val  viewModel : RecipeListViewModel by viewModels()
+    private val viewModel: RecipeListViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -50,6 +53,16 @@ class RecipeListFragment : Fragment() {
                         binding.progress.isVisible = uiState.uiData.showProgress
                         binding.progress.progress = uiState.uiData.progressValue
                         binding.buttonOk.isVisible = uiState.uiData.showButton
+
+                    }
+                    is RecipeListUiState.CompleteSelection -> {
+                        binding.buttonOk.setOnClickListener {
+                            findNavController().navigate(
+                                RecipeListFragmentDirections.goToMyRecipes(
+                                    uiState.complete.completeSelection.toTypedArray()
+                                )
+                            )
+                        }
                     }
                 }
             }
