@@ -98,6 +98,8 @@ class RecipesRepositoryImp @Inject constructor(private val database: FirebaseFir
             )
         }
 
+        emit(DataState.SaveCache(saveState = recipeItems))
+
         emit(DataState.Data(data = recipeItems))
     }
 

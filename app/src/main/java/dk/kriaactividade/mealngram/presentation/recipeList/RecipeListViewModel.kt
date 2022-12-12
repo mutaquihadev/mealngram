@@ -6,10 +6,13 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dk.kriaactividade.mealngram.data.domain.RecipesDetails
 import dk.kriaactividade.mealngram.data.domain.WEEK
 import dk.kriaactividade.mealngram.data.repository.RecipesRepository
+import dk.kriaactividade.mealngram.database.room.RecipeRoomItem
+import dk.kriaactividade.mealngram.database.room.RoomRepository
 import dk.kriaactividade.mealngram.helpers.DataState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
@@ -17,6 +20,7 @@ data class RecipeListUiData(
     val showButton: Boolean = false,
     val showProgress: Boolean = false,
     val progressValue: Int = 0,
+    val recipeRoomItem: List<RecipeRoomItem> = listOf(),
     val recipes: List<RecipeItem> = listOf(),
     val completeSelection: MutableList<RecipesDetails> = mutableListOf()
 )
@@ -24,6 +28,7 @@ data class RecipeListUiData(
 sealed interface RecipeListUiState {
     object Loading : RecipeListUiState
     object Error : RecipeListUiState
+    data class SaveCache(val uiData: RecipeListUiData) : RecipeListUiState
     data class Success(val uiData: RecipeListUiData) : RecipeListUiState
     data class CompleteSelection(val complete: RecipeListUiData) : RecipeListUiState
 }
@@ -36,7 +41,8 @@ interface RecipeListViewModelItemActions {
 class RecipeListViewModel @Inject constructor(private val repository: RecipesRepository) :
     ViewModel(),
     RecipeListViewModelItemActions {
-
+    @Inject
+    lateinit var room: RoomRepository
     private var isEditMode: Boolean = false
     private var valueProgress: Int = 0
     private var updatedSelectedDays = listOf<SelectedChipState>()
@@ -57,6 +63,7 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
     init {
         viewModelScope.launch {
             repository.getAllRecipes().collect(::handleGetAllRecipes)
+            room.allRecipes()
         }
     }
 
@@ -68,7 +75,43 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
                     RecipeListUiState.Success(uiData = RecipeListUiData(recipes = state.data))
             }
             is DataState.Loading -> _uiState.value = RecipeListUiState.Loading
+            is DataState.SaveCache -> {
+                val recipeLocal = state.saveState.map { recipeItem ->
+                    RecipeRoomItem(
+                        id = recipeItem.id,
+                        name = recipeItem.name,
+                        description = recipeItem.description,
+                        ingredients = recipeItem.ingredients,
+                        image = recipeItem.image,
+                        dateInserted = getCurrentDate()
+                    )
+                }
+                viewModelScope.launch {
+                    if (room.allRecipes().isEmpty()) {
+                        room.insertList(recipeLocal)
+                    } else {
+                        var recipeLocalDate: Date? = null
+
+                        room.allRecipes()
+                            .forEach { dateLocal -> recipeLocalDate = dateLocal.dateInserted }
+
+                        if (recipeLocalDate?.let { getCurrentDateString(it) } != getCurrentDateString(getCurrentDate())){
+                            room.insertList(recipeLocal)
+                        }
+                    }
+                }
+            }
         }
+    }
+
+    private fun getCurrentDate(): Date {
+        val calendar = Calendar.getInstance()
+        return calendar.time
+    }
+
+    private fun getCurrentDateString(date: Date): String {
+        val simpleDateFormat = SimpleDateFormat("dd/MM/yyyy", Locale("pt", "BR"))
+        return simpleDateFormat.format(date)
     }
 
     fun updateEditMode() {

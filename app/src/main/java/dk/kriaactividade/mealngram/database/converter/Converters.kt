@@ -4,7 +4,7 @@ import androidx.room.TypeConverter
 import com.google.common.reflect.TypeToken
 import com.google.gson.Gson
 import dk.kriaactividade.mealngram.data.domain.ChipState
-import dk.kriaactividade.mealngram.data.domain.WEEK
+import java.util.*
 
 
 class Converters {
@@ -25,4 +25,16 @@ class Converters {
 
     @TypeConverter
     fun jsonToList(value: String) = Gson().fromJson(value, Array<ChipState>::class.java).toList()
+
+    @TypeConverter
+    fun toDate(dateLong: Long): Date {
+        return Date(dateLong)
+    }
+
+    @TypeConverter
+    fun fromDate(date: Date): Long {
+        return date.time
+    }
+
+
 }

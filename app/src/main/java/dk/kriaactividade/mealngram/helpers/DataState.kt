@@ -12,6 +12,10 @@ sealed class DataState<out T> {
     data class Loading(
         val loadingState: LoadingState = LoadingState.Idle
     ): DataState<Nothing>()
+
+    data class SaveCache<out T>(
+        val saveState: T
+    ): DataState<T>()
 }
 
 sealed class LoadingState{
