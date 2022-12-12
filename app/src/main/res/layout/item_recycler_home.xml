@@ -41,41 +41,6 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/favorite_layout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/divider">
-
-                    <ImageButton
-                        android:id="@+id/favorite"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@android:color/transparent"
-                        android:padding="8dp"
-                        android:src="@drawable/ic_baseline_favorite_24"
-                        android:visibility="gone"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <ImageButton
-                        android:id="@+id/no_favorite"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@android:color/transparent"
-                        android:padding="8dp"
-                        android:src="@drawable/ic_baseline_favorite_border_24"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:tint="@color/red"
-                        tools:ignore="SpeakableTextPresentCheck" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <View
                     android:id="@+id/divider"
@@ -92,7 +57,6 @@
                     android:textStyle="bold"
                     android:text="@{recipe.name}"
                     android:textColor="@color/color_default"
-                    app:layout_constraintEnd_toStartOf="@+id/favorite_layout"
                     app:layout_constraintStart_toStartOf="@id/description_recipe"
                     app:layout_constraintTop_toBottomOf="@id/divider"
                     tools:text="Title recipe" />
@@ -109,8 +73,8 @@
                     android:ellipsize="end"
                     android:textStyle="bold"
                     android:text="@{recipe.description}"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintBottom_toTopOf="@id/chip_group"
-                    app:layout_constraintEnd_toStartOf="@id/favorite_layout"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/title_recipe"
                     tools:text="@string/text_lorem_ipsum" />
