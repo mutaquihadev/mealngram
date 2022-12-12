@@ -7,8 +7,9 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import dk.kriaactividade.mealngram.data.domain.Recipe
 import dk.kriaactividade.mealngram.database.converter.Converters
+import dk.kriaactividade.mealngram.database.room.RecipeRoomItem
 
-@Database(entities = [Recipe::class], version = 1, exportSchema = false)
+@Database(entities = [RecipeRoomItem::class], version = 1, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class RecipeDataBase  : RoomDatabase() {
 
@@ -25,7 +26,7 @@ abstract class RecipeDataBase  : RoomDatabase() {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     RecipeDataBase::class.java,
-                    "movie_database"
+                    "recipes_database"
                 )
                     .fallbackToDestructiveMigration()
 

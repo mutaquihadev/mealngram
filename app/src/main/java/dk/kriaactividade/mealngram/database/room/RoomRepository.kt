@@ -1,22 +1,39 @@
 package dk.kriaactividade.mealngram.database.room
 
 import androidx.annotation.WorkerThread
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.scopes.ViewModelScoped
 import dk.kriaactividade.mealngram.data.domain.Recipe
 import dk.kriaactividade.mealngram.database.RecipeDAO
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class RoomRepository @Inject constructor(private val recipeDAO: RecipeDAO) {
-    val allPerson: Flow<MutableList<Recipe>> = recipeDAO.getAllRecipes()
+@ViewModelScoped
+class RoomRepository @Inject constructor(private val recipeDAO: RecipeDAO) : ViewModel() {
+
 
     @Suppress("RedundantSuspendModifier")
     @WorkerThread
-    suspend fun insert(movieDetails: Recipe) {
-        recipeDAO.insertRecipe(movieDetails)
+    suspend fun allRecipes(): List<RecipeRoomItem> {
+       return recipeDAO.getAllRecipes()
     }
 
-    suspend fun remove(movieId: Int) {
-        recipeDAO.removeRecipe(movieId)
+    fun insert(recipeDetails: RecipeRoomItem) = viewModelScope.launch {
+        recipeDAO.insertRecipe(recipeDetails)
+    }
+
+    fun insertList(listRecipe: List<RecipeRoomItem>) = viewModelScope.launch {
+        recipeDAO.insertList(listRecipe)
+    }
+
+     fun deleteAllRecipes() = viewModelScope.launch {
+        recipeDAO.deleteAllRecipes()
+    }
+
+    fun getRecipe(recipeId: Int) = viewModelScope.launch {
+        recipeDAO.geRecipe(recipeId)
     }
 
 }

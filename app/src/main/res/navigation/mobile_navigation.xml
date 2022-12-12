@@ -46,7 +46,7 @@
         >
         <argument
             android:name="detailsRecipes"
-            app:argType="dk.kriaactividade.mealngram.data.domain.DetailsRecipes[]" />
+            app:argType="dk.kriaactividade.mealngram.data.domain.RecipesDetails[]" />
     </fragment>
 
     <fragment
