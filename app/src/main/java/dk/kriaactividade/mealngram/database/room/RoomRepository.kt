@@ -28,9 +28,9 @@ class RoomRepository @Inject constructor(private val recipeDAO: RecipeDAO) : Vie
         recipeDAO.insertList(listRecipe)
     }
 
-//     fun remove(recipeId: Int) = viewModelScope.launch {
-//        recipeDAO.removeRecipe(recipeId)
-//    }
+     fun deleteAllRecipes() = viewModelScope.launch {
+        recipeDAO.deleteAllRecipes()
+    }
 
     fun getRecipe(recipeId: Int) = viewModelScope.launch {
         recipeDAO.geRecipe(recipeId)

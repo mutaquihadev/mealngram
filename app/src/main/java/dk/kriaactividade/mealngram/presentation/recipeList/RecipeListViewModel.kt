@@ -20,7 +20,6 @@ data class RecipeListUiData(
     val showButton: Boolean = false,
     val showProgress: Boolean = false,
     val progressValue: Int = 0,
-    val recipeRoomItem: List<RecipeRoomItem> = listOf(),
     val recipes: List<RecipeItem> = listOf(),
     val completeSelection: MutableList<RecipesDetails> = mutableListOf()
 )
@@ -28,7 +27,6 @@ data class RecipeListUiData(
 sealed interface RecipeListUiState {
     object Loading : RecipeListUiState
     object Error : RecipeListUiState
-    data class SaveCache(val uiData: RecipeListUiData) : RecipeListUiState
     data class Success(val uiData: RecipeListUiData) : RecipeListUiState
     data class CompleteSelection(val complete: RecipeListUiData) : RecipeListUiState
 }
@@ -96,6 +94,7 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
                             .forEach { dateLocal -> recipeLocalDate = dateLocal.dateInserted }
 
                         if (recipeLocalDate?.let { getCurrentDateString(it) } != getCurrentDateString(getCurrentDate())){
+                            room.deleteAllRecipes()
                             room.insertList(recipeLocal)
                         }
                     }

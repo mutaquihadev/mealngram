@@ -22,7 +22,7 @@ interface RecipeDAO {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertList(listRecipe: List<RecipeRoomItem>)
 
-//    @Query("DELETE from table_recipe WHERE recipe = :recipeId")
-//    suspend fun removeRecipe(recipeId: Int)
+    @Query("DELETE from table_recipe")
+    suspend fun deleteAllRecipes()
 
 }
