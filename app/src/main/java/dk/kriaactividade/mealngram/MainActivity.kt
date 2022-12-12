@@ -34,7 +34,8 @@ class MainActivity : AppCompatActivity() {
         navController.addOnDestinationChangedListener { _, destination, _ ->
             if (destination.id == R.id.navigation_login ||
                 destination.id == R.id.navigation_recipe_details ||
-                destination.id == R.id.navigation_register) {
+                destination.id == R.id.navigation_register ||
+                    destination.id == R.id.navigation_favorite) {
                 binding.navView.gone()
             } else {
                 binding.navView.visible()

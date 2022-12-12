@@ -30,6 +30,10 @@ class ProfileFragment : Fragment() {
             viewModel.logout()
         }
 
+        binding.goToFavorites.setOnClickListener {
+            findNavController().navigate(ProfileFragmentDirections.actionNavigationProfileToNavigationFavorite())
+        }
+
 
         viewModel.logoutSuccess.observe(viewLifecycleOwner) {
             if (it) {

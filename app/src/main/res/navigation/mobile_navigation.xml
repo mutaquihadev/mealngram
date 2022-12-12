@@ -69,5 +69,15 @@
         <action
             android:id="@+id/action_navigation_profile_to_navigation_login"
             app:destination="@id/navigation_login" />
+        <action
+            android:id="@+id/action_navigation_profile_to_navigation_favorite"
+            app:destination="@id/navigation_favorite" />
     </fragment>
+
+    <fragment
+        android:id="@+id/navigation_favorite"
+        android:name="dk.kriaactividade.mealngram.presentation.favorite.FavoriteFragment"
+        android:label="Favorite"
+        tools:layout="@layout/fragment_favorite"
+        />
 </navigation>
