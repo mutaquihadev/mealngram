@@ -8,8 +8,11 @@ import coil.load
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import dk.kriaactividade.mealngram.R
+import dk.kriaactividade.mealngram.presentation.favorite.selectFavorite.SelectFavoriteItem
+import dk.kriaactividade.mealngram.presentation.favorite.selectFavorite.SelectFavoriteRecipesViewActions
 import dk.kriaactividade.mealngram.presentation.recipeList.RecipeListViewModelItemActions
 import dk.kriaactividade.mealngram.presentation.recipeList.SelectedChipState
+import dk.kriaactividade.mealngram.presentation.utils.visible
 
 @BindingAdapter("imageUrl")
 fun ImageView.loadImage(url: String) {
@@ -21,6 +24,12 @@ fun View.isVisible(isVisible: Boolean) {
     this.isVisible = isVisible
 }
 
+@BindingAdapter(value = ["bind:getId", "bind:onGetId"])
+fun ImageView.favorite(selectId:Int,actions: SelectFavoriteRecipesViewActions){
+    this.setOnClickListener {
+        actions.onFavoriteItem(selectId)
+    }
+}
 
 @BindingAdapter(value = ["bind:selectableDays", "bind:onDaySelected"])
 fun ChipGroup.setSelectableDays(
@@ -39,7 +48,11 @@ fun ChipGroup.setSelectableDays(
         chip.isEnabled = chipState.isSelectable
 
         chip.setOnClickListener {
-            actions.onDaySelected(date = chipState.date, recipeId = chipState.id, weekDay = chipState.week)
+            actions.onDaySelected(
+                date = chipState.date,
+                recipeId = chipState.id,
+                weekDay = chipState.week
+            )
         }
     }
 }

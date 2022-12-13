@@ -1,5 +1,6 @@
 package dk.kriaactividade.mealngram.presentation.utils
 
+import android.content.Context
 import android.view.View
 
     fun View.visible() {
