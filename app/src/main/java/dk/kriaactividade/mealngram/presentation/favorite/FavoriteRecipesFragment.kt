@@ -26,6 +26,8 @@ class FavoriteRecipesFragment : Fragment() {
     ): View {
         binding = FragmentFavoriteBinding.inflate(layoutInflater)
 
+        viewModel.handleGetAllRecipes()
+
         val favoriteRecipesAdapter = FavoriteRecipesAdapter()
         binding.rvRecipesFavorites.apply {
             adapter = favoriteRecipesAdapter
@@ -47,8 +49,4 @@ class FavoriteRecipesFragment : Fragment() {
         return binding.root
     }
 
-    override fun onResume() {
-        super.onResume()
-        viewModel.handleGetAllRecipes()
-    }
 }

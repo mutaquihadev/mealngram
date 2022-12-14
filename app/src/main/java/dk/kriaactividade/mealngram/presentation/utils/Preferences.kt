@@ -9,20 +9,19 @@ object Preferences {
     private var prefs: SharedPreferences = RecipesApplication().getContext().getSharedPreferences(
         "settings", MODE_PRIVATE
     )
+    private var listRecipeID: MutableSet<String> = hashSetOf()
 
-    fun getRecipeListId(): MutableList<String>?{
-        val listRecipeID: MutableSet<String>? = prefs.getStringSet("ListInt", null)
-       return listRecipeID?.let { ArrayList(it) }
+    fun getRecipeListId(): MutableList<String> {
+        return ArrayList(listRecipeID)
     }
 
-    fun setRecipeListId(recipeId:MutableList<Int>){
-        val listRecipeID:MutableSet<String> = hashSetOf()
+    fun setRecipeListId(recipeId: MutableList<Int>) {
         listRecipeID.addAll(listOf(recipeId.toString()))
         prefs.edit().putStringSet("ListInt", listRecipeID).apply()
     }
 
-    fun removeRecipeListId(){
-        prefs.edit().remove("ListInt").apply()
+    fun removeRecipeListId() {
+        prefs.edit().remove("ListInt").clear().apply()
     }
 
 }

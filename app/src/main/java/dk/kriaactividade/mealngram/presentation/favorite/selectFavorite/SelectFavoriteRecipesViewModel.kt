@@ -6,6 +6,7 @@ import dk.kriaactividade.mealngram.data.repository.RecipesRepository
 import dk.kriaactividade.mealngram.helpers.DataState
 import dk.kriaactividade.mealngram.presentation.recipeList.RecipeItem
 import dk.kriaactividade.mealngram.presentation.utils.Preferences
+import dk.kriaactividade.mealngram.presentation.utils.convertStringForInt
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -47,16 +48,19 @@ class SelectFavoriteRecipesViewModel @Inject constructor(private val repository:
                 _uiState.value = SelectFavoriteUiState.Loading
             }
             is DataState.Data -> {
+                var idPrefs = 0
+                Preferences.getRecipeListId().forEach { idPrefs = it.convertStringForInt() }
                 val selectedFavorite = state.data.map { recipeItem ->
+                    val isFavorite = idPrefs == recipeItem.id
                     SelectFavoriteItem(
                         id = recipeItem.id,
                         name = recipeItem.name,
                         description = recipeItem.description,
                         image = recipeItem.image,
-                        ingredients = recipeItem.ingredients
+                        ingredients = recipeItem.ingredients,
+                        isFavorite = isFavorite
                     )
                 }
-
                 _uiState.value =
                     SelectFavoriteUiState.Success(uiData = SelectFavoriteUiData(selectedFavorites = selectedFavorite))
             }
@@ -67,7 +71,7 @@ class SelectFavoriteRecipesViewModel @Inject constructor(private val repository:
         uiState.value.let { state ->
             when (state) {
                 is SelectFavoriteUiState.Success -> {
-                    val favoriteList = state.uiData.selectedFavorites.map {
+                    var favoriteList = state.uiData.selectedFavorites.map {
                         val isFavoriteUpdated = if (it.id == favoriteRecipeId) {
                             !it.isFavorite
                         } else {
@@ -88,10 +92,10 @@ class SelectFavoriteRecipesViewModel @Inject constructor(private val repository:
                             favoriteRecipeIds.add(favoriteItem.id)
                             Preferences.removeRecipeListId()
                             Preferences.setRecipeListId(favoriteRecipeIds)
+                            favoriteRecipeIds.clear()
                         }
 
                     }
-
 
                     _uiState.value = SelectFavoriteUiState.Success(
                         uiData = SelectFavoriteUiData(selectedFavorites = favoriteList)

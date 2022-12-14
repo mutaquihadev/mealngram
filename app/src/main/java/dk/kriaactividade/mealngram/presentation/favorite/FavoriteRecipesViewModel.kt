@@ -6,12 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dk.kriaactividade.mealngram.database.room.RecipeRoomItem
 import dk.kriaactividade.mealngram.database.room.RoomRepository
-import dk.kriaactividade.mealngram.presentation.favorite.selectFavorite.SelectFavoriteItem
-import dk.kriaactividade.mealngram.presentation.recipeList.RecipeListUiData
-import dk.kriaactividade.mealngram.presentation.recipeList.RecipeListUiState
 import dk.kriaactividade.mealngram.presentation.utils.Preferences
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import dk.kriaactividade.mealngram.presentation.utils.convertStringForInt
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
@@ -28,10 +24,12 @@ class FavoriteRecipesViewModel @Inject constructor(private val roomRepository: R
 
 
     fun handleGetAllRecipes() {
+        if (listFavorites.isNotEmpty()){
+            listFavorites.clear()
+        }
         viewModelScope.launch {
-            Preferences.getRecipeListId()?.map {
-              val stringFormat = it.replace("[", "").replace(",", "").replace("]", "");
-                roomRepository.getRecipe(stringFormat.toInt()).map { recipeItem ->
+            Preferences.getRecipeListId().map {
+                roomRepository.getRecipe(it.convertStringForInt()).map { recipeItem ->
                     val selectFavoriteItem = RecipeRoomItem(
                         id = recipeItem.id,
                         name = recipeItem.name,
