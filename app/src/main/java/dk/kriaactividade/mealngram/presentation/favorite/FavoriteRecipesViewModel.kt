@@ -28,7 +28,7 @@ class FavoriteRecipesViewModel @Inject constructor(private val roomRepository: R
             listFavorites.clear()
         }
         viewModelScope.launch {
-            Preferences.getRecipeListId().map {
+            Preferences.getRecipeListId()?.map {
                 roomRepository.getRecipe(it.convertStringForInt()).map { recipeItem ->
                     val selectFavoriteItem = RecipeRoomItem(
                         id = recipeItem.id,

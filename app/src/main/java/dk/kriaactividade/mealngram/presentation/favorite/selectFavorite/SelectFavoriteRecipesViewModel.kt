@@ -49,7 +49,7 @@ class SelectFavoriteRecipesViewModel @Inject constructor(private val repository:
             }
             is DataState.Data -> {
                 var idPrefs = 0
-                Preferences.getRecipeListId().forEach { idPrefs = it.convertStringForInt() }
+                Preferences.getRecipeListId()?.forEach { idPrefs = it.convertStringForInt() }
                 val selectedFavorite = state.data.map { recipeItem ->
                     val isFavorite = idPrefs == recipeItem.id
                     SelectFavoriteItem(
