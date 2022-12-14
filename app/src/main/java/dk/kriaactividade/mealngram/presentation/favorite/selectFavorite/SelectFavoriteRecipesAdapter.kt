@@ -37,7 +37,7 @@ class SelectFavoriteRecipesAdapter(private val actions: SelectFavoriteRecipesVie
             oldItem: SelectFavoriteItem,
             newItem: SelectFavoriteItem
         ): Boolean {
-            return newItem.name == oldItem.name
+            return newItem.id == oldItem.id
         }
 
         override fun areContentsTheSame(

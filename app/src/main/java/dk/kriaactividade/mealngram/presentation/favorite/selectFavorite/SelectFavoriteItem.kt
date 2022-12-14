@@ -8,7 +8,3 @@ data class SelectFavoriteItem(
     val isFavorite: Boolean = false,
     val ingredients: List<String>
 )
-
-data class DataStoreSaveId(
-    val id: Int
-)

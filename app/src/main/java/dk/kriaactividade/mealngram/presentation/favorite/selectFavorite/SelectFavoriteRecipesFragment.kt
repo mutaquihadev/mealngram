@@ -1,15 +1,9 @@
 package dk.kriaactividade.mealngram.presentation.favorite.selectFavorite
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.intPreferencesKey
-import androidx.datastore.preferences.preferencesDataStore
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -23,7 +17,6 @@ class SelectFavoriteRecipesFragment : Fragment() {
     private lateinit var binding: FragmentSelectFavoriteRecipesBinding
     @Inject
     lateinit var viewModel: SelectFavoriteRecipesViewModel
-    // At the top level of your kotlin file:
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,7 +41,6 @@ class SelectFavoriteRecipesFragment : Fragment() {
 
             }
         }
-
         return binding.root
     }
 

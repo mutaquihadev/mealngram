@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import dk.kriaactividade.mealngram.data.repository.RecipesRepository
 import dk.kriaactividade.mealngram.helpers.DataState
 import dk.kriaactividade.mealngram.presentation.recipeList.RecipeItem
-import dk.kriaactividade.mealngram.presentation.utils.DataStore
+import dk.kriaactividade.mealngram.presentation.utils.Preferences
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -28,8 +28,7 @@ interface SelectFavoriteRecipesViewActions {
 class SelectFavoriteRecipesViewModel @Inject constructor(private val repository: RecipesRepository) :
     ViewModel(), SelectFavoriteRecipesViewActions {
 
-    private var isFavorite = false
-    private val dataStore = DataStore()
+    private val favoriteRecipeIds = mutableListOf<Int>()
 
     private val _uiState: MutableStateFlow<SelectFavoriteUiState> =
         MutableStateFlow(SelectFavoriteUiState.Loading)
@@ -65,47 +64,40 @@ class SelectFavoriteRecipesViewModel @Inject constructor(private val repository:
     }
 
     override fun onFavoriteItem(favoriteRecipeId: Int) {
-        viewModelScope.launch {
-            dataStore.saveRecipeId(DataStoreSaveId(id = favoriteRecipeId))
-            dataStore.getUserFromPreferencesStore().collect(::handleGetFavorite)
-        }
-    }
-
-    private fun handleGetFavorite(dataSave: DataStoreSaveId) {
-        isFavorite = !isFavorite
         uiState.value.let { state ->
             when (state) {
                 is SelectFavoriteUiState.Success -> {
-                    val list = state.uiData.selectedFavorites.map {
-                        if (it.id == dataSave.id) {
-                            SelectFavoriteItem(
-                                id = it.id,
-                                name = it.name,
-                                description = it.description,
-                                ingredients = it.ingredients,
-                                image = it.image,
-                                isFavorite = true
-                            )
+                    val favoriteList = state.uiData.selectedFavorites.map {
+                        val isFavoriteUpdated = if (it.id == favoriteRecipeId) {
+                            !it.isFavorite
                         } else {
-                            SelectFavoriteItem(
-                                id = it.id,
-                                name = it.name,
-                                description = it.description,
-                                ingredients = it.ingredients,
-                                image = it.image,
-                                isFavorite = false
-                            )
+                            it.isFavorite
                         }
+                        SelectFavoriteItem(
+                            id = it.id,
+                            name = it.name,
+                            description = it.description,
+                            ingredients = it.ingredients,
+                            image = it.image,
+                            isFavorite = isFavoriteUpdated
+                        )
                     }
+
+                    favoriteList.forEach { favoriteItem ->
+                        if (favoriteItem.isFavorite) {
+                            favoriteRecipeIds.add(favoriteItem.id)
+                            Preferences.removeRecipeListId()
+                            Preferences.setRecipeListId(favoriteRecipeIds)
+                        }
+
+                    }
+
+
                     _uiState.value = SelectFavoriteUiState.Success(
-                        uiData = SelectFavoriteUiData(selectedFavorites = list)
+                        uiData = SelectFavoriteUiData(selectedFavorites = favoriteList)
                     )
-
-
                 }
-                else -> {}
             }
         }
     }
-
 }
