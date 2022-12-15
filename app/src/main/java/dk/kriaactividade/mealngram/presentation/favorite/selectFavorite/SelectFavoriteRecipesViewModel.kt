@@ -90,9 +90,8 @@ class SelectFavoriteRecipesViewModel @Inject constructor(private val repository:
                     favoriteList.forEach { favoriteItem ->
                         if (favoriteItem.isFavorite) {
                             favoriteRecipeIds.add(favoriteItem.id)
-                            Preferences.removeRecipeListId()
-                            Preferences.setRecipeListId(favoriteRecipeIds)
-                            favoriteRecipeIds.clear()
+                            Preferences.setRecipeListId(favoriteItem.id)
+                            favoriteRecipeIds.remove(favoriteItem.id)
                         }
 
                     }
