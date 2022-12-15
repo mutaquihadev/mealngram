@@ -17,7 +17,9 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
             android:layout_marginTop="8dp"
-            app:cardCornerRadius="20sp"
+            app:cardElevation="4dp"
+            app:cardCornerRadius="10dp"
+            app:cardUseCompatPadding="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -26,27 +28,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <ImageView
-                    android:id="@+id/image_recipe_selected"
-                    android:src="@drawable/prato_de_comida_mod"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:scaleType="fitXY"
-                    app:imageUrl="@{recipeDetails.image}"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
                 <TextView
                     android:id="@+id/text_recipe_selected"
                     android:layout_width="0dp"
+                    android:textSize="24sp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:text="@{recipeDetails.name}"
                     android:textColor="@color/color_default"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/image_recipe_selected"
                     app:layout_constraintTop_toTopOf="parent" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>
     </androidx.constraintlayout.widget.ConstraintLayout>

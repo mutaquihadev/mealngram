@@ -33,7 +33,7 @@ class RecipesSelectedAdapter :
             oldItem: RecipesSelectedItem,
             newItem: RecipesSelectedItem
         ): Boolean {
-            return newItem.name == oldItem.name
+            return newItem.id == oldItem.id
         }
 
         override fun areContentsTheSame(

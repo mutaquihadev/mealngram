@@ -1,6 +1,7 @@
 package dk.kriaactividade.mealngram.presentation.utils
 
 import android.view.View
+import java.util.*
 
 fun View.visible() {
     this.visibility = View.VISIBLE

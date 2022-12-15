@@ -36,25 +36,13 @@ class RecipesSelectedFragment : Fragment() {
             layoutManager = GridLayoutManager(context,1)
         }
 
-        lifecycleScope.launch {
-            viewModel.uiState.collect{ uiState ->
-                when(uiState){
-                    is RecipeListDetailsUiState.Error -> {
+        viewModel.getCurrentWeek()
 
-                    }
-                    is RecipeListDetailsUiState.Loading -> {
-                        binding.loading.visible()
-                    }
-                    is RecipeListDetailsUiState.Success -> {
-                        binding.loading.gone()
-                        binding.rvRecipesSelected.visible()
-                        recipesSelectedAdapter.submitList(uiState.uiData.recipes)
-                    }
-                }
+        viewModel.listDateWeek.observe(viewLifecycleOwner){
+            it.map {
 
             }
         }
-
         return binding.root
     }
 }
