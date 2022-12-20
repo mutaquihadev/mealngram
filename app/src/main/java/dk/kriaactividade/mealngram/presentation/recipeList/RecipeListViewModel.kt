@@ -41,7 +41,6 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
     RecipeListViewModelItemActions {
     @Inject
     lateinit var room: RoomRepository
-    private var isEditMode: Boolean = false
     private var valueProgress: Int = 0
     private var updatedSelectedDays = listOf<SelectedChipState>()
     private var showButton = false
@@ -62,6 +61,7 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
         viewModelScope.launch {
             repository.getAllRecipes().collect(::handleGetAllRecipes)
             room.allRecipes()
+            updateEditMode()
         }
     }
 
@@ -113,8 +113,7 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
         return simpleDateFormat.format(date)
     }
 
-    fun updateEditMode() {
-        isEditMode = !isEditMode
+    private fun updateEditMode() {
         _uiState.value.let {
             when (it) {
                 RecipeListUiState.Error -> {}
@@ -127,7 +126,7 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
                             description = recipe.description,
                             ingredients = recipe.ingredients,
                             image = recipe.image,
-                            isSelectionMode = isEditMode,
+                            isSelectionMode = true,
                             selectedDays = recipe.selectedDays
                         )
                     }
@@ -135,7 +134,7 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
                     _uiState.value = RecipeListUiState.Success(
                         uiData = RecipeListUiData(
                             recipes = updatedRecipes,
-                            showProgress = isEditMode
+                            showProgress = true
                         )
                     )
                 }

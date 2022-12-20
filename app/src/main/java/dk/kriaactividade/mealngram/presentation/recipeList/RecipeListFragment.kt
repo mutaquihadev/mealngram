@@ -38,7 +38,6 @@ class RecipeListFragment : Fragment() {
             adapter = recipesAdapter
         }
 
-        binding.fabAdd.setOnClickListener { viewModel.updateEditMode() }
 
         lifecycleScope.launch {
             viewModel.uiState.collect { uiState ->
