@@ -32,12 +32,11 @@ class MainActivity : AppCompatActivity() {
         navView.setupWithNavController(navController)
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            if (destination.id == R.id.navigation_login ||
-                destination.id == R.id.navigation_recipe_details ||
-                destination.id == R.id.navigation_register) {
-                binding.navView.gone()
-            } else {
+            if (destination.id == R.id.navigation_home ||
+                    destination.id == R.id.navigation_profile) {
                 binding.navView.visible()
+            } else {
+                binding.navView.gone()
             }
         }
     }
