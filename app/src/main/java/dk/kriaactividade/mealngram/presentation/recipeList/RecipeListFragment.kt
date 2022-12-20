@@ -57,11 +57,7 @@ class RecipeListFragment : Fragment() {
                     }
                     is RecipeListUiState.CompleteSelection -> {
                         binding.buttonOk.setOnClickListener {
-                            findNavController().navigate(
-                                RecipeListFragmentDirections.goToMyRecipes(
-                                    uiState.complete.completeSelection.toTypedArray()
-                                )
-                            )
+
                         }
                     }
                 }

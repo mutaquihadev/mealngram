@@ -22,20 +22,18 @@
         android:label="Register"
         tools:layout="@layout/fragment_register"
         >
+
         <action
-            android:id="@+id/action_navigation_register_to_navigation_home"
-            app:destination="@id/navigation_home" />
+            android:id="@+id/action_navigation_register_to_navigation_recipe_of_day"
+            app:destination="@id/navigation_recipe_of_day" />
     </fragment>
 
     <fragment
         android:id="@+id/navigation_home"
         android:name="dk.kriaactividade.mealngram.presentation.recipeList.RecipeListFragment"
-        android:label="@string/title_home"
+        android:label="@string/title_recipe_list"
         tools:layout="@layout/fragment_recipe_list" >
-        <action
-            android:id="@+id/go_to_my_recipes"
-            app:destination="@id/navigation_recipe_details">
-        </action>
+
     </fragment>
 
     <fragment
@@ -53,12 +51,16 @@
         android:id="@+id/navigation_dashboard"
         android:name="dk.kriaactividade.mealngram.presentation.recipesSelected.RecipesSelectedFragment"
         android:label="Dash"
-        tools:layout="@layout/fragment_recipes_selected" />
+        tools:layout="@layout/fragment_recipes_selected" >
+        <action
+            android:id="@+id/action_navigation_dashboard_to_navigation_home"
+            app:destination="@id/navigation_home" />
+    </fragment>
 
     <fragment
-        android:id="@+id/navigation_notifications"
+        android:id="@+id/navigation_recipe_of_day"
         android:name="dk.kriaactividade.mealngram.presentation.recipeDay.RecipeOfDayFragment"
-        android:label="@string/title_notifications"
+        android:label="@string/title_home"
         tools:layout="@layout/fragment_recipe_of_day" />
 
     <fragment

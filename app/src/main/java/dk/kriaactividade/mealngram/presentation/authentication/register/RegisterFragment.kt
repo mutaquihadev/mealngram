@@ -67,7 +67,7 @@ class RegisterFragment : Fragment() {
         viewModel.successRegister.observe(viewLifecycleOwner) {
             it.keys.map { success->
                 if (success){
-                    findNavController().navigate(RegisterFragmentDirections.actionNavigationRegisterToNavigationHome())
+                    findNavController().navigate(RegisterFragmentDirections.actionNavigationRegisterToNavigationRecipeOfDay())
                 } else {
                     Toast.makeText(requireContext(), it[success], Toast.LENGTH_SHORT).show()
                 }

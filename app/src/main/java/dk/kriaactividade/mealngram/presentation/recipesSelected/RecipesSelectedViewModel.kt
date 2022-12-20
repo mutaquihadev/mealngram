@@ -7,9 +7,12 @@ import androidx.lifecycle.ViewModel
 import dk.kriaactividade.mealngram.data.repository.RecipesRepository
 import dk.kriaactividade.mealngram.helpers.DataState
 import dk.kriaactividade.mealngram.helpers.HandleGetState
+import dk.kriaactividade.mealngram.presentation.utils.formatDateForLiteral
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import java.text.SimpleDateFormat
 import java.util.*
+import java.util.logging.SimpleFormatter
 import javax.inject.Inject
 import kotlin.collections.HashMap
 import kotlin.collections.HashSet
@@ -51,21 +54,7 @@ class RecipesSelectedViewModel @Inject constructor(private val repository: Recip
         }
     }
 
-    private fun getCurrent(weekInt: Int): HashMap<Date, Date> {
-        val daysOnWeek = hashMapOf<Date,Date>()
-        val data = Calendar.getInstance()
-        data.firstDayOfWeek = Calendar.SUNDAY
-        data.set(Calendar.WEEK_OF_YEAR, weekInt)
-
-        data.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY)
-        val initial = data.time
-        data.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY)
-        val final = data.time
-        daysOnWeek[initial] = final
-        return daysOnWeek
-    }
-
-     fun getCurrentWeek(){
+    fun getCurrentWeek(){
         val listDaysOnWeek = mutableListOf<HashMap<Date,Date>>()
         val calendar = Calendar.getInstance()
         val week = calendar.get(Calendar.WEEK_OF_YEAR)
@@ -75,5 +64,20 @@ class RecipesSelectedViewModel @Inject constructor(private val repository: Recip
         }
         _listDateWeek.postValue(listDaysOnWeek)
     }
+
+    private fun getCurrent(weekInt: Int): HashMap<Date, Date> {
+        val daysOnWeek = hashMapOf<Date,Date>()
+        val data = Calendar.getInstance()
+        data.firstDayOfWeek = Calendar.MONDAY
+        data.set(Calendar.WEEK_OF_YEAR, weekInt)
+        data.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
+        val initial = data.time
+        data.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY)
+        val final = data.time
+        daysOnWeek[initial] = final
+        return daysOnWeek
+    }
+
+
 
 }

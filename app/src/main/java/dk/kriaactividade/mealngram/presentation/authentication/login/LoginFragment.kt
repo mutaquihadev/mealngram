@@ -38,7 +38,7 @@ class LoginFragment : Fragment() {
         viewModel.loginSuccess.observe(viewLifecycleOwner) {
             it.keys.map {isSuccess ->
                 if (isSuccess) {
-                    findNavController().navigate(R.id.navigation_home)
+                    findNavController().navigate(R.id.navigation_recipe_of_day)
                 } else {
                     Toast.makeText(
                         requireContext(),
@@ -54,7 +54,7 @@ class LoginFragment : Fragment() {
     private fun observerUserLogged(){
         viewModel.userLogged.observe(viewLifecycleOwner){
             if (it){
-                findNavController().navigate(R.id.navigation_home)
+                findNavController().navigate(R.id.navigation_recipe_of_day)
             }
         }
     }

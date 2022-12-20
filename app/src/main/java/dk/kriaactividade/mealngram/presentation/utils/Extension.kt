@@ -1,6 +1,7 @@
 package dk.kriaactividade.mealngram.presentation.utils
 
 import android.view.View
+import java.text.SimpleDateFormat
 import java.util.*
 
 fun View.visible() {
@@ -28,4 +29,13 @@ fun String.convertStringForInt(): Int {
         error.printStackTrace()
         -1
     }
+}
+
+private fun getStringForFormat(value: Date):String{
+    val simpleDateFormat = SimpleDateFormat("dd MMM")
+    return simpleDateFormat.format(value)
+}
+
+fun Date.formatDateForLiteral():String{
+    return getStringForFormat(this)
 }
