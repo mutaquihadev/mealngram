@@ -7,7 +7,8 @@ import java.util.*
 
 @Entity(tableName = "table_recipe")
 data class RecipeRoomItem(
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
+    val roomId: Int = 0,
     val id: Int,
     val name: String,
     val description: String,
@@ -18,7 +19,8 @@ data class RecipeRoomItem(
 
 @Entity(tableName = "table_recipe_week")
 data class RecipeRoomWeekItem(
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
+    val roomId: Int = 0,
     val id: Int,
     val name: String,
     val description: String,

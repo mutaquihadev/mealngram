@@ -7,6 +7,7 @@ import dk.kriaactividade.mealngram.data.domain.RecipesDetails
 import dk.kriaactividade.mealngram.data.domain.WEEK
 import dk.kriaactividade.mealngram.data.repository.RecipesRepository
 import dk.kriaactividade.mealngram.database.room.RecipeRoomItem
+import dk.kriaactividade.mealngram.database.room.RecipeRoomWeekItem
 import dk.kriaactividade.mealngram.database.room.RoomRepository
 import dk.kriaactividade.mealngram.helpers.DataState
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,7 +22,7 @@ data class RecipeListUiData(
     val showProgress: Boolean = false,
     val progressValue: Int = 0,
     val recipes: List<RecipeItem> = listOf(),
-    val completeSelection: MutableList<RecipesDetails> = mutableListOf()
+    val completeSelection: MutableList<RecipeRoomWeekItem> = mutableListOf()
 )
 
 sealed interface RecipeListUiState {
@@ -44,7 +45,7 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
     private var valueProgress: Int = 0
     private var updatedSelectedDays = listOf<SelectedChipState>()
     private var showButton = false
-    private val recipeListLocal = mutableListOf<RecipesDetails>()
+    private val recipeListLocal = mutableListOf<RecipeRoomWeekItem>()
 
     private val _uiState: MutableStateFlow<RecipeListUiState> =
         MutableStateFlow(RecipeListUiState.Loading)
@@ -236,12 +237,13 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
     }
 
     private fun goToCompleteSelection(selectedItem: RecipeItem, removeIt: Boolean) {
-        val recipeDetails = RecipesDetails(
+        val recipeDetails = RecipeRoomWeekItem(
             id = selectedItem.id,
             name = selectedItem.name,
             description = selectedItem.description,
             ingredients = selectedItem.ingredients,
             image = selectedItem.image,
+            dateWeek = getCurrentDate()
         )
 
         if (removeIt) {

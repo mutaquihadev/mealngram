@@ -8,11 +8,12 @@ import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import coil.load
 import dk.kriaactividade.mealngram.data.domain.RecipesDetails
+import dk.kriaactividade.mealngram.database.room.RecipeRoomWeekItem
 import dk.kriaactividade.mealngram.databinding.ItemViewPagerRecipesSelectedBinding
 
 class RecipesSelectedViewPagerAdapter(
     private val context: Context,
-    private val listRecipesSelected: List<RecipesDetails>
+    private val listRecipesSelected: List<RecipeRoomWeekItem>
 ) : PagerAdapter() {
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
@@ -24,7 +25,7 @@ class RecipesSelectedViewPagerAdapter(
         return itemView.root
     }
 
-    private fun setupCard(layout: ItemViewPagerRecipesSelectedBinding, item:RecipesDetails){
+    private fun setupCard(layout: ItemViewPagerRecipesSelectedBinding, item:RecipeRoomWeekItem){
             layout.imageRecipes.load(item.image)
         layout.titleRecipe.text = item.name
         layout.descriptionDetails.text = item.description

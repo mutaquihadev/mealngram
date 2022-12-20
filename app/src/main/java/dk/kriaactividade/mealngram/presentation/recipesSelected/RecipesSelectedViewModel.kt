@@ -4,12 +4,16 @@ import android.provider.ContactsContract.Data
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dk.kriaactividade.mealngram.data.repository.RecipesRepository
+import dk.kriaactividade.mealngram.database.room.RecipeRoomWeekItem
+import dk.kriaactividade.mealngram.database.room.RecipeWeekRepository
 import dk.kriaactividade.mealngram.helpers.DataState
 import dk.kriaactividade.mealngram.helpers.HandleGetState
 import dk.kriaactividade.mealngram.presentation.utils.formatDateForLiteral
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.logging.SimpleFormatter
@@ -27,7 +31,7 @@ sealed interface RecipeListDetailsUiState {
     data class Success(val uiData: RecipeListDetailsUiData) : RecipeListDetailsUiState
 }
 
-class RecipesSelectedViewModel @Inject constructor(private val repository: RecipesRepository) :
+class RecipesSelectedViewModel @Inject constructor(private val repository: RecipeWeekRepository) :
     ViewModel(), HandleGetState<List<RecipesSelectedItem>> {
 
     private val recipesSelected = mutableListOf<RecipesSelectedItem>()
@@ -52,6 +56,10 @@ class RecipesSelectedViewModel @Inject constructor(private val repository: Recip
             }
             is DataState.Loading -> _uiState.value = RecipeListDetailsUiState.Loading
         }
+    }
+
+    suspend fun getRoomList(): List<RecipeRoomWeekItem> {
+        return repository.allRecipes()
     }
 
     fun getCurrentWeek(){

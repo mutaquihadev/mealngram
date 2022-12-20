@@ -1,6 +1,8 @@
 package dk.kriaactividade.mealngram.presentation.utils
 
 import android.view.View
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -38,4 +40,11 @@ private fun getStringForFormat(value: Date):String{
 
 fun Date.formatDateForLiteral():String{
     return getStringForFormat(this)
+}
+
+fun Fragment.getNavigationResult(key: String = "result") =
+    findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>(key)
+
+fun Fragment.setNavigationResult(result: Boolean, key: String = "result") {
+    findNavController().previousBackStackEntry?.savedStateHandle?.set(key, result)
 }

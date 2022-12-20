@@ -41,20 +41,19 @@
         android:name="dk.kriaactividade.mealngram.presentation.recipeDetails.RecipeDetailsFragment"
         android:label="@string/title_dashboard"
         tools:layout="@layout/fragment_recipe_details"
-        >
-        <argument
-            android:name="detailsRecipes"
-            app:argType="dk.kriaactividade.mealngram.data.domain.RecipesDetails[]" />
-    </fragment>
+        />
 
     <fragment
-        android:id="@+id/navigation_dashboard"
+        android:id="@+id/navigation_recipe_selected"
         android:name="dk.kriaactividade.mealngram.presentation.recipesSelected.RecipesSelectedFragment"
-        android:label="Dash"
+        android:label="Recipe Selected"
         tools:layout="@layout/fragment_recipes_selected" >
         <action
-            android:id="@+id/action_navigation_dashboard_to_navigation_home"
+            android:id="@+id/action_navigation_recipe_selected_to_navigation_home"
             app:destination="@id/navigation_home" />
+        <action
+            android:id="@+id/action_navigation_recipe_selected_to_navigation_recipe_details"
+            app:destination="@id/navigation_recipe_details" />
     </fragment>
 
     <fragment
@@ -76,7 +75,7 @@
             app:destination="@id/navigation_favorite" />
         <action
             android:id="@+id/action_navigation_profile_to_navigation_dashboard"
-            app:destination="@id/navigation_dashboard" />
+            app:destination="@id/navigation_recipe_selected" />
     </fragment>
 
     <fragment
