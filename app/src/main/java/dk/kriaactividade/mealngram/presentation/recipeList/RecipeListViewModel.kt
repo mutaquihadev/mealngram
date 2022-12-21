@@ -208,9 +208,9 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
                     }
 
                     if (recipeId == selected.recipeId) {
-                        goToCompleteSelection(recipe, false)
+                        goToCompleteSelection(recipe, false,selected.date)
                     } else {
-                        goToCompleteSelection(recipe, true)
+                        goToCompleteSelection(recipe, true,selected.date)
                     }
 
 
@@ -236,14 +236,14 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
         }
     }
 
-    private fun goToCompleteSelection(selectedItem: RecipeItem, removeIt: Boolean) {
+    private fun goToCompleteSelection(selectedItem: RecipeItem, removeIt: Boolean, selectDate: Date) {
         val recipeDetails = RecipeRoomWeekItem(
             id = selectedItem.id,
             name = selectedItem.name,
             description = selectedItem.description,
             ingredients = selectedItem.ingredients,
             image = selectedItem.image,
-            dateWeek = getCurrentDate()
+            dateWeek = selectDate
         )
 
         if (removeIt) {
