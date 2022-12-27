@@ -4,16 +4,16 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dk.kriaactividade.mealngram.data.repository.RecipesRepository
-import dk.kriaactividade.mealngram.database.room.RecipeRoomWeekItem
+import dk.kriaactividade.mealngram.database.room.SelectableRecipe
 import java.util.*
 import javax.inject.Inject
 
 class RecipeOfDayViewModel @Inject constructor(private val repository: RecipesRepository) :
     ViewModel() {
 
-    val currentRecipe: LiveData<RecipeRoomWeekItem>
+    val currentRecipe: LiveData<SelectableRecipe>
     get() = _currentRecipe
-    private val _currentRecipe = MutableLiveData<RecipeRoomWeekItem>()
+    private val _currentRecipe = MutableLiveData<SelectableRecipe>()
 
 //    init {
 //        viewModelScope.launch {

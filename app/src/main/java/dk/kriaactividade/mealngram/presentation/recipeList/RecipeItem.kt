@@ -11,7 +11,6 @@ data class RecipeItem(
     val description: String,
     val ingredients: List<String>,
     val image: String,
-    val isSelectionMode: Boolean = false,
     val selectedDays: List<SelectedChipState>
 )
 

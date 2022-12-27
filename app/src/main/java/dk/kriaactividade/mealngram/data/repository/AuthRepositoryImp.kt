@@ -5,7 +5,7 @@ import com.google.firebase.auth.FirebaseAuth
 import javax.inject.Inject
 
 class AuthRepositoryImp @Inject constructor(private val auth:FirebaseAuth): AuthRepository{
-        override suspend fun getLogin(
+        override suspend fun login(
             activity: Activity,
             email: String,
             password: String,
@@ -19,8 +19,11 @@ class AuthRepositoryImp @Inject constructor(private val auth:FirebaseAuth): Auth
             }
     }
 
-    override suspend fun getIsLogged(onLogged: (Boolean) -> Unit) {
-        onLogged(auth.currentUser != null)
+    override suspend fun isLogged() = auth.currentUser != null
+
+
+    override suspend fun logout() {
+        auth.signOut()
     }
 
     override suspend fun registerUser(

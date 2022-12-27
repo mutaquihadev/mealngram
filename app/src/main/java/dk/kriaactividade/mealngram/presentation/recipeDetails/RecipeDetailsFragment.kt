@@ -10,13 +10,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
 import dk.kriaactividade.mealngram.R
-import dk.kriaactividade.mealngram.data.domain.RecipesDetails
-import dk.kriaactividade.mealngram.database.room.RecipeRoomWeekItem
+import dk.kriaactividade.mealngram.database.room.SelectableRecipe
 import dk.kriaactividade.mealngram.databinding.FragmentRecipeDetailsBinding
-import dk.kriaactividade.mealngram.presentation.recipeList.RecipeItem
-import dk.kriaactividade.mealngram.presentation.recipeList.RecipeListUiData
-import dk.kriaactividade.mealngram.presentation.recipeList.RecipeListUiState
-import dk.kriaactividade.mealngram.presentation.utils.Constants.RESULT_FROM_DETAILS
 import dk.kriaactividade.mealngram.presentation.utils.gone
 import dk.kriaactividade.mealngram.presentation.utils.visible
 import kotlinx.coroutines.launch
@@ -66,7 +61,7 @@ class RecipeDetailsFragment : Fragment() {
         }
     }
 
-    private fun setViewPager(listRecipes: List<RecipeRoomWeekItem>){
+    private fun setViewPager(listRecipes: List<SelectableRecipe>){
         binding.vpMyRecipes.adapter = RecipesSelectedViewPagerAdapter(requireContext(),
             listRecipes
         )

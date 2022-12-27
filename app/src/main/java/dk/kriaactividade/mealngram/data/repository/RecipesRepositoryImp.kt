@@ -3,7 +3,9 @@ package dk.kriaactividade.mealngram.data.repository
 import com.google.firebase.firestore.FirebaseFirestore
 import dk.kriaactividade.mealngram.data.domain.RecipeDTO
 import dk.kriaactividade.mealngram.database.RecipeDAO
+import dk.kriaactividade.mealngram.database.SelectableRecipeDAO
 import dk.kriaactividade.mealngram.database.room.RecipeEntity
+import dk.kriaactividade.mealngram.database.room.SelectableRecipe
 import dk.kriaactividade.mealngram.helpers.DataState
 import dk.kriaactividade.mealngram.helpers.LoadingState
 import dk.kriaactividade.mealngram.presentation.utils.isSameDay
@@ -15,36 +17,19 @@ import javax.inject.Inject
 
 class RecipesRepositoryImp @Inject constructor(
     private val database: FirebaseFirestore,
-    private val recipeDAO: RecipeDAO
+    private val recipeDAO: RecipeDAO,
+    private val selectableRecipeDAO: SelectableRecipeDAO
 ) :
     RecipesRepository {
 
-//    override suspend fun selectedRecipes(details: List<RecipesDetails>) {
-//        details.map { detail ->
-//            database.collection("selected-recipes").add(
-//                RecipesDetails(
-//                    id = detail.id,
-//                    name = detail.name,
-//                    description = detail.description,
-//                    image = detail.image,
-//                    day = detail.day,
-//                    dayOfWeek = detail.dayOfWeek,
-//                    ingredients = detail.ingredients
-//                )
-//            )
-//        }
-//    }
-//
-//    override suspend fun getSelectedRecipes(): Flow<DataState<List<RecipesSelectedItem>>> = flow {
-//        emit(DataState.Loading(loadingState = LoadingState.Loading))
-//
-//        val snapshot = database.collection(SELECTED_RECIPES).get().await()
-//        val recipes = snapshot.toObjects(Recipe::class.java)
-//
-//        val recipesSelectedItem = recipes.toRecipeSelectedItem()
-//        emit(DataState.Data(data = recipesSelectedItem))
-//    }
-//
+    override suspend fun selectedRecipes(selectableRecipes: List<SelectableRecipe>) {
+
+    }
+
+    override suspend fun getSelectedRecipes(): Flow<DataState<List<SelectableRecipe>>> = flow {
+
+    }
+
 
     override suspend fun getAllRecipes(): Flow<DataState<List<RecipeEntity>>> = flow {
         emit(DataState.Loading(loadingState = LoadingState.Loading))

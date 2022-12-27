@@ -35,10 +35,10 @@ class RecipesSelectedViewModel @Inject constructor(private val repository: Recip
         MutableStateFlow(RecipeListDetailsUiState.Loading)
     val uiState = _uiState.asStateFlow()
 
-    val listDateWeek: LiveData<MutableList<kotlin.collections.HashMap<Date, Date>>>
+    val listDateWeek: LiveData<MutableList<Pair<Date, Date>>>
         get() = _listDateWeek
     private val _listDateWeek =
-        MutableLiveData<MutableList<kotlin.collections.HashMap<Date, Date>>>()
+        MutableLiveData<MutableList<Pair<Date, Date>>>()
 
 
     override fun handleGetState(state: DataState<List<RecipesSelectedItem>>) {
@@ -65,7 +65,7 @@ class RecipesSelectedViewModel @Inject constructor(private val repository: Recip
 //    }
 
     private fun getCurrentWeek() {
-        val listDaysOnWeek = mutableListOf<HashMap<Date, Date>>()
+        val listDaysOnWeek = mutableListOf<Pair<Date, Date>>()
         val calendar = Calendar.getInstance()
         val week = calendar.get(Calendar.WEEK_OF_YEAR)
         val listWeek: List<Int> = listOf(0, 1, 2, 3)
@@ -75,8 +75,7 @@ class RecipesSelectedViewModel @Inject constructor(private val repository: Recip
         _listDateWeek.postValue(listDaysOnWeek)
     }
 
-    private fun getCurrent(weekInt: Int): HashMap<Date, Date> {
-        val daysOnWeek = hashMapOf<Date, Date>()
+    private fun getCurrent(weekInt: Int): Pair<Date, Date> {
         val data = Calendar.getInstance()
         data.firstDayOfWeek = Calendar.MONDAY
         data.set(Calendar.WEEK_OF_YEAR, weekInt)
@@ -84,8 +83,7 @@ class RecipesSelectedViewModel @Inject constructor(private val repository: Recip
         val initial = data.time
         data.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY)
         val final = data.time
-        daysOnWeek[initial] = final
-        return daysOnWeek
+        return Pair(initial,final)
     }
 
     fun convertDateForString(initialDate: Date, finalDate: Date): String {

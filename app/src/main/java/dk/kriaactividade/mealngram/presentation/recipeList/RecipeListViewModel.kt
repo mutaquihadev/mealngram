@@ -1,28 +1,26 @@
 package dk.kriaactividade.mealngram.presentation.recipeList
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dk.kriaactividade.mealngram.data.domain.RecipeDTO
 import dk.kriaactividade.mealngram.data.domain.WEEK
 import dk.kriaactividade.mealngram.data.repository.RecipesRepository
 import dk.kriaactividade.mealngram.database.room.RecipeEntity
-import dk.kriaactividade.mealngram.database.room.RecipeRoomWeekItem
+import dk.kriaactividade.mealngram.database.room.SelectableRecipe
 import dk.kriaactividade.mealngram.helpers.DataState
 import dk.kriaactividade.mealngram.presentation.utils.getWeekNumber
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
 data class RecipeListUiData(
     val showButton: Boolean = false,
-    val showProgress: Boolean = false,
     val progressValue: Int = 0,
     val recipes: List<RecipeItem> = listOf(),
-    val completeSelection: MutableList<RecipeRoomWeekItem> = mutableListOf()
+    val completeSelection: MutableList<SelectableRecipe> = mutableListOf()
 )
 
 sealed interface RecipeListUiState {
@@ -37,24 +35,21 @@ interface RecipeListViewModelItemActions {
 }
 
 @HiltViewModel
-class RecipeListViewModel @Inject constructor(private val repository: RecipesRepository) :
+class RecipeListViewModel @Inject constructor(private val repository: RecipesRepository, private val savedStateHandle: SavedStateHandle) :
     ViewModel(),
     RecipeListViewModelItemActions {
 
-//    @Inject
-//    lateinit var room: RoomRepository
     private var valueProgress: Int = 0
     private var updatedSelectedDays = listOf<SelectedChipState>()
     private var showButton = false
-    private val recipeListLocal = mutableListOf<RecipeRoomWeekItem>()
-    private var dateLong = 0L
+    private val recipeListLocal = mutableListOf<SelectableRecipe>()
 
     private val _uiState: MutableStateFlow<RecipeListUiState> =
         MutableStateFlow(RecipeListUiState.Loading)
     val uiState = _uiState.asStateFlow()
 
     private val selectedChipStates: List<SelectedChip> by lazy {
-        val date = Date(dateLong)
+        val date = Date(getArgsDateLong())
         val calendar = Calendar.getInstance()
         calendar.time = date
         calendar.daysUntilTheEndOfWeek().map {
@@ -62,21 +57,18 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
         }
     }
 
-    fun getArgsDate(date:Long):Long{
-        dateLong = date
-        return dateLong
+    fun getArgsDateLong(): Long {
+        return savedStateHandle["weekNumber"] ?: 0
     }
 
     init {
         viewModelScope.launch {
             repository.getAllRecipes().collect(::handleGetAllRecipes)
-            //room.allRecipes()
-            updateEditMode()
         }
     }
 
     private fun generateSelectedDays(recipeId: Int): List<SelectedChipState> {
-        val date = Date(dateLong)
+        val date = Date(getArgsDateLong())
         val calendar = Calendar.getInstance()
         calendar.time = date
         return calendar.daysUntilTheEndOfWeek().map {
@@ -103,80 +95,10 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
                     RecipeListUiState.Success(uiData = RecipeListUiData(recipes = recipeItem))
             }
             is DataState.Loading -> _uiState.value = RecipeListUiState.Loading
-//            is DataState.SaveCache -> {
-//                val recipeLocal = state.saveState.map { recipeItem ->
-//                    RecipeRoomItem(
-//                        id = recipeItem.id,
-//                        name = recipeItem.name,
-//                        description = recipeItem.description,
-//                        ingredients = recipeItem.ingredients,
-//                        image = recipeItem.image,
-//                        dateInserted = getCurrentDate()
-//                    )
-//                }
-//                viewModelScope.launch {
-//                    if (room.allRecipes().isEmpty()) {
-//                        room.insertList(recipeLocal)
-//                    } else {
-//                        var recipeLocalDate: Date? = null
-//
-//                        room.allRecipes()
-//                            .forEach { dateLocal -> recipeLocalDate = dateLocal.dateInserted }
-//
-//                        if (recipeLocalDate?.let { getCurrentDateString(it) } != getCurrentDateString(
-//                                getCurrentDate()
-//                            )) {
-//                            room.deleteAllRecipes()
-//                            room.insertList(recipeLocal)
-//                        }
-//                    }
-//                }
-//            }
         }
-    }
-
-    private fun getCurrentDate(): Date {
-        val calendar = Calendar.getInstance()
-        return calendar.time
-    }
-
-    private fun getCurrentDateString(date: Date): String {
-        val simpleDateFormat = SimpleDateFormat("dd/MM/yyyy", Locale("pt", "BR"))
-        return simpleDateFormat.format(date)
-    }
-
-    private fun updateEditMode() {
-        _uiState.value.let {
-            when (it) {
-                RecipeListUiState.Error -> {}
-                RecipeListUiState.Loading -> {}
-                is RecipeListUiState.Success -> {
-                    val updatedRecipes = it.uiData.recipes.map { recipe ->
-                        RecipeItem(
-                            id = recipe.id,
-                            name = recipe.name,
-                            description = recipe.description,
-                            ingredients = recipe.ingredients,
-                            image = recipe.image,
-                            isSelectionMode = true,
-                            selectedDays = recipe.selectedDays
-                        )
-                    }
-
-                    _uiState.value = RecipeListUiState.Success(
-                        uiData = RecipeListUiData(
-                            recipes = updatedRecipes,
-                            showProgress = true
-                        )
-                    )
-                }
-            }
-        }
-
     }
 
     override fun onDaySelected(recipeId: Int, weekDay: WEEK, date: Date) {
-
         _uiState.value.let {
             when (it) {
                 RecipeListUiState.Error -> {}
@@ -210,7 +132,6 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
                             description = recipeItem.description,
                             ingredients = recipe.ingredients,
                             image = recipeItem.image,
-                            isSelectionMode = true,
                             selectedDays = updatedSelectedDays
                         )
                     }
@@ -233,7 +154,6 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
                     _uiState.value = RecipeListUiState.Success(
                         uiData = RecipeListUiData(
                             recipes = updatedRecipes,
-                            showProgress = true,
                             progressValue = valueProgress,
                             showButton = showButton
                         )
@@ -249,14 +169,14 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
         removeIt: Boolean,
         selectDate: Date
     ) {
-        val recipeDetails = RecipeRoomWeekItem(
+        val recipeDetails = SelectableRecipe(
             id = selectedItem.id,
             name = selectedItem.name,
             description = selectedItem.description,
             ingredients = selectedItem.ingredients,
             image = selectedItem.image,
             dateWeek = selectDate,
-            weekNumber = dateLong.getWeekNumber()
+            weekNumber = getArgsDateLong().getWeekNumber()
         )
 
         if (removeIt) {

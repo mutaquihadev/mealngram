@@ -16,7 +16,7 @@ data class RecipeEntity(
 )
 
 @Entity(tableName = "table_recipe_week")
-data class RecipeRoomWeekItem(
+data class SelectableRecipe(
     @PrimaryKey(autoGenerate = true)
     val roomId: Int = 0,
     val id: Int,

@@ -23,16 +23,15 @@ class LoginViewModel @Inject constructor(private val authRepository: AuthReposit
 
     init {
         viewModelScope.launch {
-            authRepository.getIsLogged {
-                _userLogged.postValue(it)
-            }
+            val isLogged = authRepository.isLogged()
+            _userLogged.postValue(isLogged)
         }
     }
 
     fun loginSuccess(activity: Activity, email: String, password: String) {
         viewModelScope.launch {
             if (email.isNotEmpty() && password.isNotEmpty()) {
-                authRepository.getLogin(activity, email, password) { success, message ->
+                authRepository.login(activity, email, password) { success, message ->
                     val map = hashMapOf<Boolean, String?>()
                     map[success] = message
                     _loginSuccess.postValue(map)

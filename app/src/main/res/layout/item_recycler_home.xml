@@ -84,10 +84,8 @@
                     android:id="@+id/chip_group"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:isVisible="@{recipe.selectionMode}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    tools:visibility="visible"
                     app:layout_constraintTop_toBottomOf="@id/description_recipe">
 
                     <HorizontalScrollView

@@ -5,7 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import dk.kriaactividade.mealngram.database.room.RecipeEntity
-import dk.kriaactividade.mealngram.database.room.RecipeRoomWeekItem
+import dk.kriaactividade.mealngram.database.room.SelectableRecipe
 
 @Dao
 interface RecipeDAO {
@@ -27,18 +27,15 @@ interface RecipeDAO {
 }
 
 @Dao
-interface RecipeWeekDAO {
+interface SelectableRecipeDAO {
     @Query("SELECT * from table_recipe_week ORDER BY roomId")
-    suspend fun getAllRecipesWeek(): List<RecipeRoomWeekItem>
+    suspend fun getAllSelectableRecipe(): List<SelectableRecipe>
 
     @Query("SELECT * FROM table_recipe_week WHERE weekNumber = :weekNumber")
-    suspend fun geRecipeWeek(weekNumber: Int): List<RecipeRoomWeekItem>
+    suspend fun geSelectableRecipeByWeek(weekNumber: Int): List<SelectableRecipe>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertRecipeWeek(recipeDetails: RecipeRoomWeekItem)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertListWeek(listRecipe: List<RecipeRoomWeekItem>)
+    suspend fun insertListWeek(listRecipe: List<SelectableRecipe>)
 
     @Query("DELETE from table_recipe_week")
     suspend fun deleteAllRecipesWeek()

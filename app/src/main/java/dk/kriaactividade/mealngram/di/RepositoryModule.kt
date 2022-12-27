@@ -14,7 +14,7 @@ import dk.kriaactividade.mealngram.data.repository.RecipesRepository
 import dk.kriaactividade.mealngram.data.repository.RecipesRepositoryImp
 import dk.kriaactividade.mealngram.database.RecipeDAO
 import dk.kriaactividade.mealngram.database.RecipeDataBase
-import dk.kriaactividade.mealngram.database.RecipeWeekDAO
+import dk.kriaactividade.mealngram.database.SelectableRecipeDAO
 
 @InstallIn(SingletonComponent::class)
 @Module
@@ -22,9 +22,10 @@ object RepositoryModule {
     @Provides
     fun providesRecipesRepository(
         database: FirebaseFirestore,
-        recipeDAO: RecipeDAO
+        recipeDAO: RecipeDAO,
+        selectableRecipeDAO: SelectableRecipeDAO
     ): RecipesRepository {
-        return RecipesRepositoryImp(database, recipeDAO)
+        return RecipesRepositoryImp(database, recipeDAO, selectableRecipeDAO)
     }
 
     @Provides
@@ -38,7 +39,7 @@ object RepositoryModule {
     }
 
     @Provides
-    fun providesRecipeWeekDAO(@ApplicationContext appContext: Context): RecipeWeekDAO {
+    fun providesRecipeWeekDAO(@ApplicationContext appContext: Context): SelectableRecipeDAO {
         return RecipeDataBase.getDatabase(appContext).recipeWeekDAO()
     }
 }
