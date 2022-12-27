@@ -34,6 +34,10 @@ class ProfileFragment : Fragment() {
             findNavController().navigate(ProfileFragmentDirections.actionNavigationProfileToNavigationFavorite())
         }
 
+        binding.goToRecipesOfMonth.setOnClickListener{
+            findNavController().navigate(ProfileFragmentDirections.actionNavigationProfileToNavigationDashboard())
+    }
+
 
         viewModel.logoutSuccess.observe(viewLifecycleOwner) {
             if (it) {

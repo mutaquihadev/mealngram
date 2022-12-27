@@ -7,6 +7,7 @@ import dk.kriaactividade.mealngram.data.domain.RecipesDetails
 import dk.kriaactividade.mealngram.data.domain.WEEK
 import dk.kriaactividade.mealngram.data.repository.RecipesRepository
 import dk.kriaactividade.mealngram.database.room.RecipeRoomItem
+import dk.kriaactividade.mealngram.database.room.RecipeRoomWeekItem
 import dk.kriaactividade.mealngram.database.room.RoomRepository
 import dk.kriaactividade.mealngram.helpers.DataState
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,7 +22,7 @@ data class RecipeListUiData(
     val showProgress: Boolean = false,
     val progressValue: Int = 0,
     val recipes: List<RecipeItem> = listOf(),
-    val completeSelection: MutableList<RecipesDetails> = mutableListOf()
+    val completeSelection: MutableList<RecipeRoomWeekItem> = mutableListOf()
 )
 
 sealed interface RecipeListUiState {
@@ -41,11 +42,10 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
     RecipeListViewModelItemActions {
     @Inject
     lateinit var room: RoomRepository
-    private var isEditMode: Boolean = false
     private var valueProgress: Int = 0
     private var updatedSelectedDays = listOf<SelectedChipState>()
     private var showButton = false
-    private val recipeListLocal = mutableListOf<RecipesDetails>()
+    private val recipeListLocal = mutableListOf<RecipeRoomWeekItem>()
 
     private val _uiState: MutableStateFlow<RecipeListUiState> =
         MutableStateFlow(RecipeListUiState.Loading)
@@ -62,6 +62,7 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
         viewModelScope.launch {
             repository.getAllRecipes().collect(::handleGetAllRecipes)
             room.allRecipes()
+            updateEditMode()
         }
     }
 
@@ -113,8 +114,7 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
         return simpleDateFormat.format(date)
     }
 
-    fun updateEditMode() {
-        isEditMode = !isEditMode
+    private fun updateEditMode() {
         _uiState.value.let {
             when (it) {
                 RecipeListUiState.Error -> {}
@@ -127,7 +127,7 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
                             description = recipe.description,
                             ingredients = recipe.ingredients,
                             image = recipe.image,
-                            isSelectionMode = isEditMode,
+                            isSelectionMode = true,
                             selectedDays = recipe.selectedDays
                         )
                     }
@@ -135,7 +135,7 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
                     _uiState.value = RecipeListUiState.Success(
                         uiData = RecipeListUiData(
                             recipes = updatedRecipes,
-                            showProgress = isEditMode
+                            showProgress = true
                         )
                     )
                 }
@@ -208,9 +208,9 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
                     }
 
                     if (recipeId == selected.recipeId) {
-                        goToCompleteSelection(recipe, false)
+                        goToCompleteSelection(recipe, false,selected.date)
                     } else {
-                        goToCompleteSelection(recipe, true)
+                        goToCompleteSelection(recipe, true,selected.date)
                     }
 
 
@@ -236,13 +236,14 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
         }
     }
 
-    private fun goToCompleteSelection(selectedItem: RecipeItem, removeIt: Boolean) {
-        val recipeDetails = RecipesDetails(
+    private fun goToCompleteSelection(selectedItem: RecipeItem, removeIt: Boolean, selectDate: Date) {
+        val recipeDetails = RecipeRoomWeekItem(
             id = selectedItem.id,
             name = selectedItem.name,
             description = selectedItem.description,
             ingredients = selectedItem.ingredients,
             image = selectedItem.image,
+            dateWeek = selectDate
         )
 
         if (removeIt) {

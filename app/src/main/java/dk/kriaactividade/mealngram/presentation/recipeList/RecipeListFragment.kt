@@ -12,18 +12,23 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
+import dk.kriaactividade.mealngram.database.room.RecipeWeekRepository
 import dk.kriaactividade.mealngram.databinding.FragmentRecipeListBinding
 import dk.kriaactividade.mealngram.presentation.utils.Constants
 import dk.kriaactividade.mealngram.presentation.utils.Constants.RESULT_FROM_DETAILS
 import dk.kriaactividade.mealngram.presentation.utils.gone
+import dk.kriaactividade.mealngram.presentation.utils.setNavigationResult
 import dk.kriaactividade.mealngram.presentation.utils.visible
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 
 @AndroidEntryPoint
 class RecipeListFragment : Fragment() {
 
     private val viewModel: RecipeListViewModel by viewModels()
+    @Inject
+    lateinit var recipeWeekRepository: RecipeWeekRepository
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -38,7 +43,6 @@ class RecipeListFragment : Fragment() {
             adapter = recipesAdapter
         }
 
-        binding.fabAdd.setOnClickListener { viewModel.updateEditMode() }
 
         lifecycleScope.launch {
             viewModel.uiState.collect { uiState ->
@@ -57,11 +61,9 @@ class RecipeListFragment : Fragment() {
                     }
                     is RecipeListUiState.CompleteSelection -> {
                         binding.buttonOk.setOnClickListener {
-                            findNavController().navigate(
-                                RecipeListFragmentDirections.goToMyRecipes(
-                                    uiState.complete.completeSelection.toTypedArray()
-                                )
-                            )
+                            setNavigationResult(true,"RESULT")
+                            recipeWeekRepository.insertList(uiState.complete.completeSelection)
+                            findNavController().navigateUp()
                         }
                     }
                 }

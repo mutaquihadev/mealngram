@@ -4,15 +4,13 @@ import androidx.annotation.WorkerThread
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.scopes.ViewModelScoped
-import dk.kriaactividade.mealngram.data.domain.Recipe
 import dk.kriaactividade.mealngram.database.RecipeDAO
-import kotlinx.coroutines.flow.Flow
+import dk.kriaactividade.mealngram.database.RecipeWeekDAO
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @ViewModelScoped
 class RoomRepository @Inject constructor(private val recipeDAO: RecipeDAO) : ViewModel() {
-
 
     @Suppress("RedundantSuspendModifier")
     @WorkerThread
@@ -35,5 +33,30 @@ class RoomRepository @Inject constructor(private val recipeDAO: RecipeDAO) : Vie
     suspend fun getRecipe(recipeId: Int) : List<RecipeRoomItem>{
         return recipeDAO.geRecipe(recipeId)
     }
+}
 
+@ViewModelScoped
+class RecipeWeekRepository @Inject constructor(private val recipeWeekDAO: RecipeWeekDAO) : ViewModel() {
+
+    @Suppress("RedundantSuspendModifier")
+    @WorkerThread
+    suspend fun allRecipes(): List<RecipeRoomWeekItem> {
+        return recipeWeekDAO.getAllRecipesWeek()
+    }
+
+    fun insert(recipeDetails: RecipeRoomWeekItem) = viewModelScope.launch {
+        recipeWeekDAO.insertRecipeWeek(recipeDetails)
+    }
+
+    fun insertList(listRecipe: List<RecipeRoomWeekItem>) = viewModelScope.launch {
+        recipeWeekDAO.insertListWeek(listRecipe)
+    }
+
+    fun deleteAllRecipes() = viewModelScope.launch {
+        recipeWeekDAO.deleteAllRecipesWeek()
+    }
+
+    suspend fun getRecipe(recipeId: Int) : List<RecipeRoomWeekItem>{
+        return recipeWeekDAO.geRecipeWeek(recipeId)
+    }
 }

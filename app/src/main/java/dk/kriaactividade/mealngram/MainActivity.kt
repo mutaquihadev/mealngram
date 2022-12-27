@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
         navView.setupWithNavController(navController)
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            if (destination.id == R.id.navigation_home ||
+            if (destination.id == R.id.navigation_recipe_of_day ||
                     destination.id == R.id.navigation_profile) {
                 binding.navView.visible()
             } else {

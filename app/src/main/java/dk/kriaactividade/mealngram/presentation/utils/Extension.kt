@@ -1,6 +1,11 @@
 package dk.kriaactividade.mealngram.presentation.utils
 
 import android.view.View
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import dk.kriaactividade.mealngram.presentation.recipeList.toWeek
+import java.text.SimpleDateFormat
+import java.util.*
 
 fun View.visible() {
     this.visibility = View.VISIBLE
@@ -27,4 +32,20 @@ fun String.convertStringForInt(): Int {
         error.printStackTrace()
         -1
     }
+}
+
+private fun getStringForFormat(value: Date):String{
+    val simpleDateFormat = SimpleDateFormat("dd MMM")
+    return simpleDateFormat.format(value)
+}
+
+fun Date.formatDateForLiteral():String{
+    return getStringForFormat(this)
+}
+
+fun Fragment.getNavigationResult(key: String = "result") =
+    findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>(key)
+
+fun Fragment.setNavigationResult(result: Boolean, key: String = "result") {
+    findNavController().previousBackStackEntry?.savedStateHandle?.set(key, result)
 }
