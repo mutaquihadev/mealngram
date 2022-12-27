@@ -6,13 +6,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dk.kriaactividade.mealngram.data.repository.RecipesRepositoryImp
+import dk.kriaactividade.mealngram.data.repository.AuthRepository
 import kotlinx.coroutines.launch
 import java.util.Calendar
 import java.util.Calendar.*
 import javax.inject.Inject
 
-class RegisterViewModel @Inject constructor(private val repositoryImp: RecipesRepositoryImp) : ViewModel() {
+class RegisterViewModel @Inject constructor(private val authRepository: AuthRepository) : ViewModel() {
 
     val isEmail:LiveData<Boolean>
     get() = _isEmail
@@ -80,7 +80,7 @@ class RegisterViewModel @Inject constructor(private val repositoryImp: RecipesRe
   fun register(activity: Activity, email:String,password:String){
       viewModelScope.launch {
           if (email.isNotEmpty() && password.isNotEmpty()){
-              repositoryImp.registerUser(activity,email,password){response, message ->
+              authRepository.registerUser(activity,email,password){ response, message ->
                   val map = hashMapOf<Boolean,String?>()
                   map[response] = message
                   _successRegister.postValue(map)

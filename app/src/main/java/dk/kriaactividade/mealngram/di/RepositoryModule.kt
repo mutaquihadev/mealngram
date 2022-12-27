@@ -3,11 +3,14 @@ package dk.kriaactividade.mealngram.di
 import android.content.Context
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import dk.kriaactividade.mealngram.data.repository.AuthRepository
+import dk.kriaactividade.mealngram.data.repository.AuthRepositoryImp
 import dk.kriaactividade.mealngram.data.repository.RecipesRepository
 import dk.kriaactividade.mealngram.data.repository.RecipesRepositoryImp
 import dk.kriaactividade.mealngram.database.RecipeDAO
@@ -20,8 +23,13 @@ import dk.kriaactividade.mealngram.database.room.RoomRepository
 @Module
 object RepositoryModule {
     @Provides
-    fun providesRecipesRepository(database:FirebaseFirestore,auth: FirebaseAuth): RecipesRepository {
-        return RecipesRepositoryImp(database,auth)
+    fun providesRecipesRepository(database:FirebaseFirestore): RecipesRepository {
+        return RecipesRepositoryImp(database)
+    }
+
+    @Provides
+    fun providesAuthRepository(auth:FirebaseAuth): AuthRepository{
+        return AuthRepositoryImp(auth)
     }
 
     @Provides

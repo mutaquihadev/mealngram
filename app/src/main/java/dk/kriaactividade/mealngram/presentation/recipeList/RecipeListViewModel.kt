@@ -44,8 +44,8 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
     ViewModel(),
     RecipeListViewModelItemActions {
 
-    @Inject
-    lateinit var room: RoomRepository
+//    @Inject
+//    lateinit var room: RoomRepository
     private var valueProgress: Int = 0
     private var updatedSelectedDays = listOf<SelectedChipState>()
     private var showButton = false
@@ -73,7 +73,7 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
     init {
         viewModelScope.launch {
             repository.getAllRecipes().collect(::handleGetAllRecipes)
-            room.allRecipes()
+            //room.allRecipes()
             updateEditMode()
         }
     }
@@ -106,35 +106,35 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
                     RecipeListUiState.Success(uiData = RecipeListUiData(recipes = recipeItem))
             }
             is DataState.Loading -> _uiState.value = RecipeListUiState.Loading
-            is DataState.SaveCache -> {
-                val recipeLocal = state.saveState.map { recipeItem ->
-                    RecipeRoomItem(
-                        id = recipeItem.id,
-                        name = recipeItem.name,
-                        description = recipeItem.description,
-                        ingredients = recipeItem.ingredients,
-                        image = recipeItem.image,
-                        dateInserted = getCurrentDate()
-                    )
-                }
-                viewModelScope.launch {
-                    if (room.allRecipes().isEmpty()) {
-                        room.insertList(recipeLocal)
-                    } else {
-                        var recipeLocalDate: Date? = null
-
-                        room.allRecipes()
-                            .forEach { dateLocal -> recipeLocalDate = dateLocal.dateInserted }
-
-                        if (recipeLocalDate?.let { getCurrentDateString(it) } != getCurrentDateString(
-                                getCurrentDate()
-                            )) {
-                            room.deleteAllRecipes()
-                            room.insertList(recipeLocal)
-                        }
-                    }
-                }
-            }
+//            is DataState.SaveCache -> {
+//                val recipeLocal = state.saveState.map { recipeItem ->
+//                    RecipeRoomItem(
+//                        id = recipeItem.id,
+//                        name = recipeItem.name,
+//                        description = recipeItem.description,
+//                        ingredients = recipeItem.ingredients,
+//                        image = recipeItem.image,
+//                        dateInserted = getCurrentDate()
+//                    )
+//                }
+//                viewModelScope.launch {
+//                    if (room.allRecipes().isEmpty()) {
+//                        room.insertList(recipeLocal)
+//                    } else {
+//                        var recipeLocalDate: Date? = null
+//
+//                        room.allRecipes()
+//                            .forEach { dateLocal -> recipeLocalDate = dateLocal.dateInserted }
+//
+//                        if (recipeLocalDate?.let { getCurrentDateString(it) } != getCurrentDateString(
+//                                getCurrentDate()
+//                            )) {
+//                            room.deleteAllRecipes()
+//                            room.insertList(recipeLocal)
+//                        }
+//                    }
+//                }
+//            }
         }
     }
 

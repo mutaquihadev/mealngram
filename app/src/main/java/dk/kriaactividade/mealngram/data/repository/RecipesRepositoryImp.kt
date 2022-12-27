@@ -19,67 +19,36 @@ import kotlinx.coroutines.tasks.await
 import java.util.*
 import javax.inject.Inject
 
-class RecipesRepositoryImp @Inject constructor(private val database: FirebaseFirestore,private val auth: FirebaseAuth) :
+class RecipesRepositoryImp @Inject constructor(private val database: FirebaseFirestore) :
     RecipesRepository {
 
-    override suspend fun selectedRecipes(details: List<RecipesDetails>) {
-        details.map { detail ->
-            database.collection("selected-recipes").add(
-                RecipesDetails(
-                    id = detail.id,
-                    name = detail.name,
-                    description = detail.description,
-                    image = detail.image,
-                    day = detail.day,
-                    dayOfWeek = detail.dayOfWeek,
-                    ingredients = detail.ingredients
-                )
-            )
-        }
-    }
+//    override suspend fun selectedRecipes(details: List<RecipesDetails>) {
+//        details.map { detail ->
+//            database.collection("selected-recipes").add(
+//                RecipesDetails(
+//                    id = detail.id,
+//                    name = detail.name,
+//                    description = detail.description,
+//                    image = detail.image,
+//                    day = detail.day,
+//                    dayOfWeek = detail.dayOfWeek,
+//                    ingredients = detail.ingredients
+//                )
+//            )
+//        }
+//    }
+//
+//    override suspend fun getSelectedRecipes(): Flow<DataState<List<RecipesSelectedItem>>> = flow {
+//        emit(DataState.Loading(loadingState = LoadingState.Loading))
+//
+//        val snapshot = database.collection(SELECTED_RECIPES).get().await()
+//        val recipes = snapshot.toObjects(Recipe::class.java)
+//
+//        val recipesSelectedItem = recipes.toRecipeSelectedItem()
+//        emit(DataState.Data(data = recipesSelectedItem))
+//    }
+//
 
-    override suspend fun getSelectedRecipes(): Flow<DataState<List<RecipesSelectedItem>>> = flow {
-        emit(DataState.Loading(loadingState = LoadingState.Loading))
-
-        val snapshot = database.collection(SELECTED_RECIPES).get().await()
-        val recipes = snapshot.toObjects(Recipe::class.java)
-
-        val recipesSelectedItem = recipes.toRecipeSelectedItem()
-        emit(DataState.Data(data = recipesSelectedItem))
-    }
-
-    override suspend fun getLogin(
-        activity: Activity,
-        email: String,
-        password: String,
-        onLogged: (Boolean,String?) -> Unit
-    ) {
-        auth.signInWithEmailAndPassword(
-            email, password
-        )
-            .addOnCompleteListener(activity) { task ->
-                onLogged(task.isSuccessful,task.exception?.message)
-            }
-    }
-
-    override suspend fun getIsLogged(onLogged: (Boolean) -> Unit) {
-        onLogged(auth.currentUser != null)
-    }
-
-    override suspend fun registerUser(
-        activity: Activity,
-        email: String,
-        password: String,
-        onRegister: (Boolean,String?) -> Unit
-    ) {
-        auth.createUserWithEmailAndPassword(
-            email,
-            password
-        )
-            .addOnCompleteListener(activity) { task ->
-                onRegister(task.isSuccessful,task.exception?.message)
-            }
-    }
 
     override suspend fun getAllRecipes(): Flow<DataState<List<Recipe>>> = flow {
         emit(DataState.Loading(loadingState = LoadingState.Loading))
@@ -87,7 +56,6 @@ class RecipesRepositoryImp @Inject constructor(private val database: FirebaseFir
         val snapshot = database.collection(RECIPE).get().await()
         val recipes = snapshot.toObjects(Recipe::class.java)
 
-        emit(DataState.SaveCache(saveState = recipes))
 
         emit(DataState.Data(data = recipes))
     }
