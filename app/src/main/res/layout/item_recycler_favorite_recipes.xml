@@ -6,7 +6,7 @@
     <data>
         <variable
             name="recipeRoom"
-            type="dk.kriaactividade.mealngram.database.room.RecipeRoomItem" />
+            type="dk.kriaactividade.mealngram.database.room.RecipeEntity" />
 </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

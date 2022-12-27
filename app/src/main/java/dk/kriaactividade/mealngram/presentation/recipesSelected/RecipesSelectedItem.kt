@@ -1,8 +1,7 @@
 package dk.kriaactividade.mealngram.presentation.recipesSelected
 
-import dk.kriaactividade.mealngram.data.domain.Recipe
+import dk.kriaactividade.mealngram.data.domain.RecipeDTO
 import dk.kriaactividade.mealngram.data.domain.WEEK
-import java.util.*
 
 data class RecipesSelectedItem(
     val id: Int,
@@ -14,7 +13,7 @@ data class RecipesSelectedItem(
     val ingredients: List<String>
 )
 
-fun List<Recipe>.toRecipeSelectedItem(): List<RecipesSelectedItem> {
+fun List<RecipeDTO>.toRecipeSelectedItem(): List<RecipesSelectedItem> {
     return this.map { recipe ->
         RecipesSelectedItem(
             id = recipe.id,

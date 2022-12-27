@@ -5,8 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dk.kriaactividade.mealngram.database.room.RecipeRoomWeekItem
-import dk.kriaactividade.mealngram.database.room.RecipeWeekRepository
+import dk.kriaactividade.mealngram.data.repository.RecipesRepository
 import dk.kriaactividade.mealngram.helpers.DataState
 import dk.kriaactividade.mealngram.helpers.HandleGetState
 import dk.kriaactividade.mealngram.presentation.utils.formatDateForLiteral
@@ -27,7 +26,7 @@ sealed interface RecipeListDetailsUiState {
 }
 
 @HiltViewModel
-class RecipesSelectedViewModel @Inject constructor(private val repository: RecipeWeekRepository) :
+class RecipesSelectedViewModel @Inject constructor(private val repository: RecipesRepository) :
     ViewModel(), HandleGetState<List<RecipesSelectedItem>> {
 
     private val recipesSelected = mutableListOf<RecipesSelectedItem>()
@@ -61,9 +60,9 @@ class RecipesSelectedViewModel @Inject constructor(private val repository: Recip
         }
     }
 
-    suspend fun getRoomList(): List<RecipeRoomWeekItem> {
-        return repository.getAllRecipesWeek()
-    }
+//    suspend fun getRoomList(): List<RecipeRoomWeekItem> {
+//        return repository.getAllRecipesWeek()
+//    }
 
     private fun getCurrentWeek() {
         val listDaysOnWeek = mutableListOf<HashMap<Date, Date>>()

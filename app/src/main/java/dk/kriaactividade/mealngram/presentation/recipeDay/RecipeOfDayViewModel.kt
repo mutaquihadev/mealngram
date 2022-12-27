@@ -3,39 +3,36 @@ package dk.kriaactividade.mealngram.presentation.recipeDay
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import dk.kriaactividade.mealngram.data.repository.RecipesRepository
 import dk.kriaactividade.mealngram.database.room.RecipeRoomWeekItem
-import dk.kriaactividade.mealngram.database.room.RecipeWeekRepository
-import kotlinx.coroutines.launch
-import java.util.Calendar
-import java.util.Date
+import java.util.*
 import javax.inject.Inject
 
-class RecipeOfDayViewModel @Inject constructor(private val repository: RecipeWeekRepository) :
+class RecipeOfDayViewModel @Inject constructor(private val repository: RecipesRepository) :
     ViewModel() {
 
     val currentRecipe: LiveData<RecipeRoomWeekItem>
     get() = _currentRecipe
     private val _currentRecipe = MutableLiveData<RecipeRoomWeekItem>()
 
-    init {
-        viewModelScope.launch {
-            repository.getAllRecipesWeek().map {
-                if (compareDay(it.dateWeek) == getCurrentDate()){
-                    val recipe = RecipeRoomWeekItem(
-                        id = it.id,
-                        name = it.name,
-                        description = it.description,
-                        ingredients = it.ingredients,
-                        dateWeek = it.dateWeek,
-                        image = it.image,
-                        weekNumber = it.weekNumber
-                    )
-                    _currentRecipe.postValue(recipe)
-                }
-            }
-        }
-    }
+//    init {
+//        viewModelScope.launch {
+//            repository.getAllRecipesWeek().map {
+//                if (compareDay(it.dateWeek) == getCurrentDate()){
+//                    val recipe = RecipeRoomWeekItem(
+//                        id = it.id,
+//                        name = it.name,
+//                        description = it.description,
+//                        ingredients = it.ingredients,
+//                        dateWeek = it.dateWeek,
+//                        image = it.image,
+//                        weekNumber = it.weekNumber
+//                    )
+//                    _currentRecipe.postValue(recipe)
+//                }
+//            }
+//        }
+//    }
 
     private fun compareDay(dateSave: Date): Int {
         val date = Date(dateSave.time)

@@ -13,11 +13,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
-import dk.kriaactividade.mealngram.database.room.RecipeWeekRepository
 import dk.kriaactividade.mealngram.databinding.FragmentRecipeListBinding
 import dk.kriaactividade.mealngram.presentation.utils.*
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 
 @AndroidEntryPoint
@@ -25,8 +23,6 @@ class RecipeListFragment : Fragment() {
 
     private val args:RecipeListFragmentArgs by navArgs()
     private val viewModel: RecipeListViewModel by viewModels()
-    @Inject
-    lateinit var recipeWeekRepository: RecipeWeekRepository
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -61,7 +57,7 @@ class RecipeListFragment : Fragment() {
                     is RecipeListUiState.CompleteSelection -> {
                         binding.buttonOk.setOnClickListener {
                             setNavigationResult(args.weekNumber.getWeekNumber(),"RESULT")
-                            recipeWeekRepository.insertListWeek(uiState.complete.completeSelection)
+                            //recipeWeekRepository.insertListWeek(uiState.complete.completeSelection)
                             findNavController().navigateUp()
                         }
                     }

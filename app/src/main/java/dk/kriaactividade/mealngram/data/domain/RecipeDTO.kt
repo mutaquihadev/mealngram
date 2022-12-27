@@ -1,6 +1,6 @@
 package dk.kriaactividade.mealngram.data.domain
 
-data class Recipe(
+data class RecipeDTO(
     val id: Int = 0,
     val name: String = "",
     val description: String = "",

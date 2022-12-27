@@ -26,7 +26,7 @@ class FavoriteRecipesFragment : Fragment() {
     ): View {
         binding = FragmentFavoriteBinding.inflate(layoutInflater)
 
-        viewModel.handleGetAllRecipes()
+       // viewModel.handleGetAllRecipes()
 
         val favoriteRecipesAdapter = FavoriteRecipesAdapter()
         binding.rvRecipesFavorites.apply {

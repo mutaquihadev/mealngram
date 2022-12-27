@@ -37,7 +37,7 @@ class RecipeDetailsFragment : Fragment() {
     ): View {
         binding = FragmentRecipeDetailsBinding.inflate(layoutInflater)
         lifecycleScope.launch {
-            setViewPager(viewModel.getDetailsList(args.weekNumber))
+           // setViewPager(viewModel.getDetailsList(args.weekNumber))
         }
 
         binding.apply {

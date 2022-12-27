@@ -4,24 +4,22 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import dk.kriaactividade.mealngram.data.domain.Recipe
-import dk.kriaactividade.mealngram.database.room.RecipeRoomItem
+import dk.kriaactividade.mealngram.database.room.RecipeEntity
 import dk.kriaactividade.mealngram.database.room.RecipeRoomWeekItem
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface RecipeDAO {
     @Query("SELECT * from table_recipe ORDER BY id")
-    suspend fun getAllRecipes(): List<RecipeRoomItem>
+    suspend fun getAllRecipes(): List<RecipeEntity>
 
     @Query("SELECT * FROM table_recipe WHERE id = :recipeId")
-    suspend fun geRecipe(recipeId: Int): List<RecipeRoomItem>
+    suspend fun geRecipe(recipeId: Int): List<RecipeEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertRecipe(recipeDetails: RecipeRoomItem)
+    suspend fun insertRecipe(recipeDetails: RecipeEntity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertList(listRecipe: List<RecipeRoomItem>)
+    suspend fun insertList(listRecipe: List<RecipeEntity>)
 
     @Query("DELETE from table_recipe")
     suspend fun deleteAllRecipes()

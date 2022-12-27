@@ -1,16 +1,13 @@
 package dk.kriaactividade.mealngram.presentation.recipeList
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dk.kriaactividade.mealngram.data.domain.Recipe
-import dk.kriaactividade.mealngram.data.domain.RecipesDetails
+import dk.kriaactividade.mealngram.data.domain.RecipeDTO
 import dk.kriaactividade.mealngram.data.domain.WEEK
 import dk.kriaactividade.mealngram.data.repository.RecipesRepository
-import dk.kriaactividade.mealngram.database.room.RecipeRoomItem
+import dk.kriaactividade.mealngram.database.room.RecipeEntity
 import dk.kriaactividade.mealngram.database.room.RecipeRoomWeekItem
-import dk.kriaactividade.mealngram.database.room.RoomRepository
 import dk.kriaactividade.mealngram.helpers.DataState
 import dk.kriaactividade.mealngram.presentation.utils.getWeekNumber
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -87,7 +84,7 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
         }
     }
 
-    private fun handleGetAllRecipes(state: DataState<List<Recipe>>) {
+    private fun handleGetAllRecipes(state: DataState<List<RecipeEntity>>) {
         when (state) {
             is DataState.Error -> {}
             is DataState.Data -> {

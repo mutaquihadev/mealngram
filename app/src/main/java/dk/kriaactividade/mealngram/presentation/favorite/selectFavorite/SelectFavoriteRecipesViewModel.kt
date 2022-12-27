@@ -2,10 +2,10 @@ package dk.kriaactividade.mealngram.presentation.favorite.selectFavorite
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dk.kriaactividade.mealngram.data.domain.Recipe
+import dk.kriaactividade.mealngram.data.domain.RecipeDTO
 import dk.kriaactividade.mealngram.data.repository.RecipesRepository
+import dk.kriaactividade.mealngram.database.room.RecipeEntity
 import dk.kriaactividade.mealngram.helpers.DataState
-import dk.kriaactividade.mealngram.presentation.recipeList.RecipeItem
 import dk.kriaactividade.mealngram.presentation.utils.Preferences
 import dk.kriaactividade.mealngram.presentation.utils.convertStringForInt
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -42,7 +42,7 @@ class SelectFavoriteRecipesViewModel @Inject constructor(private val repository:
         }
     }
 
-    private fun handleGetAllRecipes(state: DataState<List<Recipe>>) {
+    private fun handleGetAllRecipes(state: DataState<List<RecipeEntity>>) {
         when (state) {
             is DataState.Error -> {}
             is DataState.Loading -> {
