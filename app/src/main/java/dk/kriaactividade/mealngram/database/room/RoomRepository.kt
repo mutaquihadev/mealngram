@@ -40,23 +40,23 @@ class RecipeWeekRepository @Inject constructor(private val recipeWeekDAO: Recipe
 
     @Suppress("RedundantSuspendModifier")
     @WorkerThread
-    suspend fun allRecipes(): List<RecipeRoomWeekItem> {
+    suspend fun getAllRecipesWeek(): List<RecipeRoomWeekItem> {
         return recipeWeekDAO.getAllRecipesWeek()
     }
 
-    fun insert(recipeDetails: RecipeRoomWeekItem) = viewModelScope.launch {
+    fun insertRecipeWeek(recipeDetails: RecipeRoomWeekItem) = viewModelScope.launch {
         recipeWeekDAO.insertRecipeWeek(recipeDetails)
     }
 
-    fun insertList(listRecipe: List<RecipeRoomWeekItem>) = viewModelScope.launch {
+    fun insertListWeek(listRecipe: List<RecipeRoomWeekItem>) = viewModelScope.launch {
         recipeWeekDAO.insertListWeek(listRecipe)
     }
 
-    fun deleteAllRecipes() = viewModelScope.launch {
+    fun deleteAllRecipesWeek() = viewModelScope.launch {
         recipeWeekDAO.deleteAllRecipesWeek()
     }
 
-    suspend fun getRecipe(recipeId: Int) : List<RecipeRoomWeekItem>{
-        return recipeWeekDAO.geRecipeWeek(recipeId)
+    suspend fun geRecipeWeek(weekNumber: Int) : List<RecipeRoomWeekItem>{
+        return recipeWeekDAO.geRecipeWeek(weekNumber)
     }
 }

@@ -34,6 +34,9 @@
         android:label="@string/title_recipe_list"
         tools:layout="@layout/fragment_recipe_list" >
 
+        <argument
+            android:name="weekNumber"
+            app:argType="long" />
     </fragment>
 
     <fragment
@@ -41,7 +44,11 @@
         android:name="dk.kriaactividade.mealngram.presentation.recipeDetails.RecipeDetailsFragment"
         android:label="@string/title_dashboard"
         tools:layout="@layout/fragment_recipe_details"
-        />
+        >
+        <argument
+            android:name="weekNumber"
+            app:argType="integer" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_recipe_selected"

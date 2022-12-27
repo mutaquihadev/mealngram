@@ -29,4 +29,6 @@
     <string name="confirm_password_register">Confirme a senha</string>
     <string name="register">Registrar</string>
     <string name="favorite">Favorite</string>
+    <string name="first_week">PRIMEIRA SEMANA</string>
+    <string name="next_week">PROXIMA SEMANA</string>
 </resources>

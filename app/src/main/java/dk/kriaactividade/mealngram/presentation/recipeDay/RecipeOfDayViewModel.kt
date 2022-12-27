@@ -20,7 +20,7 @@ class RecipeOfDayViewModel @Inject constructor(private val repository: RecipeWee
 
     init {
         viewModelScope.launch {
-            repository.allRecipes().map {
+            repository.getAllRecipesWeek().map {
                 if (compareDay(it.dateWeek) == getCurrentDate()){
                     val recipe = RecipeRoomWeekItem(
                         id = it.id,
@@ -28,7 +28,8 @@ class RecipeOfDayViewModel @Inject constructor(private val repository: RecipeWee
                         description = it.description,
                         ingredients = it.ingredients,
                         dateWeek = it.dateWeek,
-                        image = it.image
+                        image = it.image,
+                        weekNumber = it.weekNumber
                     )
                     _currentRecipe.postValue(recipe)
                 }
