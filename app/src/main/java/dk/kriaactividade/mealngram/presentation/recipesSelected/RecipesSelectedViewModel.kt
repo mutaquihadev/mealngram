@@ -1,11 +1,10 @@
 package dk.kriaactividade.mealngram.presentation.recipesSelected
 
-import android.provider.ContactsContract.Data
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dk.kriaactividade.mealngram.data.repository.RecipesRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import dk.kriaactividade.mealngram.database.room.RecipeRoomWeekItem
 import dk.kriaactividade.mealngram.database.room.RecipeWeekRepository
 import dk.kriaactividade.mealngram.helpers.DataState
@@ -14,12 +13,8 @@ import dk.kriaactividade.mealngram.presentation.utils.formatDateForLiteral
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
 import java.util.*
-import java.util.logging.SimpleFormatter
 import javax.inject.Inject
-import kotlin.collections.HashMap
-import kotlin.collections.HashSet
 
 data class RecipeListDetailsUiData(
     val recipes: List<RecipesSelectedItem>
@@ -31,6 +26,7 @@ sealed interface RecipeListDetailsUiState {
     data class Success(val uiData: RecipeListDetailsUiData) : RecipeListDetailsUiState
 }
 
+@HiltViewModel
 class RecipesSelectedViewModel @Inject constructor(private val repository: RecipeWeekRepository) :
     ViewModel(), HandleGetState<List<RecipesSelectedItem>> {
 
@@ -40,9 +36,10 @@ class RecipesSelectedViewModel @Inject constructor(private val repository: Recip
         MutableStateFlow(RecipeListDetailsUiState.Loading)
     val uiState = _uiState.asStateFlow()
 
-    val listDateWeek: LiveData<MutableList<kotlin.collections.HashMap<Date,Date>>>
-    get() = _listDateWeek
-    private val _listDateWeek = MutableLiveData<MutableList<kotlin.collections.HashMap<Date,Date>>>()
+    val listDateWeek: LiveData<MutableList<kotlin.collections.HashMap<Date, Date>>>
+        get() = _listDateWeek
+    private val _listDateWeek =
+        MutableLiveData<MutableList<kotlin.collections.HashMap<Date, Date>>>()
 
 
     override fun handleGetState(state: DataState<List<RecipesSelectedItem>>) {
@@ -58,12 +55,18 @@ class RecipesSelectedViewModel @Inject constructor(private val repository: Recip
         }
     }
 
-    suspend fun getRoomList(): List<RecipeRoomWeekItem> {
-        return repository.allRecipes()
+    init {
+        viewModelScope.launch {
+            getCurrentWeek()
+        }
     }
 
-    fun getCurrentWeek(){
-        val listDaysOnWeek = mutableListOf<HashMap<Date,Date>>()
+    suspend fun getRoomList(): List<RecipeRoomWeekItem> {
+        return repository.getAllRecipesWeek()
+    }
+
+    private fun getCurrentWeek() {
+        val listDaysOnWeek = mutableListOf<HashMap<Date, Date>>()
         val calendar = Calendar.getInstance()
         val week = calendar.get(Calendar.WEEK_OF_YEAR)
         val listWeek: List<Int> = listOf(0, 1, 2, 3)
@@ -74,7 +77,7 @@ class RecipesSelectedViewModel @Inject constructor(private val repository: Recip
     }
 
     private fun getCurrent(weekInt: Int): HashMap<Date, Date> {
-        val daysOnWeek = hashMapOf<Date,Date>()
+        val daysOnWeek = hashMapOf<Date, Date>()
         val data = Calendar.getInstance()
         data.firstDayOfWeek = Calendar.MONDAY
         data.set(Calendar.WEEK_OF_YEAR, weekInt)
@@ -86,6 +89,21 @@ class RecipesSelectedViewModel @Inject constructor(private val repository: Recip
         return daysOnWeek
     }
 
+    fun convertDateForString(initialDate: Date, finalDate: Date): String {
+        return "${initialDate.formatDateForLiteral()} á ${finalDate.formatDateForLiteral()}"
+    }
 
-
+    fun getWeekNumber(weekNumber: Int): Long {
+        val data = Calendar.getInstance()
+        return if (weekNumber == 0) {
+            data.time.time
+        } else {
+            val week = data.get(Calendar.WEEK_OF_YEAR)
+            data.firstDayOfWeek = Calendar.MONDAY
+            val weekSelected = week + weekNumber
+            data.set(Calendar.WEEK_OF_YEAR, weekSelected)
+            data.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
+            data.time.time
+        }
+    }
 }

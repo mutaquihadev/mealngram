@@ -81,32 +81,15 @@ class RecipesRepositoryImp @Inject constructor(private val database: FirebaseFir
             }
     }
 
-    override suspend fun getAllRecipes(): Flow<DataState<List<RecipeItem>>> = flow {
+    override suspend fun getAllRecipes(): Flow<DataState<List<Recipe>>> = flow {
         emit(DataState.Loading(loadingState = LoadingState.Loading))
 
         val snapshot = database.collection(RECIPE).get().await()
         val recipes = snapshot.toObjects(Recipe::class.java)
 
-        val recipeItems = recipes.map {
-            RecipeItem(
-                id = it.id,
-                name = it.name,
-                image = it.image,
-                description = it.description,
-                ingredients = it.ingredients,
-                selectedDays = generateSelectedDays(it.id)
-            )
-        }
+        emit(DataState.SaveCache(saveState = recipes))
 
-        emit(DataState.SaveCache(saveState = recipeItems))
-
-        emit(DataState.Data(data = recipeItems))
+        emit(DataState.Data(data = recipes))
     }
 
-    private fun generateSelectedDays(recipeId: Int): List<SelectedChipState> {
-        val calendar = Calendar.getInstance()
-        return calendar.daysUntilTheEndOfWeek().map {
-            SelectedChipState(id = recipeId, date = it, week = it.toWeek())
-        }
-    }
 }

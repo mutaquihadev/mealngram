@@ -11,10 +11,10 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface RecipeDAO {
-    @Query("SELECT * from table_recipe ORDER BY roomId")
+    @Query("SELECT * from table_recipe ORDER BY id")
     suspend fun getAllRecipes(): List<RecipeRoomItem>
 
-    @Query("SELECT * FROM table_recipe WHERE roomId = :recipeId")
+    @Query("SELECT * FROM table_recipe WHERE id = :recipeId")
     suspend fun geRecipe(recipeId: Int): List<RecipeRoomItem>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -33,8 +33,8 @@ interface RecipeWeekDAO {
     @Query("SELECT * from table_recipe_week ORDER BY roomId")
     suspend fun getAllRecipesWeek(): List<RecipeRoomWeekItem>
 
-    @Query("SELECT * FROM table_recipe_week WHERE roomId = :recipeId")
-    suspend fun geRecipeWeek(recipeId: Int): List<RecipeRoomWeekItem>
+    @Query("SELECT * FROM table_recipe_week WHERE weekNumber = :weekNumber")
+    suspend fun geRecipeWeek(weekNumber: Int): List<RecipeRoomWeekItem>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertRecipeWeek(recipeDetails: RecipeRoomWeekItem)

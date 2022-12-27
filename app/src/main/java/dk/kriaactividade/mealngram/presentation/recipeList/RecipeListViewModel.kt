@@ -1,8 +1,10 @@
 package dk.kriaactividade.mealngram.presentation.recipeList
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dk.kriaactividade.mealngram.data.domain.Recipe
 import dk.kriaactividade.mealngram.data.domain.RecipesDetails
 import dk.kriaactividade.mealngram.data.domain.WEEK
 import dk.kriaactividade.mealngram.data.repository.RecipesRepository
@@ -10,6 +12,7 @@ import dk.kriaactividade.mealngram.database.room.RecipeRoomItem
 import dk.kriaactividade.mealngram.database.room.RecipeRoomWeekItem
 import dk.kriaactividade.mealngram.database.room.RoomRepository
 import dk.kriaactividade.mealngram.helpers.DataState
+import dk.kriaactividade.mealngram.presentation.utils.getWeekNumber
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -40,22 +43,31 @@ interface RecipeListViewModelItemActions {
 class RecipeListViewModel @Inject constructor(private val repository: RecipesRepository) :
     ViewModel(),
     RecipeListViewModelItemActions {
+
     @Inject
     lateinit var room: RoomRepository
     private var valueProgress: Int = 0
     private var updatedSelectedDays = listOf<SelectedChipState>()
     private var showButton = false
     private val recipeListLocal = mutableListOf<RecipeRoomWeekItem>()
+    private var dateLong = 0L
 
     private val _uiState: MutableStateFlow<RecipeListUiState> =
         MutableStateFlow(RecipeListUiState.Loading)
     val uiState = _uiState.asStateFlow()
 
     private val selectedChipStates: List<SelectedChip> by lazy {
+        val date = Date(dateLong)
         val calendar = Calendar.getInstance()
+        calendar.time = date
         calendar.daysUntilTheEndOfWeek().map {
             SelectedChip(date = it, weekDay = it.toWeek())
         }
+    }
+
+    fun getArgsDate(date:Long):Long{
+        dateLong = date
+        return dateLong
     }
 
     init {
@@ -66,12 +78,32 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
         }
     }
 
-    private fun handleGetAllRecipes(state: DataState<List<RecipeItem>>) {
+    private fun generateSelectedDays(recipeId: Int): List<SelectedChipState> {
+        val date = Date(dateLong)
+        val calendar = Calendar.getInstance()
+        calendar.time = date
+        return calendar.daysUntilTheEndOfWeek().map {
+            SelectedChipState(id = recipeId, date = it, week = it.toWeek())
+        }
+    }
+
+    private fun handleGetAllRecipes(state: DataState<List<Recipe>>) {
         when (state) {
             is DataState.Error -> {}
             is DataState.Data -> {
+                val recipeItem = state.data.map { recipe ->
+                    RecipeItem(
+                        id = recipe.id,
+                        name = recipe.name,
+                        description = recipe.description,
+                        image = recipe.image,
+                        ingredients = recipe.ingredients,
+                        selectedDays = generateSelectedDays(recipe.id)
+                    )
+                }
+
                 _uiState.value =
-                    RecipeListUiState.Success(uiData = RecipeListUiData(recipes = state.data))
+                    RecipeListUiState.Success(uiData = RecipeListUiData(recipes = recipeItem))
             }
             is DataState.Loading -> _uiState.value = RecipeListUiState.Loading
             is DataState.SaveCache -> {
@@ -94,7 +126,9 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
                         room.allRecipes()
                             .forEach { dateLocal -> recipeLocalDate = dateLocal.dateInserted }
 
-                        if (recipeLocalDate?.let { getCurrentDateString(it) } != getCurrentDateString(getCurrentDate())){
+                        if (recipeLocalDate?.let { getCurrentDateString(it) } != getCurrentDateString(
+                                getCurrentDate()
+                            )) {
                             room.deleteAllRecipes()
                             room.insertList(recipeLocal)
                         }
@@ -144,29 +178,6 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
 
     }
 
-    private fun clearSelectionMode() {
-//        val clearedRecipes = recipes.map { recipe ->
-//            RecipeItem(
-//                id = recipe.id,
-//                name = recipe.name,
-//                description = recipe.description,
-//                ingredients = recipe.ingredients,
-//                image = recipe.image,
-//                isSelectionMode = false,
-//                selectedDays = recipe.selectedDays
-//            )
-//        }
-//
-//        recipes.clear()
-//        recipes.addAll(clearedRecipes)
-    }
-
-
-    private fun clearSelectedRecipes() {
-        selectedChipStates.forEach { it.recipeId = null }
-    }
-
-
     override fun onDaySelected(recipeId: Int, weekDay: WEEK, date: Date) {
 
         _uiState.value.let {
@@ -208,9 +219,9 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
                     }
 
                     if (recipeId == selected.recipeId) {
-                        goToCompleteSelection(recipe, false,selected.date)
+                        goToCompleteSelection(recipe, false, selected.date)
                     } else {
-                        goToCompleteSelection(recipe, true,selected.date)
+                        goToCompleteSelection(recipe, true, selected.date)
                     }
 
 
@@ -236,14 +247,19 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
         }
     }
 
-    private fun goToCompleteSelection(selectedItem: RecipeItem, removeIt: Boolean, selectDate: Date) {
+    private fun goToCompleteSelection(
+        selectedItem: RecipeItem,
+        removeIt: Boolean,
+        selectDate: Date
+    ) {
         val recipeDetails = RecipeRoomWeekItem(
             id = selectedItem.id,
             name = selectedItem.name,
             description = selectedItem.description,
             ingredients = selectedItem.ingredients,
             image = selectedItem.image,
-            dateWeek = selectDate
+            dateWeek = selectDate,
+            weekNumber = dateLong.getWeekNumber()
         )
 
         if (removeIt) {

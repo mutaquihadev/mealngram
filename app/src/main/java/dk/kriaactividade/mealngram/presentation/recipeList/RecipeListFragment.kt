@@ -10,15 +10,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import dk.kriaactividade.mealngram.database.room.RecipeWeekRepository
 import dk.kriaactividade.mealngram.databinding.FragmentRecipeListBinding
-import dk.kriaactividade.mealngram.presentation.utils.Constants
-import dk.kriaactividade.mealngram.presentation.utils.Constants.RESULT_FROM_DETAILS
-import dk.kriaactividade.mealngram.presentation.utils.gone
-import dk.kriaactividade.mealngram.presentation.utils.setNavigationResult
-import dk.kriaactividade.mealngram.presentation.utils.visible
+import dk.kriaactividade.mealngram.presentation.utils.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -26,6 +23,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class RecipeListFragment : Fragment() {
 
+    private val args:RecipeListFragmentArgs by navArgs()
     private val viewModel: RecipeListViewModel by viewModels()
     @Inject
     lateinit var recipeWeekRepository: RecipeWeekRepository
@@ -43,6 +41,7 @@ class RecipeListFragment : Fragment() {
             adapter = recipesAdapter
         }
 
+        viewModel.getArgsDate(args.weekNumber)
 
         lifecycleScope.launch {
             viewModel.uiState.collect { uiState ->
@@ -61,8 +60,8 @@ class RecipeListFragment : Fragment() {
                     }
                     is RecipeListUiState.CompleteSelection -> {
                         binding.buttonOk.setOnClickListener {
-                            setNavigationResult(true,"RESULT")
-                            recipeWeekRepository.insertList(uiState.complete.completeSelection)
+                            setNavigationResult(args.weekNumber.getWeekNumber(),"RESULT")
+                            recipeWeekRepository.insertListWeek(uiState.complete.completeSelection)
                             findNavController().navigateUp()
                         }
                     }

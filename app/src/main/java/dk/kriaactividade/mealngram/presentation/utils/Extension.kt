@@ -44,8 +44,16 @@ fun Date.formatDateForLiteral():String{
 }
 
 fun Fragment.getNavigationResult(key: String = "result") =
-    findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>(key)
+    findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Int>(key)
 
-fun Fragment.setNavigationResult(result: Boolean, key: String = "result") {
+fun Fragment.setNavigationResult(result: Int, key: String = "result") {
     findNavController().previousBackStackEntry?.savedStateHandle?.set(key, result)
+}
+
+fun Long.getWeekNumber():Int{
+    val date = Date(this)
+    val calendar = Calendar.getInstance()
+    calendar.time = date
+    val week = calendar.get(Calendar.WEEK_OF_YEAR)
+    return week
 }

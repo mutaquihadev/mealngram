@@ -25,6 +25,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class RecipeDetailsFragment : Fragment() {
 
+    private val args: RecipeDetailsFragmentArgs by navArgs()
     private lateinit var binding : FragmentRecipeDetailsBinding
     @Inject
     lateinit var viewModel:RecipeDetailsViewModel
@@ -36,7 +37,7 @@ class RecipeDetailsFragment : Fragment() {
     ): View {
         binding = FragmentRecipeDetailsBinding.inflate(layoutInflater)
         lifecycleScope.launch {
-            setViewPager(viewModel.getDetailsList())
+            setViewPager(viewModel.getDetailsList(args.weekNumber))
         }
 
         binding.apply {
