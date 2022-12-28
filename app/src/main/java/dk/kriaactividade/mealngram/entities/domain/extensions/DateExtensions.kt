@@ -1,4 +1,4 @@
-package dk.kriaactividade.mealngram.entities.domain
+package dk.kriaactividade.mealngram.entities.domain.extensions
 
 import dk.kriaactividade.mealngram.entities.domain.recipe.WEEK
 import java.util.*

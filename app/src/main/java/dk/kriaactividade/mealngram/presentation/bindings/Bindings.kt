@@ -45,12 +45,6 @@ fun ChipGroup.setSelectableDays(
         chip.isChecked = chipState.isChecked
         chip.isEnabled = chipState.isSelectable
 
-        chip.setOnClickListener {
-            actions.onDaySelected(
-                date = chipState.date,
-                recipeId = chipState.id,
-                weekDay = chipState.week
-            )
-        }
+        chip.setOnClickListener { actions.onSelectableDaySelected(selectableDay = chipState) }
     }
 }

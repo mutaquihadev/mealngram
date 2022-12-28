@@ -10,7 +10,6 @@ import androidx.lifecycle.lifecycleScope
 import coil.load
 import dagger.hilt.android.AndroidEntryPoint
 import dk.kriaactividade.mealngram.databinding.FragmentRecipeOfDayBinding
-import dk.kriaactividade.mealngram.entities.domain.toWeek
 import dk.kriaactividade.mealngram.entities.ui.currentDayRecipe.RecipeOfDayUiState
 import kotlinx.coroutines.launch
 
