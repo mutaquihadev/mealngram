@@ -4,6 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dk.kriaactividade.mealngram.data.repository.RecipesRepository
 import dk.kriaactividade.mealngram.database.room.RecipeEntity
+import dk.kriaactividade.mealngram.entities.domain.recipe.SelectFavoriteItem
+import dk.kriaactividade.mealngram.entities.ui.selectfavoriterecipe.SelectFavoriteRecipesViewActions
+import dk.kriaactividade.mealngram.entities.ui.selectfavoriterecipe.SelectFavoriteUiData
+import dk.kriaactividade.mealngram.entities.ui.selectfavoriterecipe.SelectFavoriteUiState
 import dk.kriaactividade.mealngram.helpers.DataState
 import dk.kriaactividade.mealngram.presentation.utils.Preferences
 import dk.kriaactividade.mealngram.presentation.utils.convertStringForInt
@@ -11,20 +15,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
-data class SelectFavoriteUiData(
-    val selectedFavorites: List<SelectFavoriteItem> = listOf(),
-)
-
-sealed interface SelectFavoriteUiState {
-    object Loading : SelectFavoriteUiState
-    object Error : SelectFavoriteUiState
-    data class Success(val uiData: SelectFavoriteUiData) : SelectFavoriteUiState
-}
-
-interface SelectFavoriteRecipesViewActions {
-    fun onFavoriteItem(favoriteRecipeId: Int)
-}
 
 class SelectFavoriteRecipesViewModel @Inject constructor(private val repository: RecipesRepository) :
     ViewModel(), SelectFavoriteRecipesViewActions {

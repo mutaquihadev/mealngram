@@ -13,24 +13,15 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-data class RecipeDetailsUiData(
-    val recipes: List<SelectableRecipe>
-)
-
-sealed interface RecipeDetailsUiState {
-    object Loading : RecipeDetailsUiState
-    object Error : RecipeDetailsUiState
-    data class Success(val uiData: RecipeDetailsUiData) : RecipeDetailsUiState
-}
 
 @HiltViewModel
-class RecipeDetailsViewModel @Inject constructor(private val repository: RecipesRepository, private val savedStateHandle: SavedStateHandle) :
+class RecipeDetailsViewModel @Inject constructor(private val repository: RecipesRepository, savedStateHandle: SavedStateHandle) :
     ViewModel(),HandleGetState<List<SelectableRecipe>> {
 
-    val weekNumber = savedStateHandle.get<Int>("weekNumber")
+    private val weekNumber = savedStateHandle.get<Int>("weekNumber")
 
-    private val _uiState: MutableStateFlow<RecipeDetailsUiState> =
-        MutableStateFlow(RecipeDetailsUiState.Loading)
+    private val _uiState: MutableStateFlow<List<SelectableRecipe>> =
+        MutableStateFlow(emptyList())
     val uiState = _uiState.asStateFlow()
 
     init {
@@ -44,9 +35,8 @@ class RecipeDetailsViewModel @Inject constructor(private val repository: Recipes
     override fun handleGetState(state: DataState<List<SelectableRecipe>>) {
         when(state){
             is DataState.Data -> {
-                _uiState.value = RecipeDetailsUiState.Success(RecipeDetailsUiData(state.data))
+                _uiState.value = state.data
             }
         }
     }
-
 }

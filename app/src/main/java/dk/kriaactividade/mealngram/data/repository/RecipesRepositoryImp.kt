@@ -1,7 +1,7 @@
 package dk.kriaactividade.mealngram.data.repository
 
 import com.google.firebase.firestore.FirebaseFirestore
-import dk.kriaactividade.mealngram.data.domain.RecipeDTO
+import dk.kriaactividade.mealngram.entities.dto.RecipeDTO
 import dk.kriaactividade.mealngram.database.RecipeDAO
 import dk.kriaactividade.mealngram.database.SelectableRecipeDAO
 import dk.kriaactividade.mealngram.database.room.RecipeEntity

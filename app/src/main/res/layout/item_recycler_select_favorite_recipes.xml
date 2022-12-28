@@ -6,11 +6,11 @@
     <data>
         <variable
             name="selectFavoriteRecipe"
-            type="dk.kriaactividade.mealngram.presentation.favorite.selectFavorite.SelectFavoriteItem" />
+            type="dk.kriaactividade.mealngram.entities.domain.recipe.SelectFavoriteItem" />
 
         <variable
             name="actionsFavorite"
-            type="dk.kriaactividade.mealngram.presentation.favorite.selectFavorite.SelectFavoriteRecipesViewActions" />
+            type="dk.kriaactividade.mealngram.entities.ui.selectfavoriterecipe.SelectFavoriteRecipesViewActions" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -58,8 +58,6 @@
                         android:padding="8dp"
                         android:src="@drawable/ic_baseline_favorite_24"
                         android:visibility="gone"
-                        app:getId="@{selectFavoriteRecipe.id}"
-                        app:onGetId="@{actionsFavorite}"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -73,8 +71,6 @@
                         android:padding="8dp"
                         android:src="@drawable/ic_baseline_favorite_border_24"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:getId="@{selectFavoriteRecipe.id}"
-                        app:onGetId="@{actionsFavorite}"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"

@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import dk.kriaactividade.mealngram.databinding.ItemRecyclerHomeBinding
+import dk.kriaactividade.mealngram.entities.domain.recipe.RecipeItem
+import dk.kriaactividade.mealngram.entities.ui.recipeList.RecipeListViewModelItemActions
 
 class RecipeListAdapter(
     private val context: Context,

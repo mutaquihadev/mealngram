@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dk.kriaactividade.mealngram.data.repository.RecipesRepository
 import dk.kriaactividade.mealngram.database.room.SelectableRecipe
+import dk.kriaactividade.mealngram.entities.ui.recipelistdetails.RecipeListDetailsUiState
 import dk.kriaactividade.mealngram.helpers.DataState
 import dk.kriaactividade.mealngram.helpers.HandleGetState
 import dk.kriaactividade.mealngram.presentation.utils.formatDateForLiteral
@@ -15,16 +16,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
-
-data class RecipeListDetailsUiData(
-    val recipes: List<SelectableRecipe>
-)
-
-sealed interface RecipeListDetailsUiState {
-    object Loading : RecipeListDetailsUiState
-    object Error : RecipeListDetailsUiState
-    data class Success(val uiData: RecipeListDetailsUiData) : RecipeListDetailsUiState
-}
 
 @HiltViewModel
 class RecipesSelectedViewModel @Inject constructor(private val repository: RecipesRepository) :
@@ -52,7 +43,7 @@ class RecipesSelectedViewModel @Inject constructor(private val repository: Recip
             is DataState.Error -> {}
             is DataState.Data -> {
                 _uiState.value =
-                    RecipeListDetailsUiState.Success(uiData = RecipeListDetailsUiData(recipes = state.data))
+                    RecipeListDetailsUiState.Success(recipes = state.data)
             }
             is DataState.Loading -> _uiState.value = RecipeListDetailsUiState.Loading
         }
@@ -97,6 +88,4 @@ class RecipesSelectedViewModel @Inject constructor(private val repository: Recip
             data.time.time
         }
     }
-
-
 }

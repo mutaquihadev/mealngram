@@ -13,9 +13,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import dk.kriaactividade.mealngram.databinding.FragmentRecipeListBinding
-import dk.kriaactividade.mealngram.presentation.utils.getWeekNumber
+import dk.kriaactividade.mealngram.entities.ui.recipeList.RecipeListUiState
 import dk.kriaactividade.mealngram.presentation.utils.gone
-import dk.kriaactividade.mealngram.presentation.utils.setNavigationResult
 import dk.kriaactividade.mealngram.presentation.utils.visible
 import kotlinx.coroutines.launch
 
@@ -38,6 +37,11 @@ class RecipeListFragment : Fragment() {
             adapter = recipesAdapter
         }
 
+        binding.buttonOk.setOnClickListener {
+            viewModel.saveSelectedRecipes()
+            findNavController().navigateUp()
+        }
+
         lifecycleScope.launch {
             viewModel.uiState.collect { uiState ->
                 when (uiState) {
@@ -50,15 +54,6 @@ class RecipeListFragment : Fragment() {
 
                         binding.progress.progress = uiState.uiData.progressValue
                         binding.buttonOk.isVisible = uiState.uiData.showButton
-
-                    }
-                    is RecipeListUiState.CompleteSelection -> {
-
-                        binding.buttonOk.setOnClickListener {
-                            setNavigationResult(viewModel.getArgsDateLong().getWeekNumber(),"RESULT")
-                            viewModel.insetRecipeSelected(uiState.complete.completeSelection)
-                            findNavController().navigateUp()
-                        }
                     }
                 }
             }

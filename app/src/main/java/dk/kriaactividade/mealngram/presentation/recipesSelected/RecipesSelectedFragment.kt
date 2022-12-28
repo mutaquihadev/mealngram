@@ -11,6 +11,7 @@ import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import dk.kriaactividade.mealngram.R
 import dk.kriaactividade.mealngram.databinding.FragmentRecipesSelectedBinding
+import dk.kriaactividade.mealngram.entities.ui.recipelistdetails.RecipeListDetailsUiState
 import dk.kriaactividade.mealngram.presentation.utils.getNavigationResult
 import dk.kriaactividade.mealngram.presentation.utils.getWeekNumber
 import dk.kriaactividade.mealngram.presentation.utils.gone
@@ -33,44 +34,10 @@ class RecipesSelectedFragment : Fragment() {
         observerListDateWeek()
 
         verifyIfListIsEmpty()
-        addRecipeWeek()
-        goToRecipesSelectedInWeek()
-
-        observerResultNavigaton()
+        //addRecipeWeek()
+        //goToRecipesSelectedInWeek()
 
         return binding.root
-    }
-
-    private fun observerResultNavigaton() {
-        val result = getNavigationResult("RESULT")
-        result?.observe(viewLifecycleOwner) {
-            when (it) {
-                viewModel.getWeekNumber(0).getWeekNumber() -> {
-                    binding.apply {
-                        addRecipesInFirstWeek.gone()
-                        goForRecipesInFirstWeek.visible()
-                    }
-                }
-                viewModel.getWeekNumber(1).getWeekNumber() -> {
-                    binding.apply {
-                        addRecipesInSecondWeek.gone()
-                        goForRecipesInSecondWeek.visible()
-                    }
-                }
-                viewModel.getWeekNumber(2).getWeekNumber() -> {
-                    binding.apply {
-                        addRecipesInThirdWeek.gone()
-                        goForRecipesInThirdWeek.visible()
-                    }
-                }
-                viewModel.getWeekNumber(3).getWeekNumber() -> {
-                    binding.apply {
-                        addRecipesInFourWeek.gone()
-                        goForRecipesInFourWeek.visible()
-                    }
-                }
-            }
-        }
     }
 
     private fun observerListDateWeek() {
@@ -93,7 +60,7 @@ class RecipesSelectedFragment : Fragment() {
            viewModel.uiState.collect {
                when(it){
                    is RecipeListDetailsUiState.Success -> {
-                       it.uiData.recipes.map {selectableRecipe ->
+                       it.recipes.map { selectableRecipe ->
                            if (selectableRecipe.weekNumber == viewModel.getWeekNumber(0).getWeekNumber()){
                                binding.apply {
                                    addRecipesInFirstWeek.gone()
@@ -125,70 +92,70 @@ class RecipesSelectedFragment : Fragment() {
         }
     }
 
-    private fun addRecipeWeek() {
-        binding.apply {
-            addRecipesInFirstWeek.setOnClickListener {
-                findNavController().navigate(
-                    RecipesSelectedFragmentDirections.actionNavigationRecipeSelectedToNavigationHome(
-                        viewModel.getWeekNumber(0)
-                    )
-                )
-            }
-            addRecipesInSecondWeek.setOnClickListener {
-                findNavController().navigate(
-                    RecipesSelectedFragmentDirections.actionNavigationRecipeSelectedToNavigationHome(
-                        viewModel.getWeekNumber(1)
-                    )
-                )
-            }
-            addRecipesInThirdWeek.setOnClickListener {
-                findNavController().navigate(
-                    RecipesSelectedFragmentDirections.actionNavigationRecipeSelectedToNavigationHome(
-                        viewModel.getWeekNumber(2)
-                    )
-                )
-            }
-            addRecipesInFourWeek.setOnClickListener {
-                findNavController().navigate(
-                    RecipesSelectedFragmentDirections.actionNavigationRecipeSelectedToNavigationHome(
-                        viewModel.getWeekNumber(3)
-                    )
-                )
-            }
-        }
-    }
+//    private fun addRecipeWeek() {
+//        binding.apply {
+//            addRecipesInFirstWeek.setOnClickListener {
+//                findNavController().navigate(
+//                    RecipesSelectedFragmentDirections.actionNavigationRecipeSelectedToNavigationHome(
+//                        viewModel.getWeekNumber(0)
+//                    )
+//                )
+//            }
+//            addRecipesInSecondWeek.setOnClickListener {
+//                findNavController().navigate(
+//                    RecipesSelectedFragmentDirections.actionNavigationRecipeSelectedToNavigationHome(
+//                        viewModel.getWeekNumber(1)
+//                    )
+//                )
+//            }
+//            addRecipesInThirdWeek.setOnClickListener {
+//                findNavController().navigate(
+//                    RecipesSelectedFragmentDirections.actionNavigationRecipeSelectedToNavigationHome(
+//                        viewModel.getWeekNumber(2)
+//                    )
+//                )
+//            }
+//            addRecipesInFourWeek.setOnClickListener {
+//                findNavController().navigate(
+//                    RecipesSelectedFragmentDirections.actionNavigationRecipeSelectedToNavigationHome(
+//                        viewModel.getWeekNumber(3)
+//                    )
+//                )
+//            }
+//        }
+//    }
 
-    private fun goToRecipesSelectedInWeek() {
-        binding.apply {
-            goForRecipesInFirstWeek.setOnClickListener {
-                findNavController().navigate(
-                    RecipesSelectedFragmentDirections.actionNavigationRecipeSelectedToNavigationRecipeDetails(
-                        viewModel.getWeekNumber(0).getWeekNumber()
-                    )
-                )
-            }
-            goForRecipesInSecondWeek.setOnClickListener {
-                findNavController().navigate(
-                    RecipesSelectedFragmentDirections.actionNavigationRecipeSelectedToNavigationRecipeDetails(
-                        viewModel.getWeekNumber(1).getWeekNumber()
-                    )
-                )
-            }
-            goForRecipesInThirdWeek.setOnClickListener {
-                findNavController().navigate(
-                    RecipesSelectedFragmentDirections.actionNavigationRecipeSelectedToNavigationRecipeDetails(
-                        viewModel.getWeekNumber(2).getWeekNumber()
-                    )
-                )
-            }
-            goForRecipesInFourWeek.setOnClickListener {
-                findNavController().navigate(
-                    RecipesSelectedFragmentDirections.actionNavigationRecipeSelectedToNavigationRecipeDetails(
-                        viewModel.getWeekNumber(3).getWeekNumber()
-                    )
-                )
-            }
-        }
-    }
+//    private fun goToRecipesSelectedInWeek() {
+//        binding.apply {
+//            goForRecipesInFirstWeek.setOnClickListener {
+//                findNavController().navigate(
+//                    RecipesSelectedFragmentDirections.actionNavigationRecipeSelectedToNavigationRecipeDetails(
+//                        viewModel.getWeekNumber(0).getWeekNumber()
+//                    )
+//                )
+//            }
+//            goForRecipesInSecondWeek.setOnClickListener {
+//                findNavController().navigate(
+//                    RecipesSelectedFragmentDirections.actionNavigationRecipeSelectedToNavigationRecipeDetails(
+//                        viewModel.getWeekNumber(1).getWeekNumber()
+//                    )
+//                )
+//            }
+//            goForRecipesInThirdWeek.setOnClickListener {
+//                findNavController().navigate(
+//                    RecipesSelectedFragmentDirections.actionNavigationRecipeSelectedToNavigationRecipeDetails(
+//                        viewModel.getWeekNumber(2).getWeekNumber()
+//                    )
+//                )
+//            }
+//            goForRecipesInFourWeek.setOnClickListener {
+//                findNavController().navigate(
+//                    RecipesSelectedFragmentDirections.actionNavigationRecipeSelectedToNavigationRecipeDetails(
+//                        viewModel.getWeekNumber(3).getWeekNumber()
+//                    )
+//                )
+//            }
+//        }
+//    }
 }
 

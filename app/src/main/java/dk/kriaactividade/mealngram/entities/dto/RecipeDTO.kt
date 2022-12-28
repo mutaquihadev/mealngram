@@ -1,4 +1,7 @@
-package dk.kriaactividade.mealngram.data.domain
+package dk.kriaactividade.mealngram.entities.dto
+
+import dk.kriaactividade.mealngram.entities.domain.chip.ChipState
+import dk.kriaactividade.mealngram.entities.domain.recipe.WEEK
 
 data class RecipeDTO(
     val id: Int = 0,
@@ -18,22 +21,4 @@ data class RecipeDTO(
         ChipState(id = id, WEEK.SATURDAY),
         ChipState(id = id, WEEK.SUNDAY)
     )
-
 )
-
-data class ChipState(
-    val id: Int,
-    val dayOfWeek: WEEK,
-    val isActive: Boolean = false,
-    val isSelectable: Boolean = true
-)
-
-enum class WEEK(val id: Int, val label: String) {
-    MONDAY(id = 0, label = "Seg"),
-    TUESDAY(id = 1, label = "Ter"),
-    WEDNESDAY(id = 2, label = "Qua"),
-    THURSDAY(id = 3, label = "Qui"),
-    FRIDAY(id = 4, label = "Sex"),
-    SATURDAY(id = 5, "Sab"),
-    SUNDAY(id = 6, label = "Dom")
-}

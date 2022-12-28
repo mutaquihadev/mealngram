@@ -10,7 +10,8 @@ import androidx.lifecycle.lifecycleScope
 import coil.load
 import dagger.hilt.android.AndroidEntryPoint
 import dk.kriaactividade.mealngram.databinding.FragmentRecipeOfDayBinding
-import dk.kriaactividade.mealngram.presentation.recipeList.toWeek
+import dk.kriaactividade.mealngram.entities.domain.toWeek
+import dk.kriaactividade.mealngram.entities.ui.currentDayRecipe.RecipeOfDayUiState
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -32,10 +33,10 @@ class RecipeOfDayFragment : Fragment() {
                 when(uiState){
                 is RecipeOfDayUiState.Success -> {
                     binding.apply {
-                        toolbarRecipeOfDay.textToolbar.text = uiState.uiData.selectedRecipe.dateWeek.toWeek().name
-                        imageRecipeOfDay.load(uiState.uiData.selectedRecipe.image)
-                        textRecipeOfDay.text = uiState.uiData.selectedRecipe.name
-                        textDescriptionRecipeofDay.text = uiState.uiData.selectedRecipe.description
+                        toolbarRecipeOfDay.textToolbar.text = uiState.currentDayRecipe.dateWeek.toString()
+                        imageRecipeOfDay.load(uiState.currentDayRecipe.image)
+                        textRecipeOfDay.text = uiState.currentDayRecipe.name
+                        textDescriptionRecipeofDay.text = uiState.currentDayRecipe.description
                     }
                 }
                 }

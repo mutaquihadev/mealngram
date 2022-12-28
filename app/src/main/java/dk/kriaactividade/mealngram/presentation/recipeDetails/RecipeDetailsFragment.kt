@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -38,13 +39,7 @@ class RecipeDetailsFragment : Fragment() {
         }
 
         lifecycleScope.launch {
-            viewModel.uiState.collect { uiState ->
-                when (uiState) {
-                    is RecipeDetailsUiState.Success -> {
-                        setViewPager(uiState.uiData.recipes)
-                    }
-                }
-            }
+            viewModel.uiState.collect { recipes -> setViewPager(recipes) }
         }
 
         configureToolbar()
