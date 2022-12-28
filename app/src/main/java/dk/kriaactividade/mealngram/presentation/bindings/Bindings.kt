@@ -8,11 +8,9 @@ import coil.load
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import dk.kriaactividade.mealngram.R
-import dk.kriaactividade.mealngram.presentation.favorite.selectFavorite.SelectFavoriteItem
 import dk.kriaactividade.mealngram.presentation.favorite.selectFavorite.SelectFavoriteRecipesViewActions
 import dk.kriaactividade.mealngram.presentation.recipeList.RecipeListViewModelItemActions
 import dk.kriaactividade.mealngram.presentation.recipeList.SelectedChipState
-import dk.kriaactividade.mealngram.presentation.utils.visible
 
 @BindingAdapter("imageUrl")
 fun ImageView.loadImage(url: String) {

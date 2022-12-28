@@ -10,7 +10,6 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import dk.kriaactividade.mealngram.databinding.FragmentProfileBinding
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class ProfileFragment : Fragment() {

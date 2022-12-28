@@ -1,6 +1,5 @@
 package dk.kriaactividade.mealngram.presentation.authentication.login
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,7 +10,6 @@ import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import dk.kriaactividade.mealngram.R
 import dk.kriaactividade.mealngram.databinding.FragmentLoginBinding
-import dk.kriaactividade.mealngram.presentation.authentication.register.RegisterFragment
 import javax.inject.Inject
 
 @AndroidEntryPoint

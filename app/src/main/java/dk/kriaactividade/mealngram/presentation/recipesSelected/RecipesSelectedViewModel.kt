@@ -12,7 +12,6 @@ import dk.kriaactividade.mealngram.helpers.HandleGetState
 import dk.kriaactividade.mealngram.presentation.utils.formatDateForLiteral
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject

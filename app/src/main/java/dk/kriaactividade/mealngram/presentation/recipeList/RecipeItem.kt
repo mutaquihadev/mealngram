@@ -1,8 +1,6 @@
 package dk.kriaactividade.mealngram.presentation.recipeList
 
-import android.os.Parcelable
 import dk.kriaactividade.mealngram.data.domain.WEEK
-import kotlinx.parcelize.Parcelize
 import java.util.*
 
 data class RecipeItem(

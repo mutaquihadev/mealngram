@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dk.kriaactividade.mealngram.data.repository.AuthRepository
 import kotlinx.coroutines.launch
-import java.util.Calendar
+import java.util.*
 import java.util.Calendar.*
 import javax.inject.Inject
 

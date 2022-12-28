@@ -2,7 +2,6 @@ package dk.kriaactividade.mealngram.presentation.favorite.selectFavorite
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dk.kriaactividade.mealngram.data.domain.RecipeDTO
 import dk.kriaactividade.mealngram.data.repository.RecipesRepository
 import dk.kriaactividade.mealngram.database.room.RecipeEntity
 import dk.kriaactividade.mealngram.helpers.DataState

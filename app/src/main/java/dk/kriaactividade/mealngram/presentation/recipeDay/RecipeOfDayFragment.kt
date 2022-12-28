@@ -12,7 +12,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import dk.kriaactividade.mealngram.databinding.FragmentRecipeOfDayBinding
 import dk.kriaactividade.mealngram.presentation.recipeList.toWeek
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class RecipeOfDayFragment : Fragment() {

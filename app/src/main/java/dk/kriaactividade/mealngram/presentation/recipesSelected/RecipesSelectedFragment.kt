@@ -11,7 +11,10 @@ import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import dk.kriaactividade.mealngram.R
 import dk.kriaactividade.mealngram.databinding.FragmentRecipesSelectedBinding
-import dk.kriaactividade.mealngram.presentation.utils.*
+import dk.kriaactividade.mealngram.presentation.utils.getNavigationResult
+import dk.kriaactividade.mealngram.presentation.utils.getWeekNumber
+import dk.kriaactividade.mealngram.presentation.utils.gone
+import dk.kriaactividade.mealngram.presentation.utils.visible
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
