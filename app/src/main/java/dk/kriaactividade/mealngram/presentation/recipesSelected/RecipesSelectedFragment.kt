@@ -87,32 +87,38 @@ class RecipesSelectedFragment : Fragment() {
 
     private fun verifyIfListIsEmpty() {
         lifecycleScope.launch {
-//            viewModel.getRoomList().map {
-//                if (it.weekNumber == viewModel.getWeekNumber(0).getWeekNumber()){
-//                    binding.apply {
-//                        addRecipesInFirstWeek.gone()
-//                        goForRecipesInFirstWeek.visible()
-//                    }
-//                }
-//                if (it.weekNumber == viewModel.getWeekNumber(1).getWeekNumber()){
-//                    binding.apply {
-//                        addRecipesInSecondWeek.gone()
-//                        goForRecipesInSecondWeek.visible()
-//                    }
-//                }
-//                if (it.weekNumber == viewModel.getWeekNumber(2).getWeekNumber()){
-//                    binding.apply {
-//                        addRecipesInThirdWeek.gone()
-//                        goForRecipesInThirdWeek.visible()
-//                    }
-//                }
-//                if (it.weekNumber == viewModel.getWeekNumber(3).getWeekNumber()){
-//                    binding.apply {
-//                        addRecipesInFourWeek.gone()
-//                        goForRecipesInFourWeek.visible()
-//                    }
-//                }
-//            }
+           viewModel.uiState.collect {
+               when(it){
+                   is RecipeListDetailsUiState.Success -> {
+                       it.uiData.recipes.map {selectableRecipe ->
+                           if (selectableRecipe.weekNumber == viewModel.getWeekNumber(0).getWeekNumber()){
+                               binding.apply {
+                                   addRecipesInFirstWeek.gone()
+                                   goForRecipesInFirstWeek.visible()
+                               }
+                           }
+                           if (selectableRecipe.weekNumber == viewModel.getWeekNumber(1).getWeekNumber()){
+                               binding.apply {
+                                   addRecipesInSecondWeek.gone()
+                                   goForRecipesInSecondWeek.visible()
+                               }
+                           }
+                           if (selectableRecipe.weekNumber == viewModel.getWeekNumber(2).getWeekNumber()){
+                               binding.apply {
+                                   addRecipesInThirdWeek.gone()
+                                   goForRecipesInThirdWeek.visible()
+                               }
+                           }
+                           if (selectableRecipe.weekNumber == viewModel.getWeekNumber(3).getWeekNumber()){
+                               binding.apply {
+                                   addRecipesInFourWeek.gone()
+                                   goForRecipesInFourWeek.visible()
+                               }
+                           }
+                       }
+                   }
+               }
+           }
         }
     }
 

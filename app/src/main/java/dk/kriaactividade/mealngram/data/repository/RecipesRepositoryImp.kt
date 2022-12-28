@@ -21,15 +21,33 @@ class RecipesRepositoryImp @Inject constructor(
     private val selectableRecipeDAO: SelectableRecipeDAO
 ) :
     RecipesRepository {
+    override suspend fun saveSelectedRecipes(selectedList: List<SelectableRecipe>) {
+       return selectableRecipeDAO.insertListWeek(selectedList)
+    }
 
-    override suspend fun selectedRecipes(selectableRecipes: List<SelectableRecipe>) {
+    override suspend fun getAllSelectedRecipes(): Flow<DataState<List<SelectableRecipe>>> = flow{
+        emit(DataState.Loading(loadingState = LoadingState.Loading))
+        val allRecipesSelected = selectableRecipeDAO.getAllSelectableRecipe()
+        emit(DataState.Data(data = allRecipesSelected))
+    }
 
+    override suspend fun getRecipeOfDay(weekNumber: Int): Flow<DataState<SelectableRecipe>> = flow{
+        emit(DataState.Loading(loadingState = LoadingState.Loading))
+        val recipeOfDay = selectableRecipeDAO.geRecipeOfDay(weekNumber)
+        emit(DataState.Data(data = recipeOfDay))
+    }
+
+    override suspend fun selectedRecipes(weekNumber: Int): Flow<DataState<List<SelectableRecipe>>>  = flow {
+        emit(DataState.Loading(loadingState = LoadingState.Loading))
+        val getSelectedRecipe = selectableRecipeDAO.geSelectableRecipeByWeek(weekNumber)
+        emit(DataState.Data(data = getSelectedRecipe))
     }
 
     override suspend fun getSelectedRecipes(): Flow<DataState<List<SelectableRecipe>>> = flow {
-
+        emit(DataState.Loading(loadingState = LoadingState.Loading))
+        val selectableRecipeList = selectableRecipeDAO.getAllSelectableRecipe()
+        emit(DataState.Data(data = selectableRecipeList))
     }
-
 
     override suspend fun getAllRecipes(): Flow<DataState<List<RecipeEntity>>> = flow {
         emit(DataState.Loading(loadingState = LoadingState.Loading))

@@ -53,7 +53,7 @@ class RecipeListFragment : Fragment() {
 
                         binding.buttonOk.setOnClickListener {
                             setNavigationResult(viewModel.getArgsDateLong().getWeekNumber(),"RESULT")
-                            //recipeWeekRepository.insertListWeek(uiState.complete.completeSelection)
+                            viewModel.insetRecipeSelected(uiState.complete.completeSelection)
                             findNavController().navigateUp()
                         }
                     }

@@ -6,17 +6,19 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dk.kriaactividade.mealngram.data.repository.RecipesRepository
+import dk.kriaactividade.mealngram.database.room.SelectableRecipe
 import dk.kriaactividade.mealngram.helpers.DataState
 import dk.kriaactividade.mealngram.helpers.HandleGetState
 import dk.kriaactividade.mealngram.presentation.utils.formatDateForLiteral
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
 data class RecipeListDetailsUiData(
-    val recipes: List<RecipesSelectedItem>
+    val recipes: List<SelectableRecipe>
 )
 
 sealed interface RecipeListDetailsUiState {
@@ -27,9 +29,8 @@ sealed interface RecipeListDetailsUiState {
 
 @HiltViewModel
 class RecipesSelectedViewModel @Inject constructor(private val repository: RecipesRepository) :
-    ViewModel(), HandleGetState<List<RecipesSelectedItem>> {
+    ViewModel(), HandleGetState<List<SelectableRecipe>> {
 
-    private val recipesSelected = mutableListOf<RecipesSelectedItem>()
 
     private val _uiState: MutableStateFlow<RecipeListDetailsUiState> =
         MutableStateFlow(RecipeListDetailsUiState.Loading)
@@ -40,29 +41,23 @@ class RecipesSelectedViewModel @Inject constructor(private val repository: Recip
     private val _listDateWeek =
         MutableLiveData<MutableList<Pair<Date, Date>>>()
 
-
-    override fun handleGetState(state: DataState<List<RecipesSelectedItem>>) {
-        when (state) {
-            is DataState.Error -> {}
-            is DataState.Data -> {
-                recipesSelected.clear()
-                recipesSelected.addAll(state.data)
-                _uiState.value =
-                    RecipeListDetailsUiState.Success(uiData = RecipeListDetailsUiData(recipes = recipesSelected))
-            }
-            is DataState.Loading -> _uiState.value = RecipeListDetailsUiState.Loading
-        }
-    }
-
     init {
         viewModelScope.launch {
+            repository.getSelectedRecipes().collect(::handleGetState)
             getCurrentWeek()
         }
     }
 
-//    suspend fun getRoomList(): List<RecipeRoomWeekItem> {
-//        return repository.getAllRecipesWeek()
-//    }
+    override fun handleGetState(state: DataState<List<SelectableRecipe>>) {
+        when (state) {
+            is DataState.Error -> {}
+            is DataState.Data -> {
+                _uiState.value =
+                    RecipeListDetailsUiState.Success(uiData = RecipeListDetailsUiData(recipes = state.data))
+            }
+            is DataState.Loading -> _uiState.value = RecipeListDetailsUiState.Loading
+        }
+    }
 
     private fun getCurrentWeek() {
         val listDaysOnWeek = mutableListOf<Pair<Date, Date>>()
@@ -103,4 +98,6 @@ class RecipesSelectedViewModel @Inject constructor(private val repository: Recip
             data.time.time
         }
     }
+
+
 }

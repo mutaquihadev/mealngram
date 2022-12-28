@@ -164,6 +164,13 @@ class RecipeListViewModel @Inject constructor(private val repository: RecipesRep
         }
     }
 
+    fun insetRecipeSelected(selectedList: List<SelectableRecipe>){
+        viewModelScope.launch {
+            repository.saveSelectedRecipes(selectedList)
+        }
+
+    }
+
     private fun goToCompleteSelection(
         selectedItem: RecipeItem,
         removeIt: Boolean,

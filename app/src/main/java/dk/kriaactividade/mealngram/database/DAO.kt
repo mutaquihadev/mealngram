@@ -34,6 +34,9 @@ interface SelectableRecipeDAO {
     @Query("SELECT * FROM table_recipe_week WHERE weekNumber = :weekNumber")
     suspend fun geSelectableRecipeByWeek(weekNumber: Int): List<SelectableRecipe>
 
+    @Query("SELECT * FROM table_recipe_week WHERE weekNumber = :weekNumber")
+    suspend fun geRecipeOfDay(weekNumber: Int): SelectableRecipe
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertListWeek(listRecipe: List<SelectableRecipe>)
 

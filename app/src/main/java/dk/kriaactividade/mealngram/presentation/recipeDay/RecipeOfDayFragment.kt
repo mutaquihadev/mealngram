@@ -5,18 +5,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import coil.load
 import dagger.hilt.android.AndroidEntryPoint
 import dk.kriaactividade.mealngram.databinding.FragmentRecipeOfDayBinding
 import dk.kriaactividade.mealngram.presentation.recipeList.toWeek
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class RecipeOfDayFragment : Fragment() {
 
     private lateinit var binding: FragmentRecipeOfDayBinding
-    @Inject
-    lateinit var viewModel: RecipeOfDayViewModel
+
+    private val viewModel: RecipeOfDayViewModel by viewModels()
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -25,12 +28,18 @@ class RecipeOfDayFragment : Fragment() {
     ): View {
         binding = FragmentRecipeOfDayBinding.inflate(layoutInflater)
 
-        viewModel.currentRecipe.observe(viewLifecycleOwner){
-            binding.apply {
-                toolbarRecipeOfDay.textToolbar.text = it.dateWeek.toWeek().name
-                imageRecipeOfDay.load(it.image)
-                textRecipeOfDay.text = it.name
-                textDescriptionRecipeofDay.text = it.description
+        lifecycleScope.launch{
+            viewModel.uiState.collect { uiState ->
+                when(uiState){
+                is RecipeOfDayUiState.Success -> {
+                    binding.apply {
+                        toolbarRecipeOfDay.textToolbar.text = uiState.uiData.selectedRecipe.dateWeek.toWeek().name
+                        imageRecipeOfDay.load(uiState.uiData.selectedRecipe.image)
+                        textRecipeOfDay.text = uiState.uiData.selectedRecipe.name
+                        textDescriptionRecipeofDay.text = uiState.uiData.selectedRecipe.description
+                    }
+                }
+                }
             }
         }
 
