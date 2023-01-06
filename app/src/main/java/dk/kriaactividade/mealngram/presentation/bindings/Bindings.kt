@@ -9,6 +9,7 @@ import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import dk.kriaactividade.mealngram.R
 import dk.kriaactividade.mealngram.entities.domain.chip.SelectedChipState
+import dk.kriaactividade.mealngram.entities.domain.extensions.toDayOfWeek
 import dk.kriaactividade.mealngram.entities.ui.recipeList.RecipeListViewModelItemActions
 import dk.kriaactividade.mealngram.entities.ui.selectfavoriterecipe.SelectFavoriteRecipesViewActions
 
@@ -40,7 +41,7 @@ fun ChipGroup.setSelectableDays(
         val chip = Chip(context, null, R.attr.CustomChipChoiceStyle)
         this.addView(chip)
 
-        chip.text = chipState.date.toString()
+        chip.text = chipState.date.toDayOfWeek()
         chip.isCheckable = chipState.isSelectable
         chip.isChecked = chipState.isChecked
         chip.isEnabled = chipState.isSelectable

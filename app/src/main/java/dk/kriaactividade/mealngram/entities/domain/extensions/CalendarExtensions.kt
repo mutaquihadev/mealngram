@@ -1,5 +1,6 @@
 package dk.kriaactividade.mealngram.entities.domain.extensions
 
+import java.text.SimpleDateFormat
 import java.util.*
 
 fun Calendar.daysUntilTheEndOfWeek(): List<Date> {
@@ -10,4 +11,9 @@ fun Calendar.daysUntilTheEndOfWeek(): List<Date> {
     } while (this.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY)
 
     return dates.toList()
+}
+
+fun Date.toDayOfWeek():String{
+    val formatDate = SimpleDateFormat("E",Locale(Locale.getDefault().displayCountry))
+   return formatDate.format(this)
 }
