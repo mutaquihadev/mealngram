@@ -19,11 +19,6 @@ class Converters {
         return gson.toJson(list)
     }
 
-    @TypeConverter
-    fun listToJson(value: List<ChipState>?) = Gson().toJson(value)
-
-    @TypeConverter
-    fun jsonToList(value: String) = Gson().fromJson(value, Array<ChipState>::class.java).toList()
 
     @TypeConverter
     fun toDate(dateLong: Long): Date {
