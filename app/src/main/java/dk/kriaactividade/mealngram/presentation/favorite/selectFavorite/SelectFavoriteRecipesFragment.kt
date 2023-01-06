@@ -9,6 +9,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import dk.kriaactividade.mealngram.databinding.FragmentSelectFavoriteRecipesBinding
+import dk.kriaactividade.mealngram.entities.ui.selectfavoriterecipe.SelectFavoriteUiState
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 

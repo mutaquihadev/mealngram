@@ -5,14 +5,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
-import dk.kriaactividade.mealngram.data.repository.RecipesRepositoryImp
+import dk.kriaactividade.mealngram.data.repository.AuthRepository
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class LoginViewModel @Inject constructor(private val repositoryImp: RecipesRepositoryImp) :
+class LoginViewModel @Inject constructor(private val authRepository: AuthRepository) :
     ViewModel() {
 
 
@@ -26,16 +23,15 @@ class LoginViewModel @Inject constructor(private val repositoryImp: RecipesRepos
 
     init {
         viewModelScope.launch {
-            repositoryImp.getIsLogged {
-                _userLogged.postValue(it)
-            }
+            val isLogged = authRepository.isLogged()
+            _userLogged.postValue(isLogged)
         }
     }
 
     fun loginSuccess(activity: Activity, email: String, password: String) {
         viewModelScope.launch {
             if (email.isNotEmpty() && password.isNotEmpty()) {
-                repositoryImp.getLogin(activity, email, password) { success, message ->
+                authRepository.login(activity, email, password) { success, message ->
                     val map = hashMapOf<Boolean, String?>()
                     map[success] = message
                     _loginSuccess.postValue(map)

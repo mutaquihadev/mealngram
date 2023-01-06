@@ -8,11 +8,9 @@ import coil.load
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import dk.kriaactividade.mealngram.R
-import dk.kriaactividade.mealngram.presentation.favorite.selectFavorite.SelectFavoriteItem
-import dk.kriaactividade.mealngram.presentation.favorite.selectFavorite.SelectFavoriteRecipesViewActions
-import dk.kriaactividade.mealngram.presentation.recipeList.RecipeListViewModelItemActions
-import dk.kriaactividade.mealngram.presentation.recipeList.SelectedChipState
-import dk.kriaactividade.mealngram.presentation.utils.visible
+import dk.kriaactividade.mealngram.entities.domain.chip.SelectedChipState
+import dk.kriaactividade.mealngram.entities.ui.recipeList.RecipeListViewModelItemActions
+import dk.kriaactividade.mealngram.entities.ui.selectfavoriterecipe.SelectFavoriteRecipesViewActions
 
 @BindingAdapter("imageUrl")
 fun ImageView.loadImage(url: String) {
@@ -42,17 +40,11 @@ fun ChipGroup.setSelectableDays(
         val chip = Chip(context, null, R.attr.CustomChipChoiceStyle)
         this.addView(chip)
 
-        chip.text = chipState.week.label
+        chip.text = chipState.date.toString()
         chip.isCheckable = chipState.isSelectable
         chip.isChecked = chipState.isChecked
         chip.isEnabled = chipState.isSelectable
 
-        chip.setOnClickListener {
-            actions.onDaySelected(
-                date = chipState.date,
-                recipeId = chipState.id,
-                weekDay = chipState.week
-            )
-        }
+        chip.setOnClickListener { actions.onSelectableDaySelected(selectableDay = chipState) }
     }
 }

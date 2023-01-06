@@ -1,18 +1,16 @@
 package dk.kriaactividade.mealngram.presentation.favorite
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.lifecycleScope
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import dk.kriaactividade.mealngram.R
 import dk.kriaactividade.mealngram.databinding.FragmentFavoriteBinding
 import dk.kriaactividade.mealngram.presentation.utils.visible
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -26,7 +24,7 @@ class FavoriteRecipesFragment : Fragment() {
     ): View {
         binding = FragmentFavoriteBinding.inflate(layoutInflater)
 
-        viewModel.handleGetAllRecipes()
+       // viewModel.handleGetAllRecipes()
 
         val favoriteRecipesAdapter = FavoriteRecipesAdapter()
         binding.rvRecipesFavorites.apply {

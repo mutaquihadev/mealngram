@@ -1,12 +1,11 @@
 package dk.kriaactividade.mealngram.database.room
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.util.*
 
 @Entity(tableName = "table_recipe")
-data class RecipeRoomItem(
+data class RecipeEntity(
     @PrimaryKey
     val id: Int,
     val name: String,
@@ -17,7 +16,7 @@ data class RecipeRoomItem(
 )
 
 @Entity(tableName = "table_recipe_week")
-data class RecipeRoomWeekItem(
+data class SelectableRecipe(
     @PrimaryKey(autoGenerate = true)
     val roomId: Int = 0,
     val id: Int,

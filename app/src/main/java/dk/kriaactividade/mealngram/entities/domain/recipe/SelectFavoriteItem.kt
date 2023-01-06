@@ -1,4 +1,5 @@
-package dk.kriaactividade.mealngram.presentation.favorite.selectFavorite
+package dk.kriaactividade.mealngram.entities.domain.recipe
+
 
 data class SelectFavoriteItem(
     val id: Int,

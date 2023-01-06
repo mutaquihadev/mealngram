@@ -8,39 +8,38 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import dk.kriaactividade.mealngram.data.repository.AuthRepository
+import dk.kriaactividade.mealngram.data.repository.AuthRepositoryImp
 import dk.kriaactividade.mealngram.data.repository.RecipesRepository
 import dk.kriaactividade.mealngram.data.repository.RecipesRepositoryImp
 import dk.kriaactividade.mealngram.database.RecipeDAO
 import dk.kriaactividade.mealngram.database.RecipeDataBase
-import dk.kriaactividade.mealngram.database.RecipeWeekDAO
-import dk.kriaactividade.mealngram.database.room.RecipeWeekRepository
-import dk.kriaactividade.mealngram.database.room.RoomRepository
+import dk.kriaactividade.mealngram.database.SelectableRecipeDAO
 
 @InstallIn(SingletonComponent::class)
 @Module
 object RepositoryModule {
     @Provides
-    fun providesRecipesRepository(database:FirebaseFirestore,auth: FirebaseAuth): RecipesRepository {
-        return RecipesRepositoryImp(database,auth)
+    fun providesRecipesRepository(
+        database: FirebaseFirestore,
+        recipeDAO: RecipeDAO,
+        selectableRecipeDAO: SelectableRecipeDAO
+    ): RecipesRepository {
+        return RecipesRepositoryImp(database, recipeDAO, selectableRecipeDAO)
     }
 
     @Provides
-    fun providesRecipeDAO(@ApplicationContext appContext: Context):RecipeDAO{
+    fun providesAuthRepository(auth: FirebaseAuth): AuthRepository {
+        return AuthRepositoryImp(auth)
+    }
+
+    @Provides
+    fun providesRecipeDAO(@ApplicationContext appContext: Context): RecipeDAO {
         return RecipeDataBase.getDatabase(appContext).recipeDAO()
     }
 
     @Provides
-    fun providesRecipeWeekDAO(@ApplicationContext appContext: Context):RecipeWeekDAO{
+    fun providesRecipeWeekDAO(@ApplicationContext appContext: Context): SelectableRecipeDAO {
         return RecipeDataBase.getDatabase(appContext).recipeWeekDAO()
-    }
-
-    @Provides
-    fun providesRecipeWeekRepository(recipeWeekDAO: RecipeWeekDAO): RecipeWeekRepository {
-        return RecipeWeekRepository(recipeWeekDAO)
-    }
-
-    @Provides
-    fun providesRepository(recipeDAO: RecipeDAO): RoomRepository {
-        return RoomRepository(recipeDAO)
     }
 }

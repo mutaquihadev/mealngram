@@ -3,7 +3,6 @@ package dk.kriaactividade.mealngram.database.converter
 import androidx.room.TypeConverter
 import com.google.common.reflect.TypeToken
 import com.google.gson.Gson
-import dk.kriaactividade.mealngram.data.domain.ChipState
 import java.util.*
 
 
@@ -20,11 +19,6 @@ class Converters {
         return gson.toJson(list)
     }
 
-    @TypeConverter
-    fun listToJson(value: List<ChipState>?) = Gson().toJson(value)
-
-    @TypeConverter
-    fun jsonToList(value: String) = Gson().fromJson(value, Array<ChipState>::class.java).toList()
 
     @TypeConverter
     fun toDate(dateLong: Long): Date {

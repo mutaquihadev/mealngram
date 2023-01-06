@@ -4,31 +4,24 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
 import dk.kriaactividade.mealngram.R
-import dk.kriaactividade.mealngram.data.domain.RecipesDetails
-import dk.kriaactividade.mealngram.database.room.RecipeRoomWeekItem
+import dk.kriaactividade.mealngram.database.room.SelectableRecipe
 import dk.kriaactividade.mealngram.databinding.FragmentRecipeDetailsBinding
-import dk.kriaactividade.mealngram.presentation.recipeList.RecipeItem
-import dk.kriaactividade.mealngram.presentation.recipeList.RecipeListUiData
-import dk.kriaactividade.mealngram.presentation.recipeList.RecipeListUiState
-import dk.kriaactividade.mealngram.presentation.utils.Constants.RESULT_FROM_DETAILS
 import dk.kriaactividade.mealngram.presentation.utils.gone
 import dk.kriaactividade.mealngram.presentation.utils.visible
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class RecipeDetailsFragment : Fragment() {
 
-    private val args: RecipeDetailsFragmentArgs by navArgs()
-    private lateinit var binding : FragmentRecipeDetailsBinding
-    @Inject
-    lateinit var viewModel:RecipeDetailsViewModel
+    private lateinit var binding: FragmentRecipeDetailsBinding
+    private val viewModel: RecipeDetailsViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,9 +29,6 @@ class RecipeDetailsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentRecipeDetailsBinding.inflate(layoutInflater)
-        lifecycleScope.launch {
-            setViewPager(viewModel.getDetailsList(args.weekNumber))
-        }
 
         binding.apply {
             loading.gone()
@@ -48,12 +38,15 @@ class RecipeDetailsFragment : Fragment() {
             }
         }
 
+        lifecycleScope.launch {
+            viewModel.uiState.collect { recipes -> setViewPager(recipes) }
+        }
 
         configureToolbar()
         return binding.root
     }
 
-    private fun backToRecipeList(){
+    private fun backToRecipeList() {
         findNavController().navigateUp()
     }
 
@@ -66,10 +59,11 @@ class RecipeDetailsFragment : Fragment() {
         }
     }
 
-    private fun setViewPager(listRecipes: List<RecipeRoomWeekItem>){
-        binding.vpMyRecipes.adapter = RecipesSelectedViewPagerAdapter(requireContext(),
+    private fun setViewPager(listRecipes: List<SelectableRecipe>) {
+        binding.vpMyRecipes.adapter = RecipesSelectedViewPagerAdapter(
+            requireContext(),
             listRecipes
         )
-        binding.indicator.setupWithViewPager(binding.vpMyRecipes,false)
+        binding.indicator.setupWithViewPager(binding.vpMyRecipes, false)
     }
 }

@@ -11,7 +11,11 @@ import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import dk.kriaactividade.mealngram.R
 import dk.kriaactividade.mealngram.databinding.FragmentRecipesSelectedBinding
-import dk.kriaactividade.mealngram.presentation.utils.*
+import dk.kriaactividade.mealngram.entities.ui.recipelistdetails.RecipeListDetailsUiState
+import dk.kriaactividade.mealngram.presentation.utils.getNavigationResult
+import dk.kriaactividade.mealngram.presentation.utils.getWeekNumber
+import dk.kriaactividade.mealngram.presentation.utils.gone
+import dk.kriaactividade.mealngram.presentation.utils.visible
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -33,92 +37,58 @@ class RecipesSelectedFragment : Fragment() {
         addRecipeWeek()
         goToRecipesSelectedInWeek()
 
-        observerResultNavigaton()
-
         return binding.root
     }
 
-    private fun observerResultNavigaton() {
-        val result = getNavigationResult("RESULT")
-        result?.observe(viewLifecycleOwner) {
-            when (it) {
-                viewModel.getWeekNumber(0).getWeekNumber() -> {
-                    binding.apply {
-                        addRecipesInFirstWeek.gone()
-                        goForRecipesInFirstWeek.visible()
-                    }
-                }
-                viewModel.getWeekNumber(1).getWeekNumber() -> {
-                    binding.apply {
-                        addRecipesInSecondWeek.gone()
-                        goForRecipesInSecondWeek.visible()
-                    }
-                }
-                viewModel.getWeekNumber(2).getWeekNumber() -> {
-                    binding.apply {
-                        addRecipesInThirdWeek.gone()
-                        goForRecipesInThirdWeek.visible()
-                    }
-                }
-                viewModel.getWeekNumber(3).getWeekNumber() -> {
-                    binding.apply {
-                        addRecipesInFourWeek.gone()
-                        goForRecipesInFourWeek.visible()
-                    }
-                }
-            }
-        }
-    }
-
     private fun observerListDateWeek() {
-        viewModel.listDateWeek.observe(viewLifecycleOwner) { hasMapDate ->
+        viewModel.listDateWeek.observe(viewLifecycleOwner) { pairDate ->
             binding.apply {
                 firstWeek.text = getString(R.string.first_week)
                 secondWeek.text = getString(R.string.next_week)
 
-                hasMapDate[2].keys.map { initialDate ->
-                    hasMapDate[2].values.map { finalDate ->
-                        thirdWeek.text = viewModel.convertDateForString(initialDate, finalDate)
-                    }
-                }
+                thirdWeek.text =
+                    viewModel.convertDateForString(pairDate[2].first, pairDate[2].second)
+                fourWeek.text =
+                    viewModel.convertDateForString(pairDate[3].first, pairDate[3].second)
 
-                hasMapDate[3].keys.map { initialDate ->
-                    hasMapDate[3].values.map { finalDate ->
-                        fourWeek.text = viewModel.convertDateForString(initialDate, finalDate)
-                    }
-                }
             }
         }
     }
 
     private fun verifyIfListIsEmpty() {
         lifecycleScope.launch {
-            viewModel.getRoomList().map {
-                if (it.weekNumber == viewModel.getWeekNumber(0).getWeekNumber()){
-                    binding.apply {
-                        addRecipesInFirstWeek.gone()
-                        goForRecipesInFirstWeek.visible()
-                    }
-                }
-                if (it.weekNumber == viewModel.getWeekNumber(1).getWeekNumber()){
-                    binding.apply {
-                        addRecipesInSecondWeek.gone()
-                        goForRecipesInSecondWeek.visible()
-                    }
-                }
-                if (it.weekNumber == viewModel.getWeekNumber(2).getWeekNumber()){
-                    binding.apply {
-                        addRecipesInThirdWeek.gone()
-                        goForRecipesInThirdWeek.visible()
-                    }
-                }
-                if (it.weekNumber == viewModel.getWeekNumber(3).getWeekNumber()){
-                    binding.apply {
-                        addRecipesInFourWeek.gone()
-                        goForRecipesInFourWeek.visible()
-                    }
-                }
-            }
+           viewModel.uiState.collect {
+               when(it){
+                   is RecipeListDetailsUiState.Success -> {
+                       it.recipes.map { selectableRecipe ->
+                           if (selectableRecipe.weekNumber == viewModel.getWeekNumber(0).getWeekNumber()){
+                               binding.apply {
+                                   addRecipesInFirstWeek.gone()
+                                   goForRecipesInFirstWeek.visible()
+                               }
+                           }
+                           if (selectableRecipe.weekNumber == viewModel.getWeekNumber(1).getWeekNumber()){
+                               binding.apply {
+                                   addRecipesInSecondWeek.gone()
+                                   goForRecipesInSecondWeek.visible()
+                               }
+                           }
+                           if (selectableRecipe.weekNumber == viewModel.getWeekNumber(2).getWeekNumber()){
+                               binding.apply {
+                                   addRecipesInThirdWeek.gone()
+                                   goForRecipesInThirdWeek.visible()
+                               }
+                           }
+                           if (selectableRecipe.weekNumber == viewModel.getWeekNumber(3).getWeekNumber()){
+                               binding.apply {
+                                   addRecipesInFourWeek.gone()
+                                   goForRecipesInFourWeek.visible()
+                               }
+                           }
+                       }
+                   }
+               }
+           }
         }
     }
 

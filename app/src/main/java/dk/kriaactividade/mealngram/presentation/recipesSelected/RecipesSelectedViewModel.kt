@@ -5,8 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dk.kriaactividade.mealngram.database.room.RecipeRoomWeekItem
-import dk.kriaactividade.mealngram.database.room.RecipeWeekRepository
+import dk.kriaactividade.mealngram.data.repository.RecipesRepository
+import dk.kriaactividade.mealngram.database.room.SelectableRecipe
+import dk.kriaactividade.mealngram.entities.ui.recipelistdetails.RecipeListDetailsUiState
 import dk.kriaactividade.mealngram.helpers.DataState
 import dk.kriaactividade.mealngram.helpers.HandleGetState
 import dk.kriaactividade.mealngram.presentation.utils.formatDateForLiteral
@@ -16,57 +17,40 @@ import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
-data class RecipeListDetailsUiData(
-    val recipes: List<RecipesSelectedItem>
-)
-
-sealed interface RecipeListDetailsUiState {
-    object Loading : RecipeListDetailsUiState
-    object Error : RecipeListDetailsUiState
-    data class Success(val uiData: RecipeListDetailsUiData) : RecipeListDetailsUiState
-}
-
 @HiltViewModel
-class RecipesSelectedViewModel @Inject constructor(private val repository: RecipeWeekRepository) :
-    ViewModel(), HandleGetState<List<RecipesSelectedItem>> {
+class RecipesSelectedViewModel @Inject constructor(private val repository: RecipesRepository) :
+    ViewModel(), HandleGetState<List<SelectableRecipe>> {
 
-    private val recipesSelected = mutableListOf<RecipesSelectedItem>()
 
     private val _uiState: MutableStateFlow<RecipeListDetailsUiState> =
         MutableStateFlow(RecipeListDetailsUiState.Loading)
     val uiState = _uiState.asStateFlow()
 
-    val listDateWeek: LiveData<MutableList<kotlin.collections.HashMap<Date, Date>>>
+    val listDateWeek: LiveData<MutableList<Pair<Date, Date>>>
         get() = _listDateWeek
     private val _listDateWeek =
-        MutableLiveData<MutableList<kotlin.collections.HashMap<Date, Date>>>()
+        MutableLiveData<MutableList<Pair<Date, Date>>>()
 
+    init {
+        viewModelScope.launch {
+            repository.getSelectedRecipes().collect(::handleGetState)
+            getCurrentWeek()
+        }
+    }
 
-    override fun handleGetState(state: DataState<List<RecipesSelectedItem>>) {
+    override fun handleGetState(state: DataState<List<SelectableRecipe>>) {
         when (state) {
             is DataState.Error -> {}
             is DataState.Data -> {
-                recipesSelected.clear()
-                recipesSelected.addAll(state.data)
                 _uiState.value =
-                    RecipeListDetailsUiState.Success(uiData = RecipeListDetailsUiData(recipes = recipesSelected))
+                    RecipeListDetailsUiState.Success(recipes = state.data)
             }
             is DataState.Loading -> _uiState.value = RecipeListDetailsUiState.Loading
         }
     }
 
-    init {
-        viewModelScope.launch {
-            getCurrentWeek()
-        }
-    }
-
-    suspend fun getRoomList(): List<RecipeRoomWeekItem> {
-        return repository.getAllRecipesWeek()
-    }
-
     private fun getCurrentWeek() {
-        val listDaysOnWeek = mutableListOf<HashMap<Date, Date>>()
+        val listDaysOnWeek = mutableListOf<Pair<Date, Date>>()
         val calendar = Calendar.getInstance()
         val week = calendar.get(Calendar.WEEK_OF_YEAR)
         val listWeek: List<Int> = listOf(0, 1, 2, 3)
@@ -76,8 +60,7 @@ class RecipesSelectedViewModel @Inject constructor(private val repository: Recip
         _listDateWeek.postValue(listDaysOnWeek)
     }
 
-    private fun getCurrent(weekInt: Int): HashMap<Date, Date> {
-        val daysOnWeek = hashMapOf<Date, Date>()
+    private fun getCurrent(weekInt: Int): Pair<Date, Date> {
         val data = Calendar.getInstance()
         data.firstDayOfWeek = Calendar.MONDAY
         data.set(Calendar.WEEK_OF_YEAR, weekInt)
@@ -85,8 +68,7 @@ class RecipesSelectedViewModel @Inject constructor(private val repository: Recip
         val initial = data.time
         data.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY)
         val final = data.time
-        daysOnWeek[initial] = final
-        return daysOnWeek
+        return Pair(initial,final)
     }
 
     fun convertDateForString(initialDate: Date, finalDate: Date): String {

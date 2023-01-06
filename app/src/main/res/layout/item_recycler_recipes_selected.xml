@@ -5,7 +5,7 @@
     <data>
         <variable
             name="recipeDetails"
-            type="dk.kriaactividade.mealngram.presentation.recipesSelected.RecipesSelectedItem" />
+            type="dk.kriaactividade.mealngram.entities.domain.recipe.RecipeItem" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
