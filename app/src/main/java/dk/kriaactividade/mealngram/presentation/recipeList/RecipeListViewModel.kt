@@ -1,19 +1,14 @@
 package dk.kriaactividade.mealngram.presentation.recipeList
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dk.kriaactividade.mealngram.data.repository.RecipesRepository
 import dk.kriaactividade.mealngram.database.room.RecipeEntity
-import dk.kriaactividade.mealngram.entities.domain.chip.SelectedChip
 import dk.kriaactividade.mealngram.entities.domain.chip.SelectedChipState
-import dk.kriaactividade.mealngram.entities.domain.chip.toSelectedChipStates
 import dk.kriaactividade.mealngram.entities.domain.extensions.daysUntilTheEndOfWeek
-import dk.kriaactividade.mealngram.entities.domain.extensions.toWeek
 import dk.kriaactividade.mealngram.entities.domain.recipe.RecipeItem
-import dk.kriaactividade.mealngram.entities.domain.recipe.WEEK
 import dk.kriaactividade.mealngram.entities.ui.recipeList.RecipeListUiData
 import dk.kriaactividade.mealngram.entities.ui.recipeList.RecipeListUiState
 import dk.kriaactividade.mealngram.entities.ui.recipeList.RecipeListViewModelItemActions
@@ -38,14 +33,6 @@ class RecipeListViewModel @Inject constructor(
     private val dateTimeLong
         get() = savedStateHandle["weekNumber"] ?: Calendar.getInstance().time.time
 
-    private val selectedChipStates: List<SelectedChip> by lazy {
-        val calendar = Calendar.getInstance()
-        calendar.time = Date(dateTimeLong)
-        calendar.daysUntilTheEndOfWeek().map {
-            SelectedChip(date = it, weekDay = it.toWeek())
-        }
-    }
-
     init {
         viewModelScope.launch {
             repository.getAllRecipes().collect(::handleGetAllRecipes)
@@ -56,7 +43,7 @@ class RecipeListViewModel @Inject constructor(
         val calendar = Calendar.getInstance()
         calendar.time = date
         return calendar.daysUntilTheEndOfWeek().map {
-            SelectedChipState(id = recipeId, date = it, week = it.toWeek())
+            SelectedChipState(id = recipeId, date = it)
         }
     }
 
@@ -117,9 +104,14 @@ class RecipeListViewModel @Inject constructor(
             if (recipeItem.id == updatedSelectableDay.id) {
                 updatedSelectableDay
             } else {
-                updateChipStateOnDiferentChipStateClicked(
-                    updatedSelectableDay,
-                    selectedChipState
+                val isChecked = false
+                val isSelectable = !updatedSelectableDay.isChecked
+
+                 SelectedChipState(
+                    id = selectedChipState.id,
+                    isSelectable = isSelectable,
+                    isChecked = isChecked,
+                    date = selectedChipState.date
                 )
             }
 
@@ -128,36 +120,10 @@ class RecipeListViewModel @Inject constructor(
         }
     }
 
-    private fun updateChipStateOnDiferentChipStateClicked(
-        updatedSelectableDay: SelectedChipState,
-        selectedChipState: SelectedChipState
-    ): SelectedChipState {
-        val isChecked = false
-        val isSelectable = !updatedSelectableDay.isChecked
-
-        return SelectedChipState(
-            id = selectedChipState.id,
-            isSelectable = isSelectable,
-            isChecked = isChecked,
-            week = selectedChipState.week,
-            date = selectedChipState.date
-        )
-    }
-
-    private fun logSelectableDay(
-        selectedRecipeItem: RecipeItem, selectableDay: SelectedChipState, context: String
-    ) {
-        Log.e(
-            "SELECTED_RECIPE",
-            "$context ${selectedRecipeItem.name} ${selectableDay.week.label} " + "checked = ${selectableDay.isChecked} " + "isSelectable = ${selectableDay.isSelectable}"
-        )
-    }
-
     private fun updateSelectedDay(selectableDay: SelectedChipState) = SelectedChipState(
         id = selectableDay.id,
         isSelectable = true,
         isChecked = !selectableDay.isChecked,
-        week = selectableDay.week,
         date = selectableDay.date
     )
 

@@ -3,7 +3,6 @@ package dk.kriaactividade.mealngram.database.converter
 import androidx.room.TypeConverter
 import com.google.common.reflect.TypeToken
 import com.google.gson.Gson
-import dk.kriaactividade.mealngram.entities.domain.chip.ChipState
 import java.util.*
 
 

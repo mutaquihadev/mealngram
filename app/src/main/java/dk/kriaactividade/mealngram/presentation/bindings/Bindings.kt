@@ -40,7 +40,7 @@ fun ChipGroup.setSelectableDays(
         val chip = Chip(context, null, R.attr.CustomChipChoiceStyle)
         this.addView(chip)
 
-        chip.text = chipState.week.label
+        chip.text = chipState.date.toString()
         chip.isCheckable = chipState.isSelectable
         chip.isChecked = chipState.isChecked
         chip.isEnabled = chipState.isSelectable
