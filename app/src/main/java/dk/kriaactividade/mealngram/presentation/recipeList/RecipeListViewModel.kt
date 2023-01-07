@@ -13,6 +13,7 @@ import dk.kriaactividade.mealngram.entities.ui.recipeList.RecipeListUiData
 import dk.kriaactividade.mealngram.entities.ui.recipeList.RecipeListUiState
 import dk.kriaactividade.mealngram.entities.ui.recipeList.RecipeListViewModelItemActions
 import dk.kriaactividade.mealngram.helpers.DataState
+import dk.kriaactividade.mealngram.presentation.utils.Constants.PROGRESS_MAX
 import dk.kriaactividade.mealngram.presentation.utils.isSameDay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -29,6 +30,8 @@ class RecipeListViewModel @Inject constructor(
         MutableStateFlow(RecipeListUiState.Loading)
 
     val uiState = _uiState.asStateFlow()
+
+    private var count = 0
 
     private val dateTimeLong
         get() = savedStateHandle["weekNumber"] ?: Calendar.getInstance().time.time
@@ -79,7 +82,36 @@ class RecipeListViewModel @Inject constructor(
                 updatedRecipeItem(recipeItem, updatedSelectedDays)
             }
 
-            _uiState.value = RecipeListUiState.Success(uiData = RecipeListUiData(recipes = updatedRecipes))
+            val progress = updateProgress(updatedRecipes, selectableDay)
+
+            val showButton = count > PROGRESS_MAX
+
+            _uiState.value = RecipeListUiState.Success(
+                uiData = RecipeListUiData(
+                    recipes = updatedRecipes,
+                    progressValue = progress,
+                    showButton = showButton
+                )
+            )
+        }
+    }
+
+    private fun updateProgress(
+        recipeItems: List<RecipeItem>,
+        selectableDay: SelectedChipState
+    ): Int {
+        val listDays = mutableListOf<SelectedChipState>()
+        recipeItems.forEach { recipeItem ->
+            if (recipeItem.id == selectableDay.id) {
+                listDays.addAll(recipeItem.selectedDays)
+            }
+        }
+        return if (!selectableDay.isChecked) {
+            count += PROGRESS_MAX / listDays.size + 1
+            count
+        } else {
+            count -= PROGRESS_MAX / listDays.size + 1
+            count
         }
     }
 
@@ -107,7 +139,7 @@ class RecipeListViewModel @Inject constructor(
                 val isChecked = false
                 val isSelectable = !updatedSelectableDay.isChecked
 
-                 SelectedChipState(
+                SelectedChipState(
                     id = selectedChipState.id,
                     isSelectable = isSelectable,
                     isChecked = isChecked,
